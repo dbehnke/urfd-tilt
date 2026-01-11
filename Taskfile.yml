@@ -1,0 +1,26 @@
+version: "3"
+
+tasks:
+  init:
+    desc: Initialize development environment
+    cmds:
+      - ./scripts/ensure-repos.sh
+      - task: init-config
+
+  init-config:
+    desc: Copy default configs to local if missing
+    cmds:
+      - mkdir -p config/local
+      - cp -n config/defaults/*.ini config/local/ || true
+      - echo "Local configuration initialized in config/local/"
+
+  clean:
+    desc: Clean up configurations
+    cmds:
+      - rm -rf config/local
+      - echo "Local configuration removed."
+
+  docs:
+    desc: Generate or serve documentation (placeholder)
+    cmds:
+      - echo "See README.md for documentation."

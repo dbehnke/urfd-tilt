@@ -1,0 +1,8 @@
+services:
+  allstar-nexus:
+    image: allstar-nexus
+    container_name: allstar-nexus
+    network_mode: host
+    environment:
+      - URFD_HOST=localhost
+    restart: unless-stopped

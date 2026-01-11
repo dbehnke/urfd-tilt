@@ -1,0 +1,8 @@
+# Local configuration overrides
+config/local/
+
+# Tilt temporary files
+.tilt/
+
+# MacOS system files
+.DS_Store
