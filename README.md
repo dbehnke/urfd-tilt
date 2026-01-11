@@ -26,7 +26,7 @@ graph TD
             URFD[URFD Reflector]
             TCD[TCD Transcoder]
             Dash[Dashboard]
-            Nexus[AllStar Nexus (Optional)]
+            Nexus["AllStar Nexus (Optional)"]
         end
     end
 
