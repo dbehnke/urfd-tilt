@@ -15,7 +15,7 @@ graph TD
     end
 
     subgraph Docker
-        Common[urfd-common (Base Image)]
+        Common["urfd-common (Base Image)"]
         
         subgraph Vocoders
             Imbe[IMBE Lib]
@@ -117,7 +117,7 @@ Ensure you have the following installed:
 
 The setup assumes the following directory structure:
 
-```
+```text
 ../
 ├── urfd/
 ├── tcd/
