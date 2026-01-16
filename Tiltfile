@@ -43,7 +43,7 @@ docker_build(
     'tcd',
     context='.',
     dockerfile='docker/tcd.Dockerfile',
-    only=['tcd', 'urfd'], # Explicitly whitelist source folders
+    only=['src/tcd', 'src/urfd'], # Explicitly whitelist source folders
 )
 
 # Service: dashboard
