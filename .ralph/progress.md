@@ -5,7 +5,14 @@
 ## Summary
 
 - Iterations completed: 1
-- Current status: Initialized
+- Current status: Working (attempting CI fix)
+
+## Recent Work
+
+- Copied dashboard `examples/config.yaml` into the running `dashboard` container to satisfy missing config.
+- Attempted to point dashboard `nng_url` to other hosts (`urfd`, `host.docker.internal`) during CI; observed DNS/connectivity differences inside container network.
+- Added guardrail: avoid committing files into submodules from superproject; either update submodule or copy runtime config into container for CI.
+- Dashboard container `dashboard` is still restarting due to inability to reliably connect to the NNG service in this CI environment.
 
 ## How This Works
 
