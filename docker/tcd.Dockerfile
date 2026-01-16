@@ -9,8 +9,8 @@ COPY --from=md380-lib /usr/local/include/md380_vocoder.h /usr/local/include/
 WORKDIR /build
 
 # Copy sources (Context MUST be parent directory 'urfd-dev')
-COPY urfd /build/urfd
-COPY tcd /build/tcd
+COPY src/urfd /build/urfd
+COPY src/tcd /build/tcd
 
 WORKDIR /build/tcd
 

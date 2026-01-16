@@ -17,7 +17,7 @@ docker_build(
 # library: imbe_vocoder
 docker_build(
     'imbe-lib',
-    context='../imbe_vocoder',
+    context='src/imbe_vocoder',
     dockerfile='docker/imbe.Dockerfile',
     build_args={},
     only=['.'], # optimize context if needed, but for now full context
@@ -26,14 +26,14 @@ docker_build(
 # library: md380_vocoder
 docker_build(
     'md380-lib',
-    context='../md380_vocoder_dynarmic',
+    context='src/md380_vocoder_dynarmic',
     dockerfile='docker/md380.Dockerfile',
 )
 
 # Service: urfd
 docker_build(
     'urfd',
-    context='../urfd',
+    context='src/urfd',
     dockerfile='docker/urfd.Dockerfile',
     # live_update could be added here for incremental C++ builds if configured
 )
@@ -41,7 +41,7 @@ docker_build(
 # Service: tcd
 docker_build(
     'tcd',
-    context='..',
+    context='.',
     dockerfile='docker/tcd.Dockerfile',
     only=['tcd', 'urfd'], # Explicitly whitelist source folders
 )
@@ -49,7 +49,7 @@ docker_build(
 # Service: dashboard
 docker_build(
     'dashboard',
-    context='../urfd-nng-dashboard',
+    context='src/urfd-nng-dashboard',
     dockerfile='docker/dashboard.Dockerfile',
 )
 
@@ -60,7 +60,7 @@ enable_usrp = 'usrp' in args
 if enable_usrp:
     docker_build(
         'allstar-nexus',
-        context='../allstar-nexus',
+        context='src/allstar-nexus',
         dockerfile='docker/allstar-nexus.Dockerfile'
     )
 
