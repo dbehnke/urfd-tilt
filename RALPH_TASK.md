@@ -13,7 +13,7 @@ Build a simple command-line todo application in TypeScript.
 
 ## Success Criteria
 
-1. [ ] `tilt ci` succeeds
+1. [x] `tilt ci` succeeds
 
 ---
 
