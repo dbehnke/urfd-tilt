@@ -4,8 +4,8 @@ tasks:
   init:
     desc: Initialize development environment
     cmds:
-      - git -C .. submodule sync --recursive
-      - git -C .. submodule update --init --recursive
+      - git submodule sync --recursive
+      - git submodule update --init --recursive
       - task: init-config
 
   init-config:

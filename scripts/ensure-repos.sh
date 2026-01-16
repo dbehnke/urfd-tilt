@@ -9,8 +9,8 @@ set -e
 #
 
 echo "Syncing .gitmodules and updating submodules (repo root)..."
-git -C .. submodule sync --recursive
-git -C .. submodule update --init --recursive
+git submodule sync --recursive
+git submodule update --init --recursive
 echo "Submodules are initialized/updated under urfd-tilt/src/."
 
 exit 0

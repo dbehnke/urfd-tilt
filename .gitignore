@@ -6,3 +6,6 @@ config/local/
 
 # MacOS system files
 .DS_Store
+
+# Ralph config (may contain API key)
+.opencode/ralph-config.json
