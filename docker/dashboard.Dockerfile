@@ -28,4 +28,8 @@ RUN task build-backend
 # Install
 RUN cp urfd-dashboard /usr/local/bin/dashboard
 
-CMD ["dashboard"]
+# Ensure the default working directory contains config.yaml
+WORKDIR /build/urfd-nng-dashboard
+
+# Run the installed dashboard binary (absolute path)
+CMD ["/usr/local/bin/dashboard"]
