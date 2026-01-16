@@ -22,3 +22,21 @@
 [submodule "allstar-nexus"]
 	path = src/allstar-nexus
 	url = https://github.com/dbehnke/allstar-nexus.git
+[submodule "src/imbe_vocoder"]
+	path = src/imbe_vocoder
+	url = https://github.com/nostar/imbe_vocoder.git
+[submodule "src/md380_vocoder_dynarmic"]
+	path = src/md380_vocoder_dynarmic
+	url = https://github.com/nostar/md380_vocoder_dynarmic.git
+[submodule "src/urfd"]
+	path = src/urfd
+	url = https://github.com/dbehnke/urfd.git
+[submodule "src/tcd"]
+	path = src/tcd
+	url = https://github.com/dbehnke/tcd.git
+[submodule "src/urfd-nng-dashboard"]
+	path = src/urfd-nng-dashboard
+	url = https://github.com/dbehnke/urfd-nng-dashboard.git
+[submodule "src/allstar-nexus"]
+	path = src/allstar-nexus
+	url = https://github.com/dbehnke/allstar-nexus.git
