@@ -25,3 +25,8 @@ Build a simple command-line todo application in TypeScript.
 4. Commit your changes frequently
 5. When ALL criteria are [x], say: `RALPH_COMPLETE`
 6. If stuck on the same issue 3+ times, say: `RALPH_GUTTER`
+
+
+RALPH_COMPLETE
+
+Test run: `tilt ci` succeeded
