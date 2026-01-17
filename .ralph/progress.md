@@ -9,6 +9,21 @@
 
 ## Recent Work
 
+- **2026-01-17 (Iteration 6 - Continued)**: Phase 5 - Research and architecture analysis
+  - Examined existing USRP client and reflector architecture
+  - Analyzed CNNGVoiceStream.h/cpp current implementation (TX-only: PCM→Opus→NNG)
+  - Reviewed dashboard VoiceClient (nng.go) implementation for PTT messaging
+  - Confirmed password validation already exists in dashboard session.go (lines 192-208)
+  - Identified architecture for RX path: Browser→WebSocket→VoiceClient→NNG→CNNGVoiceStream→Reflector
+  - Dashboard already sends correct messages: ptt_start, audio_data (Opus), ptt_stop with source="web"
+  - Identified work needed for Phase 5:
+    1. Add Opus decoder to CNNGVoiceStream (receive path)
+    2. Implement NNG message receive loop in CNNGVoiceStream
+    3. Create virtual USRP client for web transmissions in Reflector
+    4. Implement stream injection via existing OpenStream() API
+    5. Add single active transmitter enforcement per module
+  - Password validation: Already complete in dashboard (no reflector changes needed)
+  - Next: Implement Opus decode and NNG receive in CNNGVoiceStream
 - **2026-01-17 (Iteration 6)**: Phase 4 - Implemented password authentication for PTT transmit
   - Created PasswordDialog.vue component with password input form and modal UI
   - Added password state to voice store (stored in sessionStorage for session persistence)
