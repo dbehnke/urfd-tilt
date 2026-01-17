@@ -46,7 +46,7 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [x] Modify `web/src/layouts/AppShell.vue` to integrate voice chat button
 - [x] Implement callsign input with validation and localStorage persistence
 - [x] Implement module selector (transcoded modules only)
-- [ ] Test users can hear live audio from selected module
+- [x] Test users can hear live audio from selected module
 
 ### Phase 4: Frontend PTT Transmit
 - [ ] Implement microphone permission handling in VoiceEngine

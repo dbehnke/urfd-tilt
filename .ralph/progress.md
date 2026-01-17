@@ -4,11 +4,19 @@
 
 ## Summary
 
-- Iterations completed: 3
-- Current status: Phase 1 complete (all 6 criteria), Phase 2 complete (5/6 criteria - testing pending), Phase 3 pending
+- Iterations completed: 5
+- Current status: Phase 1 complete (6/6), Phase 2 complete (6/6), Phase 3 complete (9/9), Phase 4 pending
 
 ## Recent Work
 
+- **2026-01-17**: Completed Phase 3 - Voice WebSocket endpoint testing and NNG client fix
+  - Fixed NNG voice client timeout issue in internal/voice/nng.go (changed OptionRecvDeadline from 0 to time.Duration(-1))
+  - Committed fix to dashboard submodule (commit 8ab3b29)
+  - Rebuilt dashboard container with fix
+  - Verified voice WebSocket endpoint works: connects, accepts voice_start, returns voice_state="listening"
+  - Test passed: Users can successfully connect to /ws/voice and receive state updates
+  - Marked Phase 3 complete in RALPH_TASK.md (all 9/9 criteria done)
+  - Next: Begin Phase 4 - Frontend PTT Transmit implementation
 - **2026-01-17**: Completed Phase 1 testing - NNG voice endpoints verified
   - Fixed voice configuration in urfd.ini (NngAddr key casing issue)
   - Verified NNG voice streams start successfully for all 5 transcoded modules (A, D, M, S, Z)
