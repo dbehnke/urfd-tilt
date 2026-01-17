@@ -5,10 +5,21 @@
 ## Summary
 
 - Iterations completed: 5
-- Current status: Phase 1 complete (6/6), Phase 2 complete (6/6), Phase 3 complete (9/9), Phase 4 pending
+- Current status: Phase 1 complete (6/6), Phase 2 complete (6/6), Phase 3 complete (9/9), Phase 4 in progress (5/8 complete)
 
 ## Recent Work
 
+- **2026-01-17**: Phase 4 - Implemented microphone permissions, PTT transmission, and half-duplex logic
+  - Added microphone permission request with proper error handling (NotAllowedError, NotFoundError, etc.)
+  - Integrated opus-recorder.js with 8kHz, 12kbps, 20ms frames for audio encoding
+  - Implemented startPTT/stopPTT functions with state management
+  - Added half-duplex logic: blocks PTT when receiving audio (rx_busy state)
+  - Implemented sendAudioData to transmit Opus frames via WebSocket
+  - Added currentState and isReceivingAudio tracking for UI components
+  - Handle ptt_denied messages from server
+  - Committed changes to dashboard submodule (commits d5d7f02, 35814f6)
+  - Marked 5 of 8 Phase 4 criteria complete in RALPH_TASK.md
+  - Next: Create password prompt dialog and implement password auth flow
 - **2026-01-17**: Completed Phase 3 - Voice WebSocket endpoint testing and NNG client fix
   - Fixed NNG voice client timeout issue in internal/voice/nng.go (changed OptionRecvDeadline from 0 to time.Duration(-1))
   - Committed fix to dashboard submodule (commit 8ab3b29)

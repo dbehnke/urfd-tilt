@@ -49,11 +49,11 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [x] Test users can hear live audio from selected module
 
 ### Phase 4: Frontend PTT Transmit
-- [ ] Implement microphone permission handling in VoiceEngine
-- [ ] Integrate opus-recorder.js for microphone capture and encoding
-- [ ] Implement PTT button state management (press/release)
-- [ ] Add half-duplex logic (lock PTT when receiving audio)
-- [ ] Wire up WebSocket audio upload for transmit path
+- [x] Implement microphone permission handling in VoiceEngine
+- [x] Integrate opus-recorder.js for microphone capture and encoding
+- [x] Implement PTT button state management (press/release)
+- [x] Add half-duplex logic (lock PTT when receiving audio)
+- [x] Wire up WebSocket audio upload for transmit path
 - [ ] Create password prompt dialog component
 - [ ] Implement password authentication flow in voice store
 - [ ] Test PTT button locks during RX and allows TX when clear
