@@ -70,8 +70,8 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 
 ### Phase 6: Polish & Core Features
 - [x] Add audio level meters (RX and TX) to VoiceChat UI
-- [ ] Implement AGC/noise gate on transmit audio
-- [ ] Add echo cancellation hints to getUserMedia config
+- [x] Implement AGC/noise gate on transmit audio
+- [x] Add echo cancellation hints to getUserMedia config
 - [ ] Implement voice activity detection (optional)
 - [ ] Add connection recovery handling (WebSocket reconnect)
 - [ ] Add session timeout enforcement (120s max TX per config)
