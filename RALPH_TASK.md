@@ -80,7 +80,7 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [ ] Test connection interruption and recovery scenarios
 
 ### Phase 6.5: Mobile Support & Advanced Features
-- [ ] Implement Media Session API for background audio playback
+- [x] Implement Media Session API for background audio playback
 - [ ] Add Wake Lock API to prevent screen sleep during sessions
 - [ ] Handle iOS audio context resume requirements
 - [ ] Add persistent notification with active talker info (mobile)
