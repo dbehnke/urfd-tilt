@@ -4,11 +4,31 @@
 
 ## Summary
 
-- Iterations completed: 6
-- Current status: Phase 1 complete (6/6), Phase 2 complete (6/6), Phase 3 complete (9/9), Phase 4 complete (8/8)
+- Iterations completed: 7
+- Current status: Phase 1 complete (6/6), Phase 2 complete (6/6), Phase 3 complete (9/9), Phase 4 complete (8/8), Phase 5 in progress (2/8)
 
 ## Recent Work
 
+- **2026-01-17 (Iteration 7)**: Phase 5 - Implemented Opus decode and NNG receive in NNGVoiceStream
+  - Added Opus decoder to CNNGVoiceStream for receiving browser audio (RX path)
+  - Implemented NNG receive thread to process messages from dashboard (ptt_start, ptt_stop, audio_data)
+  - Added JSON message parsing using nlohmann/json library
+  - Implemented active transmitter tracking (m_ActiveCallsign) for single talker per module enforcement
+  - Updated CNNGVoiceStream constructor to accept CReflector* pointer for future stream injection
+  - Added HandlePTTStart/Stop/AudioData methods for processing incoming web transmissions
+  - Build successfully compiles with new RX path code
+  - Committed changes to urfd submodule (commit f139eb3)
+  - Updated parent repo submodule reference (commit 389821f)
+  - Marked Phase 5 criteria 1 and 6 complete in RALPH_TASK.md (commit fa2ebe3)
+  - Pushed all commits to remote
+  - **Stream Injection Analysis:**
+    - Stream injection requires creating DVHeaderPacket and DVFramePacket objects
+    - Need to create virtual USRP client with proper callsign
+    - Must encode PCM to Codec2/AMBE (reflector uses encoded voice internally)
+    - CodecStream handles transcoding - may be able to inject at PacketStream level
+    - OpenStream() expects encoded voice packets, not raw PCM
+    - Complex multi-step process requiring deeper reflector architecture knowledge
+  - Next: Implement stream injection (virtual client + packet creation + codec encoding)
 - **2026-01-17 (Iteration 6 - Continued)**: Phase 5 - Research and architecture analysis
   - Examined existing USRP client and reflector architecture
   - Analyzed CNNGVoiceStream.h/cpp current implementation (TX-only: PCM→Opus→NNG)
