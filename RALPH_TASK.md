@@ -30,11 +30,11 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [ ] Test NNG voice endpoint streams Opus audio (verify with simple client)
 
 ### Phase 2: Dashboard Voice Bridge (Receive Path)
-- [ ] Create `internal/voice/nng.go` implementing NNG client for voice endpoint
-- [ ] Create `internal/voice/session.go` with voice session state machine
-- [ ] Modify `internal/server/server.go` to add WebSocket voice handler
-- [ ] Modify `internal/server/hub.go` to add voice session management
-- [ ] Add voice configuration to `config.yaml`
+- [x] Create `internal/voice/nng.go` implementing NNG client for voice endpoint
+- [x] Create `internal/voice/session.go` with voice session state machine
+- [x] Modify `internal/server/server.go` to add WebSocket voice handler
+- [x] Modify `internal/server/hub.go` to add voice session management
+- [x] Add voice configuration to `config.yaml`
 - [ ] Test WebSocket endpoint streams Opus frames to browser clients
 
 ### Phase 3: Frontend Voice Receiver
