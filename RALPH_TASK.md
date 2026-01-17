@@ -65,7 +65,7 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [x] Add callsign and user metadata handling for web streams
 - [x] Tag web streams with `source=web` metadata
 - [x] Implement single active stream enforcement per module
-- [ ] Add password validation in dashboard voice handler
+- [x] Add password validation in dashboard voice handler
 - [ ] Test end-to-end: browser PTT → dashboard → reflector → other clients
 
 ### Phase 6: Polish & Core Features
