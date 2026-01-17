@@ -63,7 +63,7 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [x] Create virtual USRP client/user for web transmissions in Reflector
 - [x] Implement stream injection via OpenStream() for web audio
 - [x] Add callsign and user metadata handling for web streams
-- [ ] Tag web streams with `source=web` metadata
+- [x] Tag web streams with `source=web` metadata
 - [x] Implement single active stream enforcement per module
 - [ ] Add password validation in dashboard voice handler
 - [ ] Test end-to-end: browser PTT → dashboard → reflector → other clients
