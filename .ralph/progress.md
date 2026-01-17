@@ -4,11 +4,25 @@
 
 ## Summary
 
-- Iterations completed: 2
-- Current status: Phase 1 complete, Phase 2 complete (5/6 criteria), Phase 3 pending
+- Iterations completed: 3
+- Current status: Phase 1 complete (all 6 criteria), Phase 2 complete (5/6 criteria - testing pending), Phase 3 pending
 
 ## Recent Work
 
+- **2026-01-17**: Completed Phase 1 testing - NNG voice endpoints verified
+  - Fixed voice configuration in urfd.ini (NngAddr key casing issue)
+  - Verified NNG voice streams start successfully for all 5 transcoded modules (A, D, M, S, Z)
+  - Each module gets unique port: 5556, 5559, 5568, 5574, 5581
+  - Created test_voice_client.py for future integration testing
+  - urfd logs show: "NNGVoiceStream[X]: Started at tcp://0.0.0.0:XXXX"
+  - Voice config now appears in NNG state broadcasts: "VoiceEnable":true, "VoiceNNGAddr":"tcp://0.0.0.0:5556"
+  - Marked Phase 1 complete in RALPH_TASK.md (all 6/6 criteria done)
+- **2026-01-17**: Started Phase 2 testing - Dashboard voice WebSocket endpoint
+  - Verified voice handler code exists in dashboard source (internal/server/server.go has /ws/voice handler)
+  - Verified voice config exists in dashboard source (internal/voice/nng.go and session.go present)
+  - Dashboard config.yaml in source has voice section with enable:true
+  - Current issue: Running dashboard container built before config update, needs rebuild
+  - Next: Rebuild dashboard image with updated config and test /ws/voice endpoint
 - **2026-01-17**: Implemented Phase 2 - Dashboard Voice Bridge (Receive Path)
   - Created internal/voice/nng.go with NNG PAIR client for reflector voice endpoint
   - Created internal/voice/session.go with complete voice session state machine
