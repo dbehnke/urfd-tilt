@@ -4,13 +4,29 @@
 
 ## Summary
 
-- Iterations completed: 7  
-- Current status: Phase 1 complete (6/6), Phase 2 complete (6/6), Phase 3 complete (9/9), Phase 4 complete (8/8), Phase 5 in progress (2/8)
-- **Key Achievement:** NNG receive path fully implemented and compiling
-- **Next Major Task:** Stream injection (virtual client + packet creation)
+- Iterations completed: 8  
+- Current status: Phase 1 complete (6/6), Phase 2 complete (6/6), Phase 3 complete (9/9), Phase 4 complete (8/8), Phase 5 in progress (5/8)
+- **Key Achievement:** Virtual USRP client and stream injection fully implemented
+- **Next Major Task:** Password validation and end-to-end testing
 
 ## Recent Work
 
+- **2026-01-17 (Iteration 8)**: Phase 5 - Implemented virtual USRP client and stream injection
+  - Created virtual USRP client for web transmissions (CreateVirtualClient/DestroyVirtualClient)
+  - Implemented stream injection via Reflector::OpenStream() API
+  - Added DVHeaderPacket creation with user callsign from web client
+  - Added DVFramePacket creation with decoded PCM audio (USRP format, 160 samples/frame)
+  - Implemented proper stream lifecycle: header packet → audio frames → last frame
+  - Added stream ID generation using rand() (consistent with other protocols)
+  - Updated HandlePTTStart to create virtual client and open stream
+  - Updated HandlePTTStop to send final frame and close stream properly
+  - Updated HandleAudioData to push CDvFramePacket to active stream
+  - Added packet counter tracking for debugging/logging
+  - Code compiles successfully with all changes
+  - Committed changes to urfd submodule (commit e326718)
+  - Updated parent repo submodule reference (commit 4d0179a)
+  - Marked Phase 5 criteria 2, 3, and 4 complete in RALPH_TASK.md (commit 52ace34)
+  - Next: Implement password validation in dashboard voice handler
 - **2026-01-17 (Iteration 7)**: Phase 5 - Implemented Opus decode and NNG receive in NNGVoiceStream
   - Added Opus decoder to CNNGVoiceStream for receiving browser audio (RX path)
   - Implemented NNG receive thread to process messages from dashboard (ptt_start, ptt_stop, audio_data)
