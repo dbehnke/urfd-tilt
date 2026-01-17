@@ -59,12 +59,12 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [x] Test PTT button locks during RX and allows TX when clear
 
 ### Phase 5: Reflector Audio Injection (Transmit Path)
-- [ ] Implement Opus decode in CNNGVoiceStream
+- [x] Implement Opus decode in CNNGVoiceStream
 - [ ] Create virtual USRP client/user for web transmissions in Reflector
 - [ ] Implement stream injection via OpenStream() for web audio
 - [ ] Add callsign and user metadata handling for web streams
 - [ ] Tag web streams with `source=web` metadata
-- [ ] Implement single active stream enforcement per module
+- [x] Implement single active stream enforcement per module
 - [ ] Add password validation in dashboard voice handler
 - [ ] Test end-to-end: browser PTT → dashboard → reflector → other clients
 
