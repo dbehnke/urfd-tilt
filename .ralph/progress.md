@@ -4,13 +4,47 @@
 
 ## Summary
 
-- Iterations completed: 10  
-- Current status: Phase 1-5 complete (38/39), Phase 6 complete (8/9 implementation)
-- **Key Achievement:** Phase 6 polish features complete - audio meters, reconnection, session timeout, diagnostics
-- **Next Major Task:** Manual testing (Phase 5 end-to-end, Phase 6 connection scenarios)
+- Iterations completed: 11  
+- Current status: Phase 1-5 complete (38/39), Phase 6 complete (8/9), Phase 6.5 implementation (6/8)
+- **Key Achievement:** Phase 6.5 mobile features implemented - iOS audio context, auto-reconnect, data usage tracking
+- **Next Major Task:** Manual testing on iOS Safari 15+ and Android Chrome
 
 ## Recent Work
 
+- **2026-01-17 (Iteration 11)**: Phase 6.5 - Mobile Support & Advanced Features
+  - **iOS Audio Context Resume (Criterion 3)**:
+    - Added resumeAudioContext() function to handle suspended audio context
+    - Call resume on connect(), startPTT(), and visibility change events
+    - Properly handles iOS Safari requirement for user-gesture-initiated audio
+    - Made connect() function async to support await resumeAudioContext()
+  - **Persistent Notification with Active Talker (Criterion 4)**:
+    - Already implemented via Media Session API metadata updates
+    - updateMediaSessionMetadata() called when active talker changes
+    - Shows talker callsign in lock screen/notification area
+  - **Auto-Reconnect on App Resume (Criterion 5)**:
+    - Enhanced visibilitychange handler to detect app resume
+    - Automatically reconnect if disconnected while in background
+    - Only reconnects if shouldReconnect flag is true (not user-initiated disconnect)
+    - Logs diagnostic event for app resume reconnection
+  - **Data Usage Indicator (Criterion 6)**:
+    - Created DataUsageIndicator.vue component with real-time stats
+    - Track bytesReceived and bytesSent for all WebSocket messages
+    - Calculate session duration, total data (KB/MB), and bitrate (kbps)
+    - Display in compact grid: Data usage, Rate, Time
+    - Auto-update every 2 seconds via polling
+    - Reset on connection open, track throughout session
+    - Exposed getDataUsage() and resetDataUsage() from VoiceEngine
+  - **Build and Integration**:
+    - Build successful with all mobile features
+    - Integrated DataUsageIndicator into VoiceChat.vue
+    - Shows only when connected to avoid clutter
+  - Committed changes to dashboard submodule (commit 05becc0)
+  - Updated parent repo submodule reference (commit bf256a2)
+  - Marked Phase 6.5 criteria 3-6 complete in RALPH_TASK.md (commit 717f9ae)
+  - Pushed all commits to remote
+  - Phase 6.5 progress: 6/8 criteria complete (75%)
+  - **Remaining work**: Manual testing on iOS Safari 15+ and Android Chrome (criteria 7-8)
+  
 - **2026-01-17 (Iteration 10 - Final)**: Phase 6 - Completed all implementation work
   - **Audio Level Meters (Criterion 72)**:
     - Created AudioLevelMeter.vue component with visual level indicators (0-100 scale)
