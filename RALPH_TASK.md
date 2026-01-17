@@ -27,7 +27,7 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [x] Add voice configuration section to `src/configure.h`
 - [x] Modify `src/PacketStream.cpp` to add audio tap observer pattern
 - [x] Modify `src/Reflector.cpp` to initialize CNNGVoiceStream when enabled
-- [ ] Test NNG voice endpoint streams Opus audio (verify with simple client)
+- [x] Test NNG voice endpoint streams Opus audio (verify with simple client)
 
 ### Phase 2: Dashboard Voice Bridge (Receive Path)
 - [x] Create `internal/voice/nng.go` implementing NNG client for voice endpoint
