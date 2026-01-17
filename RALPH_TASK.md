@@ -22,11 +22,11 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 ## Success Criteria
 
 ### Phase 1: Reflector Audio Streaming (Receive Only)
-- [ ] Create `src/NNGVoiceStream.h` with CNNGVoiceStream class definition
-- [ ] Create `src/NNGVoiceStream.cpp` implementing audio tap and Opus encoding
-- [ ] Add voice configuration section to `src/configure.h`
-- [ ] Modify `src/PacketStream.cpp` to add audio tap observer pattern
-- [ ] Modify `src/Reflector.cpp` to initialize CNNGVoiceStream when enabled
+- [x] Create `src/NNGVoiceStream.h` with CNNGVoiceStream class definition
+- [x] Create `src/NNGVoiceStream.cpp` implementing audio tap and Opus encoding
+- [x] Add voice configuration section to `src/configure.h`
+- [x] Modify `src/PacketStream.cpp` to add audio tap observer pattern
+- [x] Modify `src/Reflector.cpp` to initialize CNNGVoiceStream when enabled
 - [ ] Test NNG voice endpoint streams Opus audio (verify with simple client)
 
 ### Phase 2: Dashboard Voice Bridge (Receive Path)
