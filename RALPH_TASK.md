@@ -60,9 +60,9 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 
 ### Phase 5: Reflector Audio Injection (Transmit Path)
 - [x] Implement Opus decode in CNNGVoiceStream
-- [ ] Create virtual USRP client/user for web transmissions in Reflector
-- [ ] Implement stream injection via OpenStream() for web audio
-- [ ] Add callsign and user metadata handling for web streams
+- [x] Create virtual USRP client/user for web transmissions in Reflector
+- [x] Implement stream injection via OpenStream() for web audio
+- [x] Add callsign and user metadata handling for web streams
 - [ ] Tag web streams with `source=web` metadata
 - [x] Implement single active stream enforcement per module
 - [ ] Add password validation in dashboard voice handler
