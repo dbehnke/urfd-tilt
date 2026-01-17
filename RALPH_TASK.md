@@ -69,7 +69,7 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [ ] Test end-to-end: browser PTT → dashboard → reflector → other clients
 
 ### Phase 6: Polish & Core Features
-- [ ] Add audio level meters (RX and TX) to VoiceChat UI
+- [x] Add audio level meters (RX and TX) to VoiceChat UI
 - [ ] Implement AGC/noise gate on transmit audio
 - [ ] Add echo cancellation hints to getUserMedia config
 - [ ] Implement voice activity detection (optional)
