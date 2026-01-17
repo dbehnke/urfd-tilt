@@ -4,12 +4,32 @@
 
 ## Summary
 
-- Iterations completed: 8  
-- Current status: Phase 1 complete (6/6), Phase 2 complete (6/6), Phase 3 complete (9/9), Phase 4 complete (8/8), Phase 5 in progress (5/8)
-- **Key Achievement:** Virtual USRP client and stream injection fully implemented
-- **Next Major Task:** Password validation and end-to-end testing
+- Iterations completed: 9  
+- Current status: Phase 1 complete (6/6), Phase 2 complete (6/6), Phase 3 complete (9/9), Phase 4 complete (8/8), Phase 5 in progress (7/8)
+- **Key Achievement:** Source metadata tagging and password validation complete
+- **Next Major Task:** End-to-end testing (browser PTT → reflector → clients)
 
 ## Recent Work
+
+- **2026-01-17 (Iteration 9)**: Phase 5 - Implemented source metadata tagging and verified password validation
+  - Added m_ActiveSource member to CNNGVoiceStream for storing source tag
+  - Updated HandleMessage to parse 'source' field from incoming JSON messages
+  - Modified HandlePTTStart to store source tag and include it in log messages
+  - Modified HandlePTTStop to use source tag in log messages
+  - Updated Cleanup to clear m_ActiveSource
+  - Log messages now show source tag: "[web] KC1XXX started transmitting"
+  - Enables clear identification of web vs hardware transmissions
+  - Dashboard already sends source='web' in all voice messages (nng.go lines 120, 131, 141)
+  - Committed changes to urfd submodule (commit e838412)
+  - Updated parent repo submodule reference (commit cc3ff1b)
+  - Verified password validation is already implemented in dashboard session.go:
+    - RequirePassword flag set based on transmit_password config
+    - handlePTTPress() validates password before transmission (lines 192-208)
+    - Sends auth_required/auth_failed messages appropriately
+    - Sets Authenticated flag on successful validation
+  - Marked Phase 5 criteria 5 and 7 complete in RALPH_TASK.md (commits 89b162c, 1960559)
+  - Build and CI passed successfully (tilt ci)
+  - Next: End-to-end testing of browser PTT → dashboard → reflector → other clients
 
 - **2026-01-17 (Iteration 8)**: Phase 5 - Implemented virtual USRP client and stream injection
   - Created virtual USRP client for web transmissions (CreateVirtualClient/DestroyVirtualClient)
