@@ -75,8 +75,8 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [x] Implement voice activity detection (optional)
 - [x] Add connection recovery handling (WebSocket reconnect)
 - [x] Add session timeout enforcement (120s max TX per config)
-- [ ] Improve error messages and user feedback
-- [ ] Add logging and diagnostics for troubleshooting
+- [x] Improve error messages and user feedback
+- [x] Add logging and diagnostics for troubleshooting
 - [ ] Test connection interruption and recovery scenarios
 
 ### Phase 6.5: Mobile Support & Advanced Features
