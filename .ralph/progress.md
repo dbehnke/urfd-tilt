@@ -4,11 +4,20 @@
 
 ## Summary
 
-- Iterations completed: 1
-- Current status: Phase 1 complete, working on Phase 2
+- Iterations completed: 2
+- Current status: Phase 1 complete, Phase 2 complete (5/6 criteria), Phase 3 pending
 
 ## Recent Work
 
+- **2026-01-17**: Implemented Phase 2 - Dashboard Voice Bridge (Receive Path)
+  - Created internal/voice/nng.go with NNG PAIR client for reflector voice endpoint
+  - Created internal/voice/session.go with complete voice session state machine
+  - Implemented WebSocket /ws/voice handler in internal/server/server.go
+  - Added voice session management to internal/server/hub.go with active transmitter tracking
+  - Added VoiceConfig to internal/config/config.go with all required fields
+  - Updated config.yaml with voice configuration section (enable, reflector_addr, password, etc.)
+  - Committed Phase 2 implementation to dashboard submodule (commit 157f61a)
+  - Updated RALPH_TASK.md to mark 5 of 6 Phase 2 criteria complete (testing pending)
 - **2026-01-17**: Implemented Phase 1 - Reflector Audio Streaming (Receive Only)
   - Created CNNGVoiceStream class for live Opus audio streaming via NNG PAIR protocol
   - Added voice configuration section to Configure.h/Configure.cpp with VoiceEnable and VoiceNNGAddr
@@ -19,7 +28,6 @@
 - Attempted to point dashboard `nng_url` to other hosts (`urfd`, `host.docker.internal`) during CI; observed DNS/connectivity differences inside container network.
 - Added guardrail: avoid committing files into submodules from superproject; either update submodule or copy runtime config into container for CI.
 - Dashboard container `dashboard` previously restarted due to inability to connect to NNG; updated dashboard to run without failing when NNG is unreachable so `tilt ci` succeeds.
-- Read state files `RALPH_TASK.md` and `.ralph/*`; confirmed all criteria in `RALPH_TASK.md` are checked and task is complete.
 
 ## How This Works
 
