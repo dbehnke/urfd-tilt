@@ -54,9 +54,9 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [x] Implement PTT button state management (press/release)
 - [x] Add half-duplex logic (lock PTT when receiving audio)
 - [x] Wire up WebSocket audio upload for transmit path
-- [ ] Create password prompt dialog component
-- [ ] Implement password authentication flow in voice store
-- [ ] Test PTT button locks during RX and allows TX when clear
+- [x] Create password prompt dialog component
+- [x] Implement password authentication flow in voice store
+- [x] Test PTT button locks during RX and allows TX when clear
 
 ### Phase 5: Reflector Audio Injection (Transmit Path)
 - [ ] Implement Opus decode in CNNGVoiceStream
