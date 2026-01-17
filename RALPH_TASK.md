@@ -72,8 +72,8 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [x] Add audio level meters (RX and TX) to VoiceChat UI
 - [x] Implement AGC/noise gate on transmit audio
 - [x] Add echo cancellation hints to getUserMedia config
-- [ ] Implement voice activity detection (optional)
-- [ ] Add connection recovery handling (WebSocket reconnect)
+- [x] Implement voice activity detection (optional)
+- [x] Add connection recovery handling (WebSocket reconnect)
 - [ ] Add session timeout enforcement (120s max TX per config)
 - [ ] Improve error messages and user feedback
 - [ ] Add logging and diagnostics for troubleshooting
