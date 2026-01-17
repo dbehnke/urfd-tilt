@@ -74,7 +74,7 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [x] Add echo cancellation hints to getUserMedia config
 - [x] Implement voice activity detection (optional)
 - [x] Add connection recovery handling (WebSocket reconnect)
-- [ ] Add session timeout enforcement (120s max TX per config)
+- [x] Add session timeout enforcement (120s max TX per config)
 - [ ] Improve error messages and user feedback
 - [ ] Add logging and diagnostics for troubleshooting
 - [ ] Test connection interruption and recovery scenarios
