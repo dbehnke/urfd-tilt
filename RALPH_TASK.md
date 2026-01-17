@@ -35,17 +35,17 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [x] Modify `internal/server/server.go` to add WebSocket voice handler
 - [x] Modify `internal/server/hub.go` to add voice session management
 - [x] Add voice configuration to `config.yaml`
-- [ ] Test WebSocket endpoint streams Opus frames to browser clients
+- [x] Test WebSocket endpoint streams Opus frames to browser clients
 
 ### Phase 3: Frontend Voice Receiver
-- [ ] Add `opus-recorder` and `libopus.js` dependencies to `web/package.json`
-- [ ] Create `web/src/components/VoiceChat/VoiceEngine.vue` with Web Audio API
-- [ ] Create `web/src/components/VoiceChat/VoiceChat.vue` main UI component
-- [ ] Create `web/src/components/VoiceChat/PTTButton.vue` for PTT control
-- [ ] Create `web/src/stores/voice.ts` Pinia store for voice state
-- [ ] Modify `web/src/layouts/AppShell.vue` to integrate voice chat button
-- [ ] Implement callsign input with validation and localStorage persistence
-- [ ] Implement module selector (transcoded modules only)
+- [x] Add `opus-recorder` and `libopus.js` dependencies to `web/package.json`
+- [x] Create `web/src/components/VoiceChat/VoiceEngine.vue` with Web Audio API
+- [x] Create `web/src/components/VoiceChat/VoiceChat.vue` main UI component
+- [x] Create `web/src/components/VoiceChat/PTTButton.vue` for PTT control
+- [x] Create `web/src/stores/voice.ts` Pinia store for voice state
+- [x] Modify `web/src/layouts/AppShell.vue` to integrate voice chat button
+- [x] Implement callsign input with validation and localStorage persistence
+- [x] Implement module selector (transcoded modules only)
 - [ ] Test users can hear live audio from selected module
 
 ### Phase 4: Frontend PTT Transmit
