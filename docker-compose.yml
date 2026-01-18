@@ -24,14 +24,14 @@ services:
   dashboard:
     image: dashboard
     container_name: dashboard
-    command: dashboard
+    command: dashboard -config /etc/dashboard/config.yaml
     network_mode: host
     environment:
       - URFD_HOST=localhost
-      - URFD_AUDIO_PATH=/usr/local/bin/audio
     depends_on:
       - urfd
     volumes:
+      - ./config/dashboard:/etc/dashboard:ro
       - ./data/audio:/usr/local/bin/audio:ro
       - ./data/dashboard:/app/data
     restart: unless-stopped

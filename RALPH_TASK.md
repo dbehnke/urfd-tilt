@@ -90,7 +90,7 @@ For detailed architecture, see: `.opencode/plans/webvoiceclient.md`
 - [ ] Test lock screen controls functionality
 
 ### Testing & Validation
-- [ ] Run `tilt ci` successfully with all changes
+- [x] Run `tilt ci` successfully with all changes
 - [ ] Verify no regressions in existing dashboard functionality
 - [ ] Test with multiple concurrent listeners on same module
 - [ ] Test with multiple modules active simultaneously (no crosstalk)
