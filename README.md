@@ -36,7 +36,7 @@ graph TD
     Common --> Imbe & MD380 & URFD & TCD & Dash
     Imbe & MD380 -->|Linked into| TCD
     URFD -->|NNG| Dash
-    URFD -->|TCP| TCD
+    URFD -->|NNG| TCD
     Nexus -.->|USRP| URFD
 ```
 
