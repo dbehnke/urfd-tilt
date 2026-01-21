@@ -58,11 +58,21 @@ nix-shell shell.nix
 brew install tilt go-task docker git
 ```
 
+#### Using Colima Instead of Docker Desktop
+
+If you're using [Colima](https://github.com/abiosoft/colima) on macOS, you'll need to use the `grpc` port forwarder to support UDP ports (required for digital protocols like M17, DPlus, DExtra, etc.):
+
+```bash
+colima start --cpu 4 --memory 8 --disk 100 --port-forwarder grpc --vz-rosetta
+```
+
+**Important**: The default `ssh` port forwarder only supports TCP. Since URFD uses many UDP ports for digital voice protocols, the `grpc` port forwarder is required. The `--save-config` flag (enabled by default) will persist this setting for future starts.
+
 ### Manual
 
 Ensure you have the following installed:
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) or [Colima](https://github.com/abiosoft/colima)
 - [Tilt](https://docs.tilt.dev/install.html)
 - [Task](https://taskfile.dev/installation/)
 - Git
@@ -129,5 +139,104 @@ The setup assumes the following directory structure:
     ├── Tiltfile
     ├── Taskfile.yml
     ├── docker-compose.yml
-    └── ...
+    ├── docker-compose.usrp.yml
+    ├── config/
+    │   ├── defaults/      # Default configurations (do not edit)
+    │   ├── local/         # Your local configurations (git-ignored)
+    │   └── dashboard/     # Dashboard configuration
+    ├── data/              # Runtime data (git-ignored)
+    │   ├── logs/          # URFD logs
+    │   ├── audio/         # Audio recordings
+    │   └── dashboard/     # Dashboard data
+    ├── docker/            # Dockerfiles for services
+    └── scripts/           # Utility scripts
+```
+
+## Available Tasks
+
+View all available tasks with:
+
+```bash
+task --list
+```
+
+Common tasks:
+
+- `task init` - Initialize development environment (clone submodules, setup config)
+- `task init-config` - Copy default configs to local directory
+- `task clean` - Remove local configuration files
+
+## Ports and Services
+
+### Web Interfaces
+
+- **Tilt UI**: http://localhost:10350
+- **Dashboard**: http://localhost:8080
+
+### Digital Voice Protocols (UDP)
+
+All UDP ports are exposed for connecting digital voice clients (hotspots, repeaters, transceivers):
+
+- **30001** - DExtra (D-STAR)
+- **20001** - DPlus (D-STAR)
+- **30051** - DCS (D-STAR)
+- **8880** - DMRPlus (DMR)
+- **62030** - MMDVM (DMR)
+- **17000** - M17
+- **42000** - YSF (System Fusion)
+- **41000** - P25
+- **41400** - NXDN
+- **10017** - URF Interlinking
+
+### Service Ports (TCP)
+
+- **10100** - Transcoder (internal TCD connection)
+- **40000** - G3 Terminal
+- **5555** - NNG Dashboard (internal)
+- **5556** - NNG Voice Audio Data (PAIR socket)
+- **6556** - NNG Voice Control PTT (REP socket)
+
+**Note**: For UDP port forwarding on macOS with Colima, ensure you're using the `grpc` port forwarder (see Prerequisites section).
+
+## Testing
+
+### Testing UDP Ports
+
+To verify UDP ports are accessible for digital protocols:
+
+```bash
+./scripts/test-udp-ports.sh
+```
+
+This will test all UDP ports and show which protocols are listening.
+
+## Troubleshooting
+
+### UDP Ports Not Accessible on macOS with Colima
+
+If digital voice clients like Droidstar can't connect to UDP ports, ensure Colima is using the `grpc` port forwarder:
+
+```bash
+colima stop
+colima start --port-forwarder grpc
+```
+
+The default `ssh` port forwarder only supports TCP.
+
+### Viewing Logs
+
+- **Tilt UI**: Press `Space` in the Tilt CLI to open the web UI with streaming logs
+- **Docker logs**: `docker logs urfd`, `docker logs tcd`, `docker logs dashboard`
+- **URFD log files**: Check `data/logs/` directory
+
+### Clean Rebuild
+
+If you encounter build issues:
+
+```bash
+tilt down
+docker system prune -a  # Warning: removes all unused Docker resources
+task clean
+task init
+tilt up
 ```
