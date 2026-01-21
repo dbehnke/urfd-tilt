@@ -125,31 +125,31 @@ Ensure you have the following installed:
 
 ## Repository Layout
 
-The setup assumes the following directory structure:
+The project uses git submodules for all source repositories:
 
 ```text
-../
-├── urfd/
-├── tcd/
-├── urfd-nng-dashboard/
-├── imbe_vocoder/
-├── md380_vocoder_dynarmic/
-├── allstar-nexus/ (Optional)
-└── urfd-tilt/  <-- You are here
-    ├── Tiltfile
-    ├── Taskfile.yml
-    ├── docker-compose.yml
-    ├── docker-compose.usrp.yml
-    ├── config/
-    │   ├── defaults/      # Default configurations (do not edit)
-    │   ├── local/         # Your local configurations (git-ignored)
-    │   └── dashboard/     # Dashboard configuration
-    ├── data/              # Runtime data (git-ignored)
-    │   ├── logs/          # URFD logs
-    │   ├── audio/         # Audio recordings
-    │   └── dashboard/     # Dashboard data
-    ├── docker/            # Dockerfiles for services
-    └── scripts/           # Utility scripts
+urfd-tilt/  <-- You are here
+├── Tiltfile
+├── Taskfile.yml
+├── docker-compose.yml
+├── docker-compose.usrp.yml
+├── src/                   # Git submodules (initialized by `task init`)
+│   ├── urfd/              # URFD reflector source
+│   ├── tcd/               # Transcoder source
+│   ├── urfd-nng-dashboard/ # Dashboard source
+│   ├── imbe_vocoder/      # IMBE vocoder library
+│   ├── md380_vocoder_dynarmic/ # MD380 vocoder library
+│   └── allstar-nexus/     # AllStar Nexus (optional USRP)
+├── config/
+│   ├── defaults/          # Default configurations (do not edit)
+│   ├── local/             # Your local configurations (git-ignored)
+│   └── dashboard/         # Dashboard configuration
+├── data/                  # Runtime data (git-ignored)
+│   ├── logs/              # URFD logs
+│   ├── audio/             # Audio recordings
+│   └── dashboard/         # Dashboard data
+├── docker/                # Dockerfiles for services
+└── scripts/               # Utility scripts
 ```
 
 ## Available Tasks
