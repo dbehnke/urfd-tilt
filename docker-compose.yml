@@ -3,7 +3,26 @@ services:
     image: urfd
     container_name: urfd
     command: urfd /usr/local/etc/urfd/urfd.ini
-    network_mode: host
+    ports:
+      # D-Star protocols
+      - "30001:30001/udp"  # DExtra
+      - "20001:20001/udp"  # DPlus
+      - "30051:30051/udp"  # DCS
+      # DMR protocols
+      - "8880:8880/udp"    # DMRPlus
+      - "62030:62030/udp"  # MMDVM
+      # Other protocols
+      - "17000:17000/udp"  # M17
+      - "42000:42000/udp"  # YSF
+      - "41000:41000/udp"  # P25
+      - "41400:41400/udp"  # NXDN
+      - "10017:10017/udp"  # URF
+      # TCP ports
+      - "10100:10100/tcp"  # Transcoder
+      - "40000:40000/tcp"  # G3 Terminal
+      - "5555:5555/tcp"    # NNG Dashboard
+      - "5556:5556/tcp"    # NNG Voice (audio data - PAIR)
+      - "6556:6556/tcp"    # NNG Voice Control (PTT control - REP)
     volumes:
       - ./config/local:/usr/local/etc/urfd:ro
       - ./data/logs:/var/log/urfd
@@ -14,7 +33,7 @@ services:
     image: tcd
     container_name: tcd
     command: tcd /usr/local/etc/tcd/tcd.ini
-    network_mode: host
+    network_mode: service:urfd
     depends_on:
       - urfd
     volumes:
@@ -25,9 +44,10 @@ services:
     image: dashboard
     container_name: dashboard
     command: dashboard -config /etc/dashboard/config.yaml
-    network_mode: host
+    ports:
+      - "8080:8080/tcp"    # Dashboard HTTP
     environment:
-      - URFD_HOST=localhost
+      - URFD_HOST=urfd
     depends_on:
       - urfd
     volumes:

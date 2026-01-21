@@ -9,3 +9,6 @@ config/local/
 
 # Ralph config (may contain API key)
 .opencode/ralph-config.json
+
+# Runtime data (audio files, logs, database)
+data/

@@ -1,0 +1,29 @@
+server:
+  addr: ":8080"
+  nng_url: "tcp://urfd:5555"
+  db_path: "data/dashboard.db"
+
+reflector:
+  name: "URFD Dashboard"
+  description: "Universal Reflector Dashboard"
+  modules:
+    A: "Module A"
+    B: "Module B"
+    C: "Module C"
+
+logging:
+  level: "info"
+  console: true
+
+audio:
+  enable: true
+  path: "/usr/local/bin/audio"
+
+voice:
+  enable: true
+  reflector_addr: "tcp://urfd:5556"        # PAIR socket for audio data
+  control_addr: "tcp://urfd:6556"          # REQ socket for PTT control
+  transmit_password: ""
+  max_clients: 100
+  opus_bitrate: 12000
+  max_tx_duration: 120

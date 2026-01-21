@@ -11,7 +11,8 @@ local_resource(
 docker_build(
     'urfd-common',
     context='.',
-    dockerfile='common.Dockerfile'
+    dockerfile='common.Dockerfile',
+    ignore=['./data']
 )
 
 # library: imbe_vocoder
@@ -44,6 +45,7 @@ docker_build(
     context='.',
     dockerfile='docker/tcd.Dockerfile',
     only=['src/tcd', 'src/urfd'], # Explicitly whitelist source folders
+    ignore=['./data']
 )
 
 # Service: dashboard
