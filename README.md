@@ -22,7 +22,7 @@ graph TD
             MD380[MD380 Lib]
         end
 
-        subgraph Sevices
+        subgraph Services
             URFD[URFD Reflector]
             TCD[TCD Transcoder]
             Dash[Dashboard]
@@ -97,8 +97,8 @@ Ensure you have the following installed:
 
 3. **Access Services**:
     - **Tilt UI**: `http://localhost:10350`
-    - **Dashboard**: `http://localhost:8080` (or as configured)
-    - **URFD**: Ports defined in `docker-compose.yml` (host mode).
+    - **Dashboard**: `http://localhost:8080`
+    - **URFD**: All protocol ports are exposed (see Ports and Services section below)
 
 ## Workflow
 
@@ -120,7 +120,7 @@ Ensure you have the following installed:
 ### Rebuilding
 
 - Tilt automatically watches the `Tiltfile` and `config/local` changes.
-- Source code changes in `../urfd` etc. will trigger image rebuilds (standard Tilt behavior).
+- Source code changes in `src/urfd`, `src/tcd`, `src/urfd-nng-dashboard`, etc. will trigger image rebuilds (standard Tilt behavior).
 - To force a full rebuild, use the Tilt UI or restart `tilt up`.
 
 ## Repository Layout
