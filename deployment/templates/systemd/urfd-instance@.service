@@ -1,0 +1,37 @@
+[Unit]
+Description=URFD Production Instance - %i
+Documentation=https://github.com/n7tae/urfd
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=${INSTANCE_DIR}
+
+# Start the instance
+ExecStart=/usr/bin/docker compose -f ${INSTANCE_DIR}/docker-compose.yml up -d
+
+# Stop the instance
+ExecStop=/usr/bin/docker compose -f ${INSTANCE_DIR}/docker-compose.yml down
+
+# Reload (restart) the instance
+ExecReload=/usr/bin/docker compose -f ${INSTANCE_DIR}/docker-compose.yml restart
+
+# Run as root (required for Docker operations)
+User=root
+Group=root
+
+# Restart policy
+Restart=on-failure
+RestartSec=10s
+
+# Security hardening
+PrivateTmp=yes
+NoNewPrivileges=yes
+
+# Resource limits
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

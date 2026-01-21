@@ -1,0 +1,154 @@
+###### URFD PRODUCTION CONFIGURATION ######
+# This file is generated from template by deploy-instance.sh
+# Manual edits may be overwritten - edit .env file instead for common settings.
+# For advanced settings not in .env, add them to this file with TODO comments.
+
+[Names]
+Callsign = ${REFLECTOR_CALLSIGN}
+SysopEmail = ${REFLECTOR_SYSOP_EMAIL}
+Country = ${REFLECTOR_COUNTRY}
+Sponsor = ${REFLECTOR_SPONSOR}
+DashboardUrl = ${REFLECTOR_DASHBOARD_URL}
+Bootstrap = ${REFLECTOR_BOOTSTRAP}
+
+[IP Addresses]
+IPv4Binding = ${REFLECTOR_IPV4_BINDING}
+# IPv6Binding = ${REFLECTOR_IPV6_BINDING}
+
+[Modules]
+Modules = ${REFLECTOR_MODULES}
+DescriptionA = ${REFLECTOR_DESC_A}
+DescriptionD = ${REFLECTOR_DESC_D}
+DescriptionM = ${REFLECTOR_DESC_M}
+DescriptionS = ${REFLECTOR_DESC_S}
+DescriptionZ = ${REFLECTOR_DESC_Z}
+# TODO: Add more module descriptions as needed (B, C, etc.)
+
+[Dashboard]
+Enable = ${DASHBOARD_ENABLE}
+NNGAddr = ${DASHBOARD_NNG_URL}
+Interval = ${DASHBOARD_INTERVAL}
+NNGDebug = ${DASHBOARD_NNG_DEBUG}
+ControlNNGEnable = ${DASHBOARD_CONTROL_NNG_ENABLE}
+ControlNNGAddr = ${DASHBOARD_VOICE_CONTROL_ADDR}
+
+[Audio]
+Enable = ${AUDIO_ENABLE}
+path = ${AUDIO_PATH}
+
+[Transcoder]
+Port = ${TCD_PORT}
+BindingAddress = ${TCD_SERVER_ADDRESS}
+Modules = ${TCD_MODULES}
+
+# ======================================================================
+# PROTOCOL CONFIGURATIONS
+# ======================================================================
+
+[Brandmeister]
+Enable = ${BRANDMEISTER_ENABLE}
+Port = ${BRANDMEISTER_PORT}
+
+[DCS]
+Port = 30051
+
+[DExtra]
+Port = 30001
+
+[DPlus]
+Port = 20001
+
+[G3]
+Enable = ${G3_ENABLE}
+
+[IMRS]
+Enable = ${IMRS_ENABLE}
+Port = ${IMRS_PORT}
+
+[DMRPlus]
+Port = 8880
+
+[M17]
+Enable = ${M17_ENABLE}
+Port = 17000
+
+[MMDVM]
+Port = 62030
+DefaultId = ${MMDVM_DEFAULT_ID}
+
+[NXDN]
+Port = 41400
+AutoLinkModule = ${NXDN_AUTOLINK_MODULE}
+ReflectorID = ${NXDN_REFLECTOR_ID}
+
+[P25]
+Port = 41000
+AutoLinkModule = ${P25_AUTOLINK_MODULE}
+ReflectorID = ${P25_REFLECTOR_ID}
+
+[URF]
+Port = 10017
+
+[USRP]
+Enable = ${USRP_ENABLE}
+Callsign = ${USRP_CALLSIGN}
+IPAddress = ${USRP_IP_ADDRESS}
+
+[DMR]
+XlxCompatibility = ${DMR_XLX_COMPATIBILITY}
+SingleMode = ${DMR_SINGLE_MODE}
+HoldTime = ${DMR_HOLD_TIME}
+DefaultTimeout = ${DMR_DEFAULT_TIMEOUT}
+
+[YSF]
+Port = 42000
+AutoLinkModule = ${YSF_AUTOLINK_MODULE}
+EnableDGID = ${YSF_ENABLE_DGID}
+DefaultTxFreq = ${YSF_DEFAULT_TX_FREQ}
+DefaultRxFreq = ${YSF_DEFAULT_RX_FREQ}
+RegistrationID = ${YSF_REGISTRATION_ID}
+RegistrationName = ${YSF_REGISTRATION_NAME}
+RegistrationDescription = ${YSF_REGISTRATION_DESC}
+
+# ======================================================================
+# DATABASE CONFIGURATIONS
+# ======================================================================
+
+[DMR ID DB]
+Mode = ${DMRID_MODE}
+FilePath = ${FILE_DMRID_PATH}
+URL = ${DMRID_URL}
+RefreshMin = ${DMRID_REFRESH_MIN}
+
+[NXDN ID DB]
+Mode = ${NXDNID_MODE}
+FilePath = ${FILE_NXDNID_PATH}
+URL = ${NXDNID_URL}
+RefreshMin = ${NXDNID_REFRESH_MIN}
+
+[YSF TX/RX DB]
+Mode = ${YSFDB_MODE}
+FilePath = ${FILE_YSFDB_PATH}
+URL = ${YSFDB_URL}
+RefreshMin = ${YSFDB_REFRESH_MIN}
+
+# ======================================================================
+# FILE PATHS
+# ======================================================================
+
+[Files]
+PidPath = ${FILE_PID_PATH}
+XmlPath = ${FILE_XML_PATH}
+WhitelistPath = ${FILE_WHITELIST_PATH}
+BlacklistPath = ${FILE_BLACKLIST_PATH}
+InterlinkPath = ${FILE_INTERLINK_PATH}
+G3TerminalPath = ${FILE_G3_TERMINAL_PATH}
+
+# ======================================================================
+# ADVANCED SETTINGS
+# ======================================================================
+# TODO: Add advanced network settings (timeouts, retries, etc.)
+# TODO: Add codec-specific settings
+# TODO: Add security/access control settings
+# TODO: Add logging verbosity controls
+# TODO: Add performance tuning parameters

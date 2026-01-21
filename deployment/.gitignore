@@ -1,0 +1,5 @@
+# Production deployment instances (local data)
+instances/
+
+# Image version history (machine-specific)
+build/.image-versions

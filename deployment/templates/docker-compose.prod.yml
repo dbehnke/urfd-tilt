@@ -1,0 +1,99 @@
+# URFD Production Docker Compose Template
+# This file uses environment variables for configuration.
+# Copy this to your instance directory and customize via .env file.
+#
+# Variable substitution is performed by deploy-instance.sh script.
+
+services:
+  urfd:
+    image: urfd-urfd:${IMAGE_VERSION}
+    container_name: ${INSTANCE_NAME}-urfd
+    command: urfd /usr/local/etc/urfd/urfd.ini
+    ports:
+      # D-Star protocols (UDP)
+      - "${PORT_DEXTRA}:30001/udp"    # DExtra
+      - "${PORT_DPLUS}:20001/udp"     # DPlus
+      - "${PORT_DCS}:30051/udp"       # DCS
+      # DMR protocols (UDP)
+      - "${PORT_DMRPLUS}:8880/udp"    # DMRPlus
+      - "${PORT_MMDVM}:62030/udp"     # MMDVM
+      # Other protocols (UDP)
+      - "${PORT_M17}:17000/udp"       # M17
+      - "${PORT_YSF}:42000/udp"       # YSF
+      - "${PORT_P25}:41000/udp"       # P25
+      - "${PORT_NXDN}:41400/udp"      # NXDN
+      - "${PORT_URF}:10017/udp"       # URF
+      # TCP ports
+      - "${PORT_TRANSCODER}:10100/tcp"  # Transcoder
+      - "${PORT_G3}:40000/tcp"          # G3 Terminal
+      - "${PORT_NNG_DASHBOARD}:5555/tcp"  # NNG Dashboard
+      - "${PORT_NNG_VOICE}:5556/tcp"      # NNG Voice (audio data - PAIR)
+      - "${PORT_NNG_CONTROL}:6556/tcp"    # NNG Voice Control (PTT control - REP)
+    volumes:
+      - ${INSTANCE_DIR}/config:/usr/local/etc/urfd:ro
+      - ${INSTANCE_DIR}/data/logs:/var/log/urfd
+      - ${INSTANCE_DIR}/data/audio:/usr/local/bin/audio
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  tcd:
+    image: urfd-tcd:${IMAGE_VERSION}
+    container_name: ${INSTANCE_NAME}-tcd
+    command: tcd /usr/local/etc/tcd/tcd.ini
+    network_mode: service:urfd
+    depends_on:
+      - urfd
+    volumes:
+      - ${INSTANCE_DIR}/config:/usr/local/etc/tcd:ro
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  dashboard:
+    image: urfd-dashboard:${IMAGE_VERSION}
+    container_name: ${INSTANCE_NAME}-dashboard
+    command: dashboard -config /etc/dashboard/config.yaml
+    ports:
+      - "${PORT_DASHBOARD_HTTP}:8080/tcp"  # Dashboard HTTP
+    environment:
+      - URFD_HOST=urfd
+    depends_on:
+      - urfd
+    volumes:
+      - ${INSTANCE_DIR}/config/dashboard:/etc/dashboard:ro
+      - ${INSTANCE_DIR}/data/audio:/usr/local/bin/audio:ro
+      - ${INSTANCE_DIR}/data/dashboard:/app/data
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # AllStar Nexus (optional)
+  # Uncomment to enable AllStar <-> URFD bridging
+  # allstar-nexus:
+  #   image: urfd-allstar-nexus:${IMAGE_VERSION}
+  #   container_name: ${INSTANCE_NAME}-allstar-nexus
+  #   environment:
+  #     - URFD_HOST=${ALLSTAR_URFD_HOST:-host.docker.internal}
+  #     - URFD_PORT=${PORT_NNG_DASHBOARD}
+  #     - AMI_HOST=${ALLSTAR_AMI_HOST}
+  #     - AMI_PORT=${ALLSTAR_AMI_PORT:-5038}
+  #     - AMI_USERNAME=${ALLSTAR_AMI_USERNAME}
+  #     - AMI_SECRET=${ALLSTAR_AMI_SECRET}
+  #   volumes:
+  #     - ${INSTANCE_DIR}/config/allstar:/etc/allstar:ro
+  #   restart: unless-stopped
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"

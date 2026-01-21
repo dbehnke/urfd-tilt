@@ -1,0 +1,126 @@
+# AllStar Nexus Production Configuration
+# This file is generated from template by deploy-instance.sh
+# Manual edits may be overwritten - edit .env file instead for common settings.
+
+# ======================================================================
+# SERVER CONFIGURATION
+# ======================================================================
+port: 8080
+app_env: production
+
+# ======================================================================
+# BRANDING
+# ======================================================================
+title: "AllStar Nexus"
+subtitle: ""  # Optional subtitle shown in header
+
+# ======================================================================
+# DATABASE CONFIGURATION
+# ======================================================================
+db_path: data/allstar.db
+astdb_path: data/astdb.txt
+astdb_url: http://allmondb.allstarlink.org/
+astdb_update_hours: 24
+
+# ======================================================================
+# SECURITY CONFIGURATION
+# ======================================================================
+jwt_secret: ${ALLSTAR_JWT_SECRET:-change-me-in-production}  # CHANGE THIS!
+token_ttl_seconds: 86400  # 24 hours
+
+# ======================================================================
+# RATE LIMITING
+# ======================================================================
+auth_rpm: 60
+public_stats_rpm: 120
+
+# ======================================================================
+# AMI (ASTERISK MANAGER INTERFACE) CONFIGURATION
+# ======================================================================
+ami_enabled: true
+ami_host: ${ALLSTAR_AMI_HOST}
+ami_port: ${ALLSTAR_AMI_PORT:-5038}
+ami_username: ${ALLSTAR_AMI_USERNAME}
+ami_password: ${ALLSTAR_AMI_SECRET}
+
+# ======================================================================
+# NODE CONFIGURATION
+# ======================================================================
+# Simple format: just list your node numbers (names auto-lookup from astdb)
+nodes: ${ALLSTAR_NODE_IDS:-[]}
+
+# Advanced format (uncomment and edit if you want custom names):
+# nodes:
+#   - node_id: 43732
+#     name: "My Custom Node Name"
+#   - node_id: 48412
+#     name: "Another Node"
+
+ami_events: "on"
+ami_retry_interval: 15s
+ami_retry_max: 60s
+
+# ======================================================================
+# FEATURE TOGGLES
+# ======================================================================
+disable_link_poller: false
+allow_anon_dashboard: true
+
+# ======================================================================
+# DISCORD WEBHOOK NOTIFICATIONS (Optional)
+# ======================================================================
+discord:
+  enabled: false
+  webhook_url: ""  # Set your Discord webhook URL here
+  qso_inactive_seconds: 120  # Declare QSO ended after 2 minutes
+  node_idle_seconds: 300     # Declare node idle after 5 minutes
+  min_talkers_for_qso: 2     # Minimum talkers to declare QSO started
+  notify_individual_talks: true
+
+# ======================================================================
+# GAMIFICATION SYSTEM (Optional)
+# ======================================================================
+gamification:
+  enabled: false
+  tally_interval_minutes: 30
+  
+  rested_bonus:
+    enabled: true
+    accumulation_rate: 0.006  # ~1 hour per week max (1/168)
+    idle_threshold_seconds: 300  # 5 minutes idle
+    max_hours: 2
+    multiplier: 2.0
+  
+  diminishing_returns:
+    enabled: true
+    tiers:
+      - { max_seconds: 1200, multiplier: 1.0 }
+      - { max_seconds: 2400, multiplier: 0.75 }
+      - { max_seconds: 3600, multiplier: 0.5 }
+      - { max_seconds: 999999, multiplier: 0.25 }
+  
+  kerchunk_detection:
+    enabled: true
+    threshold_seconds: 3
+    consecutive_window: 30
+    single: 0.5
+    two_to_three: 0.25
+    four_to_five: 0.1
+    six_plus: 0.0
+  
+  xp_caps:
+    enabled: true
+    daily_cap_seconds: 1200
+    weekly_cap_seconds: 7200
+    reset_hour: 0
+    week_starts: sunday
+
+# ======================================================================
+# ADVANCED CONFIGURATION
+# ======================================================================
+# TODO: Configure custom level scaling for gamification
+# TODO: Configure level groupings (badges, titles, colors)
+# TODO: Configure renown (prestige) system
+# TODO: Configure Discord gamification notifications
+# TODO: Add custom authentication providers
+# TODO: Add metrics/monitoring configuration

@@ -1,0 +1,49 @@
+# TCD (Transcoder) Production Configuration
+# This file is generated from template by deploy-instance.sh
+# Manual edits may be overwritten - edit .env file instead for common settings.
+
+# ======================================================================
+# CONNECTION SETTINGS
+# ======================================================================
+# Connection to URFD Transcoder Server
+ServerAddress=${TCD_SERVER_ADDRESS}
+Port=${TCD_PORT}
+
+# ======================================================================
+# MODULE CONFIGURATION
+# ======================================================================
+# Modules to support (must match URFD config)
+Modules=${TCD_MODULES}
+
+# ======================================================================
+# AUDIO GAIN SETTINGS (in dB)
+# ======================================================================
+# D-Star audio gain adjustments
+DStarGainIn=${TCD_DSTAR_GAIN_IN}
+DStarGainOut=${TCD_DSTAR_GAIN_OUT}
+
+# DMR and YSF audio gain adjustments
+DmrYsfGainIn=${TCD_DMR_YSF_GAIN_IN}
+DmrYsfGainOut=${TCD_DMR_YSF_GAIN_OUT}
+
+# USRP (AllStar) audio gain adjustments
+UsrpTxGain=${TCD_USRP_TX_GAIN}
+UsrpRxGain=${TCD_USRP_RX_GAIN}
+
+# ======================================================================
+# AGC (Automatic Gain Control) SETTINGS
+# ======================================================================
+# Enable/disable AGC
+AGC=${TCD_AGC}
+
+# AGC target level in dB (typical range: -12 to -24)
+AGCTargetLevel=${TCD_AGC_TARGET_LEVEL}
+
+# ======================================================================
+# ADVANCED SETTINGS
+# ======================================================================
+# TODO: Add codec-specific settings (bitrate, quality, etc.)
+# TODO: Add buffer size configuration
+# TODO: Add latency tuning parameters
+# TODO: Add debug/logging settings
+# TODO: Add error correction settings

@@ -2,7 +2,10 @@ services:
   allstar-nexus:
     image: allstar-nexus
     container_name: allstar-nexus
-    network_mode: host
+    # Note: Using bridge networking for better isolation
+    # URFD_HOST should point to host.docker.internal to reach urfd container
     environment:
-      - URFD_HOST=localhost
+      - URFD_HOST=host.docker.internal
+    ports:
+      - "5038:5038"  # AMI (Asterisk Manager Interface)
     restart: unless-stopped

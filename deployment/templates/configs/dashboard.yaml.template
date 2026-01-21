@@ -1,0 +1,100 @@
+# URFD Dashboard Production Configuration
+# This file is generated from template by deploy-instance.sh
+# Manual edits may be overwritten - edit .env file instead for common settings.
+
+# ======================================================================
+# SERVER CONFIGURATION
+# ======================================================================
+server:
+  # HTTP server listen address
+  addr: ":8080"
+  
+  # NNG connection to URFD for dashboard data
+  nng_url: "${DASHBOARD_NNG_URL}"
+  
+  # SQLite database path for dashboard data
+  db_path: "${DASHBOARD_DB_PATH}"
+
+# ======================================================================
+# REFLECTOR INFORMATION
+# ======================================================================
+reflector:
+  # Reflector display name
+  name: "${DASHBOARD_NAME}"
+  
+  # Reflector description
+  description: "${DASHBOARD_DESCRIPTION}"
+  
+  # Module descriptions (must match URFD config)
+  modules:
+    A: "${REFLECTOR_DESC_A}"
+    D: "${REFLECTOR_DESC_D}"
+    M: "${REFLECTOR_DESC_M}"
+    S: "${REFLECTOR_DESC_S}"
+    Z: "${REFLECTOR_DESC_Z}"
+    # TODO: Add more module descriptions as needed (B, C, etc.)
+
+# ======================================================================
+# LOGGING CONFIGURATION
+# ======================================================================
+logging:
+  # Log level: debug, info, warn, error
+  level: "${DASHBOARD_LOG_LEVEL}"
+  
+  # Enable console logging
+  console: true
+  
+  # TODO: Add file logging configuration
+  # TODO: Add log rotation settings
+
+# ======================================================================
+# AUDIO RECORDING CONFIGURATION
+# ======================================================================
+audio:
+  # Enable audio recording feature
+  enable: ${AUDIO_ENABLE}
+  
+  # Path to store audio recordings
+  path: "${AUDIO_PATH}"
+  
+  # TODO: Add audio retention policy settings
+  # TODO: Add audio format/codec settings
+
+# ======================================================================
+# VOICE FEATURE CONFIGURATION
+# ======================================================================
+voice:
+  # Enable web-based voice transmission feature
+  enable: ${DASHBOARD_VOICE_ENABLE}
+  
+  # NNG PAIR socket for audio data from URFD
+  reflector_addr: "${DASHBOARD_VOICE_REFLECTOR_ADDR}"
+  
+  # NNG REQ socket for PTT control to URFD
+  control_addr: "${DASHBOARD_VOICE_CONTROL_ADDR}"
+  
+  # Password for voice transmission (empty = no password)
+  transmit_password: "${DASHBOARD_VOICE_TX_PASSWORD}"
+  
+  # Maximum concurrent voice clients
+  max_clients: ${DASHBOARD_VOICE_MAX_CLIENTS}
+  
+  # Opus codec bitrate (bits per second)
+  opus_bitrate: ${DASHBOARD_VOICE_OPUS_BITRATE}
+  
+  # Maximum transmission duration (seconds)
+  max_tx_duration: ${DASHBOARD_VOICE_MAX_TX_DURATION}
+  
+  # TODO: Add voice quality settings
+  # TODO: Add per-user rate limiting
+  # TODO: Add voice activity detection settings
+
+# ======================================================================
+# ADVANCED SETTINGS
+# ======================================================================
+# TODO: Add authentication/authorization configuration
+# TODO: Add HTTPS/TLS settings
+# TODO: Add CORS configuration
+# TODO: Add API rate limiting
+# TODO: Add caching configuration
+# TODO: Add metrics/monitoring endpoints

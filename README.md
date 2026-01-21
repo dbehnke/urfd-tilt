@@ -2,6 +2,8 @@
 
 This directory contains the modernized development workflow for URFD, using [Tilt](https://tilt.dev/), [Docker Compose](https://docs.docker.com/compose/), and [Taskfile](https://taskfile.dev/).
 
+**For production deployment**, see the [Production Deployment Guide](deployment/README.md).
+
 ## Architecture
 
 The environment orchestrates multiple services and builds them from local source repositories.
@@ -133,6 +135,11 @@ urfd-tilt/  <-- You are here
 ├── Taskfile.yml
 ├── docker-compose.yml
 ├── docker-compose.usrp.yml
+├── deployment/            # Production deployment tools
+│   ├── README.md          # Production deployment guide
+│   ├── build/             # Image build scripts
+│   ├── scripts/           # Deployment and management scripts
+│   └── templates/         # Configuration templates
 ├── src/                   # Git submodules (initialized by `task init`)
 │   ├── urfd/              # URFD reflector source
 │   ├── tcd/               # Transcoder source
@@ -240,3 +247,15 @@ task clean
 task init
 tilt up
 ```
+
+## Production Deployment
+
+For deploying URFD in production environments with multiple isolated instances, systemd integration, and proper port management, see the comprehensive [Production Deployment Guide](deployment/README.md).
+
+Production features include:
+- Versioned Docker image builds
+- Multi-instance deployment with automatic port offsets
+- Configuration templates and validation
+- Instance lifecycle management (start, stop, restart, upgrade)
+- Systemd integration for automatic startup
+- Backup and rollback capabilities

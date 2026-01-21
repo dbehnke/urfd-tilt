@@ -12,3 +12,6 @@ config/local/
 
 # Runtime data (audio files, logs, database)
 data/
+
+# Production deployment instances
+deployment/instances/
