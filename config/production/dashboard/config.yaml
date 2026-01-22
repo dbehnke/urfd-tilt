@@ -1,0 +1,31 @@
+server:
+  addr: ":8080"
+  nng_url: "tcp://host.docker.internal:5555"  # Connect to URFD on host network
+  db_path: "data/dashboard.db"
+
+reflector:
+  name: "URF239"
+  description: "URF239 Digital Network"
+  modules:
+    A: "Main"
+    D: "DMR"
+    M: "M17"
+    S: "DStar"
+    Z: "Experimental"
+
+logging:
+  level: "info"
+  console: true
+
+audio:
+  enable: true
+  path: "/usr/local/bin/audio"
+
+voice:
+  enable: true
+  reflector_addr: "tcp://host.docker.internal:5556"   # PAIR socket - connect to host
+  control_addr: "tcp://host.docker.internal:6556"     # REQ socket - connect to host
+  transmit_password: ""                                # Set a password for security
+  max_clients: 100
+  opus_bitrate: 12000
+  max_tx_duration: 120

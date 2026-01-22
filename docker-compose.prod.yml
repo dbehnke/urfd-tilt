@@ -1,0 +1,58 @@
+# Docker Compose Production Override for URF239
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# This file overrides the base docker-compose.yml with URF239 production settings:
+# - Host networking for URFD (to communicate with AllStar-Nexus on host)
+# - All ports offset by +1
+# - Production container names
+# - Production config paths
+# - Log rotation enabled
+#
+# NOTE: Using host networking for URFD means:
+# - URFD listens on offset ports (+1) directly on host
+# - Can communicate with AllStar-Nexus NNG on host network
+# - TCD shares URFD's network via network_mode: service:urfd
+# - Dashboard runs on bridge network and connects via host IP
+
+services:
+  urfd:
+    container_name: urfd239
+    network_mode: host  # Use host network for AllStar-Nexus NNG communication
+    # Ports are now defined in urfd.ini and bound directly to host
+    # URFD will listen on: 17001, 42001, 41001, 41401, etc.
+    volumes:
+      - ./config/production:/usr/local/etc/urfd:ro  # Use production configs
+      - ./data/production/logs:/var/log/urfd
+      - ./data/production/audio:/usr/local/bin/audio
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  tcd:
+    container_name: tcd239
+    network_mode: service:urfd  # Share URFD's host network for transcoding
+    volumes:
+      - ./config/production:/usr/local/etc/tcd:ro  # Use production configs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  dashboard:
+    container_name: dashboard239
+    ports:
+      - "8081:8080/tcp"    # Dashboard HTTP (8080 + 1 on host)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Enable host.docker.internal on Linux
+    volumes:
+      - ./config/production/dashboard:/etc/dashboard:ro  # Production dashboard config
+      - ./data/production/audio:/usr/local/bin/audio:ro
+      - ./data/production/dashboard:/app/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
