@@ -23,8 +23,8 @@ audio:
 
 voice:
   enable: true
-  reflector_addr: "tcp://host.docker.internal:5556"   # PAIR socket - connect to host
-  control_addr: "tcp://host.docker.internal:6001"     # REQ socket - AllStar-Nexus control (not module control)
+  reflector_addr: "tcp://host.docker.internal:5556"   # PAIR socket - Module A voice stream
+  control_addr: "tcp://host.docker.internal:6556"     # REQ socket - Module A PTT control
   transmit_password: "CHANGE_ME_TO_SECURE_PASSWORD"   # IMPORTANT: Set a strong password for web transmit security
   max_clients: 100
   opus_bitrate: 12000
