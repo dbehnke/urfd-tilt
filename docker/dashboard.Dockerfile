@@ -1,5 +1,5 @@
-# Frontend Build
-FROM oven/bun:1 AS frontend-builder
+# Frontend Build - Using Node.js for compatibility (AVX not required)
+FROM node:20-slim AS frontend-builder
 
 # Install go-task
 RUN apt-get update && apt-get install -y curl git \
@@ -9,8 +9,8 @@ WORKDIR /app
 COPY web ./web
 COPY Taskfile.yml .
 
-# Build frontend
-RUN task install-frontend && task build-frontend
+# Install and build frontend with npm (instead of bun)
+RUN cd web && npm install && npm run build
 
 # Backend Build
 FROM urfd-common AS backend-builder
