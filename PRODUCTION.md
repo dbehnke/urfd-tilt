@@ -576,6 +576,41 @@ sudo systemctl stop <conflicting-service>
 dc-prod restart
 ```
 
+**Problem: Dashboard keeps using old/wrong transmit password**
+
+The password is cached in browser sessionStorage. To clear it:
+
+```javascript
+// Option 1: Open browser console (F12) and run:
+sessionStorage.removeItem('voice_password')
+// Then refresh the page
+
+// Option 2: Clear all session data
+sessionStorage.clear()
+// Then refresh the page
+
+// Option 3: Use incognito/private browsing window
+// This starts with clean storage
+```
+
+After clearing, the dashboard will prompt for the new password on next PTT.
+
+**Changing the transmit password:**
+
+1. Update `config/production/dashboard/config.yaml`:
+   ```yaml
+   transmit_password: "YourNewSecurePassword"
+   ```
+
+2. Restart dashboard:
+   ```bash
+   dc-prod restart dashboard239
+   ```
+
+3. Clear browser storage (see above)
+
+4. Next PTT will prompt for new password
+
 ### AllStar-Nexus Documentation
 
 For complete AllStar-Nexus setup, see:
