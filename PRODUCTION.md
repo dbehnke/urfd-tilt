@@ -392,7 +392,7 @@ URF239 production deployment includes **AllStar-Nexus** integration for connecti
 │ AllStar Node    │       │  AllStar-Nexus   │       │  URF239 (URFD)  │
 │ (Asterisk)      │◄─────►│  (Host Network)  │◄─────►│  (Host Network) │
 │                 │  AMI  │                  │  NNG  │                 │
-│ 127.0.0.1:XXXX  │       │  Port 8090       │ 6556  │  USRP Enabled   │
+│ 127.0.0.1:XXXX  │       │  Port 8090       │ 6001  │  USRP Enabled   │
 └─────────────────┘       └──────────────────┘       └─────────────────┘
 ```
 
@@ -411,7 +411,7 @@ URF239 uses three NNG sockets for different purposes:
 |-------------|------|---------|----------|
 | **Dashboard PUB** | 5555 | Publish reflector events to dashboard | PUB/SUB |
 | **Voice PAIR** | 5556 | Bidirectional voice streaming | PAIR |
-| **Control REP** | 6556 | AllStar-Nexus registration commands | REQ/REP |
+| **Control REP** | 6001 | AllStar-Nexus registration commands | REQ/REP |
 
 ### URFD Configuration
 
@@ -425,7 +425,7 @@ IPAddress = 172.17.0.1  # Docker host gateway (or AllStar-Nexus IP)
 
 [Dashboard]
 ControlNNGEnable = true
-ControlNNGAddr = tcp://0.0.0.0:6556  # Control socket for USRP registration
+ControlNNGAddr = tcp://0.0.0.0:6001  # Control socket for USRP registration
 ```
 
 ### Host Networking Mode
@@ -491,7 +491,7 @@ asterisk:
   password: "YOUR_AMI_PASSWORD"
   
 urfd:
-  nng_control_addr: "tcp://127.0.0.1:6556"  # URF239 Control socket
+  nng_control_addr: "tcp://127.0.0.1:6001"  # URF239 Control socket
   usrp_callsign: "ALLSTAR"
 ```
 
@@ -523,8 +523,8 @@ sudo ufw allow 41401/udp
 dc-prod up -d
 
 # 2. Verify NNG Control socket is listening
-sudo netstat -tulpn | grep 6556
-# Should show: tcp  0  0  0.0.0.0:6556  0.0.0.0:*  LISTEN
+sudo netstat -tulpn | grep 6001
+# Should show: tcp  0  0  0.0.0.0:6001  0.0.0.0:*  LISTEN
 
 # 3. Start AllStar-Nexus (on host)
 cd /opt/allstar-nexus
@@ -545,10 +545,10 @@ docker logs -f urfd239 | grep -E "NNG Control|USRP|registered"
 ```bash
 # Check if URFD Control socket is listening
 docker logs urfd239 | grep "NNG Control"
-# Should show: NNG Control: Listening at tcp://0.0.0.0:6556
+# Should show: NNG Control: Listening at tcp://0.0.0.0:6001
 
 # Test connection from host
-telnet localhost 6556
+telnet localhost 6001
 ```
 
 **Problem: USRP audio not reaching reflector**
@@ -567,7 +567,7 @@ docker logs urfd239 | grep USRP
 
 ```bash
 # Check port conflicts
-sudo netstat -tulpn | grep -E '5555|5556|6556|17001|42001'
+sudo netstat -tulpn | grep -E '5555|5556|6001|17001|42001'
 
 # If ports are in use, stop conflicting services
 sudo systemctl stop <conflicting-service>
