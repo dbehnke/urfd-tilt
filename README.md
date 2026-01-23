@@ -2,7 +2,10 @@
 
 This directory contains the modernized development workflow for URFD, using [Tilt](https://tilt.dev/), [Docker Compose](https://docs.docker.com/compose/), and [Taskfile](https://taskfile.dev/).
 
-**For production deployment**, see the [Production Deployment Guide](deployment/README.md).
+## Production Deployment
+
+- **URF239 Production**: See [PRODUCTION.md](PRODUCTION.md) for Git branch strategy and upgrade workflow
+- **Standalone Deployment**: See [deployment/urfd-239/README.md](deployment/urfd-239/README.md) for standalone package
 
 ## Architecture
 

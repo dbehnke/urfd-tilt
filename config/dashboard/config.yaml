@@ -23,7 +23,7 @@ voice:
   enable: true
   reflector_addr: "tcp://urfd:5556"        # PAIR socket for audio data
   control_addr: "tcp://urfd:6556"          # REQ socket for PTT control
-  transmit_password: ""
+  transmit_password: "test123"
   max_clients: 100
   opus_bitrate: 12000
   max_tx_duration: 120

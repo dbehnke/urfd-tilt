@@ -11,7 +11,16 @@ config/local/
 .opencode/ralph-config.json
 
 # Runtime data (audio files, logs, database)
-data/
+data/logs/
+data/audio/
+data/dashboard/
+data/production/logs/
+data/production/audio/
+data/production/dashboard/
+
+# Keep directory structure
+!data/**/.gitkeep
 
 # Production deployment instances
 deployment/instances/
+deployment/urfd-239/
