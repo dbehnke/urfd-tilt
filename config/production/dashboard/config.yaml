@@ -1,7 +1,7 @@
 server:
   addr: ":8080"
   nng_url: "tcp://host.docker.internal:5555"  # Connect to URFD on host network
-  db_path: "data/dashboard.db"
+  db_path: "/app/data/dashboard.db"
 
 reflector:
   name: "URF239"
