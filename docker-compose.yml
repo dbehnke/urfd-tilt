@@ -29,6 +29,8 @@ services:
       - "8080:8080/tcp"    # Dashboard HTTP
     environment:
       - URFD_HOST=urfd
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Allow dashboard to reach host urfd
     depends_on:
       - urfd
     volumes:
