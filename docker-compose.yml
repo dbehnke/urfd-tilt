@@ -4,21 +4,21 @@ services:
     container_name: urfd
     command: urfd /usr/local/etc/urfd/urfd.ini
     ports:
-      # D-Star protocols
-      - "30001:30001/udp"  # DExtra
-      - "20001:20001/udp"  # DPlus
-      - "30051:30051/udp"  # DCS
-      # DMR protocols
-      - "8880:8880/udp"    # DMRPlus
-      - "62030:62030/udp"  # MMDVM
-      # Other protocols
-      - "17000:17000/udp"  # M17
-      - "42000:42000/udp"  # YSF
-      - "41000:41000/udp"  # P25
-      - "41400:41400/udp"  # NXDN
-      - "10017:10017/udp"  # URF
+      # D-Star protocols (all +1 from standard)
+      - "30001:30002/udp"  # DExtra (standard 30001, urfd listens on 30002)
+      - "20001:20002/udp"  # DPlus (standard 20001, urfd listens on 20002)
+      - "30051:30052/udp"  # DCS (standard 30051, urfd listens on 30052)
+      # DMR protocols (all +1 from standard)
+      - "8880:8881/udp"    # DMRPlus (standard 8880, urfd listens on 8881)
+      - "62030:62031/udp"  # MMDVM (standard 62030, urfd listens on 62031)
+      # Other protocols (all +1 from standard)
+      - "17000:17001/udp"  # M17 (standard 17000, urfd listens on 17001)
+      - "42000:42001/udp"  # YSF (standard 42000, urfd listens on 42001)
+      - "41000:41001/udp"  # P25 (standard 41000, urfd listens on 41001)
+      - "41400:41401/udp"  # NXDN (standard 41400, urfd listens on 41401)
+      - "10017:10018/udp"  # URF (standard 10017, urfd listens on 10018)
       # TCP ports
-      - "10100:10100/tcp"  # Transcoder
+      - "10100:10101/tcp"  # Transcoder (standard 10100, urfd listens on 10101)
       - "40000:40000/tcp"  # G3 Terminal
       - "5555:5555/tcp"    # NNG Dashboard
       # NNG Voice Streams (per-module: A=5556, D=5559, M=5568, S=5574, Z=5581)
