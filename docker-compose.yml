@@ -36,5 +36,5 @@ services:
     volumes:
       - ./config/dashboard:/etc/dashboard:ro
       - ./data/audio:/usr/local/bin/audio:ro
-      - ./data/dashboard:/app/data
+      - ./data/dashboard:/data
     restart: unless-stopped
