@@ -3,30 +3,9 @@ services:
     image: urfd
     container_name: urfd
     command: urfd /usr/local/etc/urfd/urfd.ini
-    ports:
-      # D-Star protocols (+1 from standard - urfd.ini has Port = standard+1)
-      - "30002:30002/udp"  # DExtra (urfd listens on 30002)
-      - "20002:20002/udp"  # DPlus (urfd listens on 20002)
-      - "30052:30052/udp"  # DCS (urfd listens on 30052)
-      # DMR protocols (+1 from standard - urfd.ini has Port = standard+1)
-      - "8881:8881/udp"    # DMRPlus (urfd listens on 8881)
-      - "62031:62031/udp"  # MMDVM (urfd listens on 62031)
-      # Other protocols (+1 from standard - urfd.ini has Port = standard+1)
-      - "17001:17001/udp"  # M17 (urfd listens on 17001)
-      - "42001:42001/udp"  # YSF (urfd listens on 42001)
-      - "41001:41001/udp"  # P25 (urfd listens on 41001)
-      - "41401:41401/udp"  # NXDN (urfd listens on 41401)
-      - "10018:10018/udp"  # URF (urfd listens on 10018)
-      # TCP ports
-      - "10101:10101/tcp"  # Transcoder (urfd listens on 10101)
-      - "40000:40000/tcp"  # G3 Terminal
-      - "5555:5555/tcp"    # NNG Dashboard
-      # NOTE: USRP ports (32001/34001) are NOT exposed - they use localhost communication
-      # between urfd container and host AllStar via host.docker.internal
-    extra_hosts:
-      - "host.docker.internal:host-gateway"  # Allow container to reach host AllStar
+    network_mode: host  # Use host networking for direct AllStar communication
     volumes:
-      - ./config/local:/usr/local/etc/urfd:ro
+      - ./config/production:/usr/local/etc/urfd:ro
       - ./data/logs:/var/log/urfd
       - ./data/audio:/usr/local/bin/audio
     restart: unless-stopped
@@ -35,11 +14,11 @@ services:
     image: tcd
     container_name: tcd
     command: tcd /usr/local/etc/tcd/tcd.ini
-    network_mode: service:urfd
+    network_mode: host  # Share host network with urfd
     depends_on:
       - urfd
     volumes:
-      - ./config/local:/usr/local/etc/tcd:ro
+      - ./config/production:/usr/local/etc/tcd:ro
     restart: unless-stopped
 
   dashboard:
