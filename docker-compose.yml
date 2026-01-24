@@ -4,21 +4,21 @@ services:
     container_name: urfd
     command: urfd /usr/local/etc/urfd/urfd.ini
     ports:
-      # D-Star protocols (all +1 from standard)
-      - "30001:30002/udp"  # DExtra (standard 30001, urfd listens on 30002)
-      - "20001:20002/udp"  # DPlus (standard 20001, urfd listens on 20002)
-      - "30051:30052/udp"  # DCS (standard 30051, urfd listens on 30052)
-      # DMR protocols (all +1 from standard)
-      - "8880:8881/udp"    # DMRPlus (standard 8880, urfd listens on 8881)
-      - "62030:62031/udp"  # MMDVM (standard 62030, urfd listens on 62031)
-      # Other protocols (all +1 from standard)
-      - "17000:17001/udp"  # M17 (standard 17000, urfd listens on 17001)
-      - "42000:42001/udp"  # YSF (standard 42000, urfd listens on 42001)
-      - "41000:41001/udp"  # P25 (standard 41000, urfd listens on 41001)
-      - "41400:41401/udp"  # NXDN (standard 41400, urfd listens on 41401)
-      - "10017:10018/udp"  # URF (standard 10017, urfd listens on 10018)
+      # D-Star protocols (+1 from standard - urfd.ini has Port = standard+1)
+      - "30002:30002/udp"  # DExtra (urfd listens on 30002)
+      - "20002:20002/udp"  # DPlus (urfd listens on 20002)
+      - "30052:30052/udp"  # DCS (urfd listens on 30052)
+      # DMR protocols (+1 from standard - urfd.ini has Port = standard+1)
+      - "8881:8881/udp"    # DMRPlus (urfd listens on 8881)
+      - "62031:62031/udp"  # MMDVM (urfd listens on 62031)
+      # Other protocols (+1 from standard - urfd.ini has Port = standard+1)
+      - "17001:17001/udp"  # M17 (urfd listens on 17001)
+      - "42001:42001/udp"  # YSF (urfd listens on 42001)
+      - "41001:41001/udp"  # P25 (urfd listens on 41001)
+      - "41401:41401/udp"  # NXDN (urfd listens on 41401)
+      - "10018:10018/udp"  # URF (urfd listens on 10018)
       # TCP ports
-      - "10100:10101/tcp"  # Transcoder (standard 10100, urfd listens on 10101)
+      - "10101:10101/tcp"  # Transcoder (urfd listens on 10101)
       - "40000:40000/tcp"  # G3 Terminal
       - "5555:5555/tcp"    # NNG Dashboard
       # NNG Voice Streams (per-module: A=5556, D=5559, M=5568, S=5574, Z=5581)
