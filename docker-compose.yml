@@ -21,6 +21,9 @@ services:
       - "10101:10101/tcp"  # Transcoder (urfd listens on 10101)
       - "40000:40000/tcp"  # G3 Terminal
       - "5555:5555/tcp"    # NNG Dashboard
+      # USRP ports for AllStar integration
+      - "32001:32001/udp"  # USRP TX (urfd sends to AllStar)
+      - "34001:34001/udp"  # USRP RX (urfd receives from AllStar)
       # NNG Voice Streams (per-module: A=5556, D=5559, M=5568, S=5574, Z=5581)
       - "5556:5556/tcp"    # Module A - Voice Audio
       - "6556:6556/tcp"    # Module A - Voice Control
