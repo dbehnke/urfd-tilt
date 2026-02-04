@@ -141,10 +141,19 @@ main() {
 
             log_info "Building package path: $BUILD_PKG -> $BUILD_DIR/$SERVICE/$BINARY_NAME"
 
-            (cd "$SERVICE_DIR" && \
-                GOOS=linux GOARCH="$ARCH" CGO_ENABLED=0 \
-                go build -ldflags="-s -w" -o "$BUILD_DIR/$SERVICE/$BINARY_NAME" "$BUILD_PKG") || {
-                log_error "Failed to build $SERVICE for $ARCH"
+            # Build Go binaries inside a Debian trixie container to ensure
+            # the produced binaries are linked against the same libc/libstdc++
+            # versions that we target at runtime. This avoids host-toolchain
+            # mismatches (macOS host, newer glibc, etc.). The container will
+            # write the binary to the $BUILD_DIR/$SERVICE directory via a bind mount.
+            mkdir -p "$BUILD_DIR/$SERVICE"
+            log_info "Building $SERVICE inside debian:trixie for linux/$ARCH"
+            docker run --rm --platform "linux/$ARCH" \
+                -v "$SERVICE_DIR":/src:ro \
+                -v "$(pwd)/$BUILD_DIR/$SERVICE":/out:rw \
+                -w /src \
+                debian:trixie bash -lc "set -euo pipefail; apt-get update; apt-get install -y --no-install-recommends ca-certificates golang-go build-essential >/dev/null; GOOS=linux GOARCH=${ARCH} CGO_ENABLED=0 go build -ldflags='-s -w' -o /out/${BINARY_NAME} ${BUILD_PKG}" || {
+                log_error "Failed to build $SERVICE for $ARCH inside debian:trixie"
                 exit 1
             }
         done
