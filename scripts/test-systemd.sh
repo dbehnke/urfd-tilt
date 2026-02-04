@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Usage: scripts/test-systemd.sh [--dist DIR] [--image IMAGE] [--machine NAME] [--keep-machine] [--fail-on-service-failed]
 DIST="./dist"
-IMAGE="docker.io/library/ubuntu:22.04"
+IMAGE="local/debian-trixie-systemd:latest"
 MACHINE_NAME="urfd-podman"
 KEEP_MACHINE=false
 FAIL_ON_SERVICE_FAILED=false
@@ -41,9 +41,11 @@ fi
 
 start_podman_machine_if_needed() {
   if ! podman machine inspect "$MACHINE_NAME" >/dev/null 2>&1; then
-    podman machine init --name "$MACHINE_NAME" --cpus 2 --memory 2048
+    # podman machine init takes the name as a positional parameter
+    podman machine init "$MACHINE_NAME" --cpus 2 --memory 2048
   fi
-  podman machine start "$MACHINE_NAME"
+  # Start the machine but ignore error if it's already running
+  podman machine start "$MACHINE_NAME" || true
 }
 
 if [ "$OS" = "Darwin" ]; then

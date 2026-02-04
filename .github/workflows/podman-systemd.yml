@@ -18,6 +18,16 @@ jobs:
 
       - name: Run packaging script (arch: ${{ matrix.arch }})
         run: |
+          # Ensure Docker and buildx are available on the runner so
+          # packaging/build-packages.sh can use docker buildx and docker run.
+          sudo apt-get update
+          sudo apt-get -y install docker.io binfmt-support qemu-user-static || true
+          sudo systemctl start docker || true
+          # Register qemu handlers (best-effort) for multi-arch buildx
+          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || true
+          # Create and use a buildx builder so `docker buildx build` works reliably
+          sudo docker buildx create --use --name urfd-builder || true
+
           chmod +x packaging/build-packages.sh || true
           export SINGLE_ARCH=${{ matrix.arch }}
           echo "Building for arch ${SINGLE_ARCH}"
@@ -35,7 +45,7 @@ jobs:
     needs: package
     strategy:
       matrix:
-        arch: [amd64]
+        arch: [amd64, arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,13 +64,21 @@ jobs:
       - name: (arm64 emulation) Install QEMU handlers if testing arm64
         if: matrix.arch == 'arm64'
         run: |
-          sudo apt-get -y install qemu-user-static binfmt-support || true
-          # register QEMU handlers (best-effort), docker is available on runner
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || true
+          sudo apt-get -y install qemu-user-static binfmt-support docker.io || true
+          sudo systemctl start docker || true
+          # register QEMU handlers (best-effort)
+          sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || true
+
+      - name: Build Debian trixie systemd image
+        run: |
+          if [ "${{ matrix.arch }}" = "arm64" ]; then PLAT="linux/arm64"; else PLAT="linux/amd64"; fi
+          sudo docker buildx build --platform "$PLAT" -f scripts/docker/debian-trixie-systemd.Dockerfile -t local/debian-trixie-systemd:${{ matrix.arch }} --load .
 
       - name: Run systemd tests
         run: |
-          bash scripts/test-systemd.sh --dist ./dist --image docker.io/library/ubuntu:22.04
+          IMAGE="local/debian-trixie-systemd:${{ matrix.arch }}"
+          echo "Using image: $IMAGE"
+          bash scripts/test-systemd.sh --dist ./dist --image "$IMAGE"
 
       - name: Upload artifacts
         if: always()
