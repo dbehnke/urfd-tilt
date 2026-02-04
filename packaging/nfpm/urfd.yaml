@@ -51,6 +51,7 @@ overrides:
 
 scripts:
   preinstall: packaging/scripts/preinstall.sh
+  postinstall: packaging/scripts/check-debian-trixie.sh
   postinstall: packaging/scripts/postinstall.sh
   preremove: packaging/scripts/preremove.sh
   postremove: packaging/scripts/postremove.sh
