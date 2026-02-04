@@ -1,7 +1,7 @@
 [
      {
-          "Id": "0f4c6b9bc9e229ab8ad3a33e6e74fde255a66a821c7a3f3ee9b65f3527899f64",
-          "Created": "2026-02-04T12:45:46.299294037-05:00",
+          "Id": "2f4e8d1945ddd73fc890a1df57c037aad62074d099c16bd25506248c6e678c57",
+          "Created": "2026-02-04T16:04:22.906810961-05:00",
           "Path": "/sbin/init",
           "Args": [
                "/sbin/init"
@@ -14,34 +14,34 @@
                "Restarting": false,
                "OOMKilled": false,
                "Dead": false,
-               "Pid": 1483,
-               "ConmonPid": 1481,
+               "Pid": 1565,
+               "ConmonPid": 1563,
                "ExitCode": 0,
                "Error": "",
-               "StartedAt": "2026-02-04T12:45:46.503260154-05:00",
+               "StartedAt": "2026-02-04T16:04:23.1091378-05:00",
                "FinishedAt": "0001-01-01T00:00:00Z",
-               "CgroupPath": "/user.slice/user-501.slice/user@501.service/user.slice/libpod-0f4c6b9bc9e229ab8ad3a33e6e74fde255a66a821c7a3f3ee9b65f3527899f64.scope",
+               "CgroupPath": "/user.slice/user-501.slice/user@501.service/user.slice/libpod-2f4e8d1945ddd73fc890a1df57c037aad62074d099c16bd25506248c6e678c57.scope",
                "CheckpointedAt": "0001-01-01T00:00:00Z",
                "RestoredAt": "0001-01-01T00:00:00Z"
           },
-          "Image": "7cedd1789007b05e6d93dd9fc53689e944a48c6dd42140c8ebbdc9161a0cd47b",
-          "ImageDigest": "sha256:2177d6740805c17a20917eeebe2d088b07e77e709657cc9eb25628a9dfc8aac9",
-          "ImageName": "localhost/local/ubuntu-systemd:22.04",
+          "Image": "979f2812ccf7b687e96ae875f76b2a775eeb3c4210ed116239a60b3399c29a9d",
+          "ImageDigest": "sha256:0f8633b6755ea4070d56024e647352633d9e4538daec778dc90c7d89e53bc75e",
+          "ImageName": "localhost/local/debian-trixie-systemd:latest",
           "Rootfs": "",
           "Pod": "",
-          "ResolvConfPath": "/run/user/501/containers/overlay-containers/0f4c6b9bc9e229ab8ad3a33e6e74fde255a66a821c7a3f3ee9b65f3527899f64/userdata/resolv.conf",
-          "HostnamePath": "/run/user/501/containers/overlay-containers/0f4c6b9bc9e229ab8ad3a33e6e74fde255a66a821c7a3f3ee9b65f3527899f64/userdata/hostname",
-          "HostsPath": "/run/user/501/containers/overlay-containers/0f4c6b9bc9e229ab8ad3a33e6e74fde255a66a821c7a3f3ee9b65f3527899f64/userdata/hosts",
-          "StaticDir": "/var/home/core/.local/share/containers/storage/overlay-containers/0f4c6b9bc9e229ab8ad3a33e6e74fde255a66a821c7a3f3ee9b65f3527899f64/userdata",
-          "OCIConfigPath": "/var/home/core/.local/share/containers/storage/overlay-containers/0f4c6b9bc9e229ab8ad3a33e6e74fde255a66a821c7a3f3ee9b65f3527899f64/userdata/config.json",
+          "ResolvConfPath": "/run/user/501/containers/overlay-containers/2f4e8d1945ddd73fc890a1df57c037aad62074d099c16bd25506248c6e678c57/userdata/resolv.conf",
+          "HostnamePath": "/run/user/501/containers/overlay-containers/2f4e8d1945ddd73fc890a1df57c037aad62074d099c16bd25506248c6e678c57/userdata/hostname",
+          "HostsPath": "/run/user/501/containers/overlay-containers/2f4e8d1945ddd73fc890a1df57c037aad62074d099c16bd25506248c6e678c57/userdata/hosts",
+          "StaticDir": "/var/home/core/.local/share/containers/storage/overlay-containers/2f4e8d1945ddd73fc890a1df57c037aad62074d099c16bd25506248c6e678c57/userdata",
+          "OCIConfigPath": "/var/home/core/.local/share/containers/storage/overlay-containers/2f4e8d1945ddd73fc890a1df57c037aad62074d099c16bd25506248c6e678c57/userdata/config.json",
           "OCIRuntime": "crun",
-          "ConmonPidFile": "/run/user/501/containers/overlay-containers/0f4c6b9bc9e229ab8ad3a33e6e74fde255a66a821c7a3f3ee9b65f3527899f64/userdata/conmon.pid",
-          "PidFile": "/run/user/501/containers/overlay-containers/0f4c6b9bc9e229ab8ad3a33e6e74fde255a66a821c7a3f3ee9b65f3527899f64/userdata/pidfile",
-          "Name": "urfd-test-ctr-58026",
+          "ConmonPidFile": "/run/user/501/containers/overlay-containers/2f4e8d1945ddd73fc890a1df57c037aad62074d099c16bd25506248c6e678c57/userdata/conmon.pid",
+          "PidFile": "/run/user/501/containers/overlay-containers/2f4e8d1945ddd73fc890a1df57c037aad62074d099c16bd25506248c6e678c57/userdata/pidfile",
+          "Name": "urfd-test-ctr-8168",
           "RestartCount": 0,
           "Driver": "overlay",
-          "MountLabel": "system_u:object_r:container_file_t:s0:c365,c977",
-          "ProcessLabel": "system_u:system_r:container_init_t:s0:c365,c977",
+          "MountLabel": "system_u:object_r:container_file_t:s0:c612,c681",
+          "ProcessLabel": "system_u:system_r:container_init_t:s0:c612,c681",
           "AppArmorProfile": "",
           "EffectiveCaps": [
                "CAP_CHOWN",
@@ -73,17 +73,17 @@
           "GraphDriver": {
                "Name": "overlay",
                "Data": {
-                    "LowerDir": "/var/home/core/.local/share/containers/storage/overlay/ed448cf1e0a29d2953d969021d83ea79d701f553459d670f50af7402efa7d8f0/diff:/var/home/core/.local/share/containers/storage/overlay/168d3f8561df2ab372f2b8e8b7f6ebfb56328a905c2107ba23df4149ee7d60a8/diff",
-                    "MergedDir": "/var/home/core/.local/share/containers/storage/overlay/290ae5166f3099548ed7f5b3eadc7f3ea0be5fe0a57b81ebd4917adf38bae3ba/merged",
-                    "UpperDir": "/var/home/core/.local/share/containers/storage/overlay/290ae5166f3099548ed7f5b3eadc7f3ea0be5fe0a57b81ebd4917adf38bae3ba/diff",
-                    "WorkDir": "/var/home/core/.local/share/containers/storage/overlay/290ae5166f3099548ed7f5b3eadc7f3ea0be5fe0a57b81ebd4917adf38bae3ba/work"
+                    "LowerDir": "/var/home/core/.local/share/containers/storage/overlay/e06e03d78c7d8f2ddf4519fcbfb496d3741ac53d17349344c99a4e127b7feffa/diff:/var/home/core/.local/share/containers/storage/overlay/e113f5633fdbf165c7de584aeb38f37f09b256f31ed803e83d4f58aa655d2b26/diff",
+                    "MergedDir": "/var/home/core/.local/share/containers/storage/overlay/28ff0121f4e1897919a8af3c7ef0f4eeaac60959368d15c3dd2d7cb27626b6c2/merged",
+                    "UpperDir": "/var/home/core/.local/share/containers/storage/overlay/28ff0121f4e1897919a8af3c7ef0f4eeaac60959368d15c3dd2d7cb27626b6c2/diff",
+                    "WorkDir": "/var/home/core/.local/share/containers/storage/overlay/28ff0121f4e1897919a8af3c7ef0f4eeaac60959368d15c3dd2d7cb27626b6c2/work"
                }
           },
           "Mounts": [
                {
                     "Type": "volume",
-                    "Name": "88e650b40f5217eb5812a64bd902384cfc1d6372c0591ed6a9be9a9dece260c5",
-                    "Source": "/var/home/core/.local/share/containers/storage/volumes/88e650b40f5217eb5812a64bd902384cfc1d6372c0591ed6a9be9a9dece260c5/_data",
+                    "Name": "064e3c2d4313bb7ff249eb61dc8272b79f5f74ba0113ab409cb89903c94cd757",
+                    "Source": "/var/home/core/.local/share/containers/storage/volumes/064e3c2d4313bb7ff249eb61dc8272b79f5f74ba0113ab409cb89903c94cd757/_data",
                     "Destination": "/sys/fs/cgroup",
                     "Driver": "local",
                     "Mode": "",
@@ -118,14 +118,14 @@
                "IPv6Gateway": "",
                "GlobalIPv6Address": "",
                "GlobalIPv6PrefixLen": 0,
-               "MacAddress": "c2:9f:38:49:21:b3",
+               "MacAddress": "5e:de:8b:ac:90:76",
                "Bridge": "",
                "SandboxID": "",
                "HairpinMode": false,
                "LinkLocalIPv6Address": "",
                "LinkLocalIPv6PrefixLen": 0,
                "Ports": {},
-               "SandboxKey": "/run/user/501/netns/netns-3948e221-972d-6b24-e289-2452b58c93b8",
+               "SandboxKey": "/run/user/501/netns/netns-d0487760-d413-4a35-d6d6-b73f9f6e509d",
                "Networks": {
                     "podman": {
                          "EndpointID": "",
@@ -135,13 +135,13 @@
                          "IPv6Gateway": "",
                          "GlobalIPv6Address": "",
                          "GlobalIPv6PrefixLen": 0,
-                         "MacAddress": "c2:9f:38:49:21:b3",
+                         "MacAddress": "5e:de:8b:ac:90:76",
                          "NetworkID": "2f259bab93aaaaa2542ba43ef33eb990d0999ee1b9924b557b7be53c0b7a1bb9",
                          "DriverOpts": null,
                          "IPAMConfig": null,
                          "Links": null,
                          "Aliases": [
-                              "0f4c6b9bc9e2"
+                              "2f4e8d1945dd"
                          ]
                     }
                }
@@ -152,7 +152,7 @@
           "KubeExitCodePropagation": "invalid",
           "lockNumber": 0,
           "Config": {
-               "Hostname": "0f4c6b9bc9e2",
+               "Hostname": "2f4e8d1945dd",
                "Domainname": "",
                "User": "",
                "AttachStdin": false,
@@ -165,21 +165,19 @@
                     "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
                     "container=podman",
                     "HOME=/root",
-                    "container_uuid=0f4c6b9bc9e229ab8ad3a33e6e74fde2",
-                    "HOSTNAME=0f4c6b9bc9e2"
+                    "container_uuid=2f4e8d1945ddd73fc890a1df57c037aa",
+                    "HOSTNAME=2f4e8d1945dd"
                ],
                "Cmd": [
                     "/sbin/init"
                ],
-               "Image": "localhost/local/ubuntu-systemd:22.04",
+               "Image": "localhost/local/debian-trixie-systemd:latest",
                "Volumes": null,
                "WorkingDir": "/",
                "Entrypoint": [],
                "OnBuild": null,
                "Labels": {
-                    "io.buildah.version": "1.42.2",
-                    "org.opencontainers.image.ref.name": "ubuntu",
-                    "org.opencontainers.image.version": "22.04"
+                    "io.buildah.version": "1.42.2"
                },
                "Annotations": {
                     "io.container.manager": "libpod",
@@ -196,7 +194,7 @@
                     "podman",
                     "run",
                     "--name",
-                    "urfd-test-ctr-58026",
+                    "urfd-test-ctr-8168",
                     "-d",
                     "--systemd=always",
                     "--tmpfs",
@@ -205,7 +203,7 @@
                     "/run/lock",
                     "-v",
                     "/Users/dbehnke/development/urfd-dev/urfd-tilt/dist:/tmp/urfd-dist:ro",
-                    "local/ubuntu-systemd:22.04",
+                    "local/debian-trixie-systemd:latest",
                     "/sbin/init"
                ],
                "SystemdMode": true,
@@ -217,7 +215,7 @@
           },
           "HostConfig": {
                "Binds": [
-                    "88e650b40f5217eb5812a64bd902384cfc1d6372c0591ed6a9be9a9dece260c5:/sys/fs/cgroup:rprivate,rw,nodev,exec,nosuid,rbind",
+                    "064e3c2d4313bb7ff249eb61dc8272b79f5f74ba0113ab409cb89903c94cd757:/sys/fs/cgroup:rprivate,rw,nodev,exec,nosuid,rbind",
                     "/Users/dbehnke/development/urfd-dev/urfd-tilt/dist:/tmp/urfd-dist:ro,rprivate,rbind"
                ],
                "CgroupManager": "systemd",

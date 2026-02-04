@@ -148,14 +148,32 @@ main() {
             # write the binary to the $BUILD_DIR/$SERVICE directory via a bind mount.
             mkdir -p "$BUILD_DIR/$SERVICE"
             log_info "Building $SERVICE inside debian:trixie for linux/$ARCH"
+            # Mount the service source and the absolute build output directory
+            # directly. Previously we prefixed the absolute $BUILD_DIR with
+            # "$(pwd)/" which produced an incorrect host path and caused
+            # some Go build outputs to be written to the container-only
+            # filesystem (empty host directory). Use the absolute path as
+            # produced earlier so the container writes into the real
+            # $DIST_DIR/build-<arch> location.
             docker run --rm --platform "linux/$ARCH" \
                 -v "$SERVICE_DIR":/src:ro \
-                -v "$(pwd)/$BUILD_DIR/$SERVICE":/out:rw \
+                -v "$BUILD_DIR/$SERVICE":/out:rw \
                 -w /src \
-                debian:trixie bash -lc "set -euo pipefail; apt-get update; apt-get install -y --no-install-recommends ca-certificates golang-go build-essential >/dev/null; GOOS=linux GOARCH=${ARCH} CGO_ENABLED=0 go build -ldflags='-s -w' -o /out/${BINARY_NAME} ${BUILD_PKG}" || {
-                log_error "Failed to build $SERVICE for $ARCH inside debian:trixie"
-                exit 1
-            }
+                debian:trixie bash -lc "set -euo pipefail; \
+                    apt-get update; \
+                    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+                        ca-certificates build-essential wget curl >/dev/null; \
+                    # Install Go 1.25.6 to ensure reproducible toolchain and
+                    # avoid host/go-version mismatches. Use the official tarball
+                    # from go.dev and extract to /usr/local/go.
+                    GO_TARBALL=go1.25.6.linux-${ARCH}.tar.gz; \
+                    curl -fsSL "https://go.dev/dl/${GO_TARBALL}" -o /tmp/go.tgz; \
+                    rm -rf /usr/local/go; mkdir -p /usr/local; tar -C /usr/local -xzf /tmp/go.tgz; \
+                    export PATH=/usr/local/go/bin:$PATH; \
+                    GOOS=linux GOARCH=${ARCH} CGO_ENABLED=0 /usr/local/go/bin/go build -ldflags='-s -w' -o /out/${BINARY_NAME} ${BUILD_PKG}" || {
+                    log_error "Failed to build $SERVICE for $ARCH inside debian:trixie"
+                    exit 1
+                }
         done
     done
 

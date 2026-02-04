@@ -74,6 +74,16 @@ jobs:
           if [ "${{ matrix.arch }}" = "arm64" ]; then PLAT="linux/arm64"; else PLAT="linux/amd64"; fi
           sudo docker buildx build --platform "$PLAT" -f scripts/docker/debian-trixie-systemd.Dockerfile -t local/debian-trixie-systemd:${{ matrix.arch }} --load .
 
+      - name: Ensure lint & govulncheck tools are available
+        run: |
+          # Install golangci-lint and govulncheck to match local Taskfile targets
+          sudo apt-get update
+          sudo apt-get -y install golang-go ca-certificates make git wget curl || true
+          export GOPATH="${HOME}/go"
+          export PATH="$GOPATH/bin:$PATH"
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest || true
+          go install golang.org/x/vuln/cmd/govulncheck@latest || true
+
       - name: Run systemd tests
         run: |
           IMAGE="local/debian-trixie-systemd:${{ matrix.arch }}"
