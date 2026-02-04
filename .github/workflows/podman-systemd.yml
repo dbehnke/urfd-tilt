@@ -9,40 +9,54 @@ jobs:
   package:
     name: Build Packages
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run packaging script
+      - name: Run packaging script (arch: ${{ matrix.arch }})
         run: |
           chmod +x packaging/build-packages.sh || true
-          # build packages (adjust SINGLE_ARCH as needed)
-          SINGLE_ARCH=amd64 ./packaging/build-packages.sh
+          export SINGLE_ARCH=${{ matrix.arch }}
+          echo "Building for arch ${SINGLE_ARCH}"
+          SINGLE_ARCH=${SINGLE_ARCH} ./packaging/build-packages.sh
 
-      - name: Upload dist artifact
+      - name: Upload dist artifact (arch: ${{ matrix.arch }})
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-${{ matrix.arch }}
           path: dist/
 
   podman-test:
     name: Podman Systemd Test
     runs-on: ubuntu-latest
     needs: package
+    strategy:
+      matrix:
+        arch: [amd64]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download dist artifact
+      - name: Download dist artifact for arch ${{ matrix.arch }}
         uses: actions/download-artifact@v4
         with:
-          name: dist
+          name: dist-${{ matrix.arch }}
           path: dist
 
       - name: Install Podman
         run: |
           sudo apt-get update
           sudo apt-get -y install podman jq
+
+      - name: (arm64 emulation) Install QEMU handlers if testing arm64
+        if: matrix.arch == 'arm64'
+        run: |
+          sudo apt-get -y install qemu-user-static binfmt-support || true
+          # register QEMU handlers (best-effort), docker is available on runner
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || true
 
       - name: Run systemd tests
         run: |
@@ -52,7 +66,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: podman-systemd-artifacts
+          name: podman-systemd-artifacts-${{ matrix.arch }}
           path: artifacts/
 
       - name: Cleanup containers
