@@ -11,10 +11,10 @@ description: |
 
 depends:
   - libnng1
-  - libcurl4t64
+  - libcurl4
   - libopus0
   - libogg0
-  - libfmt-dev
+  - libfmt8
   - systemd
 
 contents:
