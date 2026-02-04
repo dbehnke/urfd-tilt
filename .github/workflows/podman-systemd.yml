@@ -1,0 +1,65 @@
+name: Podman Systemd Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  package:
+    name: Build Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run packaging script
+        run: |
+          chmod +x packaging/build-packages.sh || true
+          # build packages (adjust SINGLE_ARCH as needed)
+          SINGLE_ARCH=amd64 ./packaging/build-packages.sh
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  podman-test:
+    name: Podman Systemd Test
+    runs-on: ubuntu-latest
+    needs: package
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Install Podman
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install podman jq
+
+      - name: Run systemd tests
+        run: |
+          bash scripts/test-systemd.sh --dist ./dist --image docker.io/library/ubuntu:22.04
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: podman-systemd-artifacts
+          path: artifacts/
+
+      - name: Cleanup containers
+        if: always()
+        run: |
+          set -e || true
+          pods=$(podman ps -a -q || true)
+          if [ -n "$pods" ]; then
+            podman rm -f $pods || true
+          fi

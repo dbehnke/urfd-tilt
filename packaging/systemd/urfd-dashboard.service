@@ -1,0 +1,13 @@
+[Unit]
+Description=URFD NNG Dashboard
+Requires=urfd.service
+After=network-online.target urfd.service
+
+[Service]
+ExecStart=/usr/bin/urfd-dashboard -config /etc/urfd/dashboard.yaml
+WorkingDirectory=/var/lib/urfd
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

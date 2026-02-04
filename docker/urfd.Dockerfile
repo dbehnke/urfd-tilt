@@ -1,3 +1,5 @@
+ARG BUILD_VERSION=dev
+
 FROM urfd-common
 
 WORKDIR /build/urfd
@@ -11,7 +13,7 @@ WORKDIR /build/urfd/reflector
 RUN echo "DHT=false" > urfd.mk
 
 # Build
-RUN make clean && make
+RUN make clean && make BUILD_VERSION=$(BUILD_VERSION)
 
 # Install binaries to /usr/local/bin for verify or easy usage, though we use them in docker-compose from build dir or copy?
 # docker-compose uses 'urfd' image.

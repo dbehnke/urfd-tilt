@@ -1,0 +1,14 @@
+name: urfd-suite
+arch: all
+platform: linux
+version: 0.0.0
+maintainer: "URFD Project"
+vendor: "URFD"
+homepage: "https://github.com/dbehnke/urfd"
+description: |
+  URFD meta-package that pulls together core components.
+
+depends:
+  - urfd
+  - urfd-dashboard
+  - tcd

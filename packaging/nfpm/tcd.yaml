@@ -1,0 +1,29 @@
+name: tcd
+arch: ${ARCH}
+platform: linux
+version: 0.0.0
+maintainer: "URFD Project"
+vendor: "URFD"
+homepage: "https://github.com/dbehnke/urfd"
+description: |
+  URFD TCD - Transcode Daemon
+  Handles audio transcoding for the URFD system.
+
+depends:
+  - urfd
+  - systemd
+
+contents:
+  - src: dist/build-${ARCH}/tcd/tcd
+    dst: /usr/bin/tcd
+    file_info:
+      mode: 0755
+  - src: packaging/configs/tcd.ini
+    dst: /etc/urfd/tcd.ini
+    type: config|noreplace
+    file_info:
+      mode: 0644
+  - src: packaging/systemd/urfd-tcd.service
+    dst: /usr/lib/systemd/system/urfd-tcd.service
+    file_info:
+      mode: 0644

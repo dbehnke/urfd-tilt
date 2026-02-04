@@ -1,0 +1,13 @@
+[Unit]
+Description=URFD Transcoder Daemon (tcd)
+Requires=urfd.service
+After=network-online.target urfd.service
+
+[Service]
+ExecStart=/usr/bin/tcd /etc/urfd/tcd.ini
+ExecStartPre=-/sbin/rmmod ftdi_sio
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,19 @@
+name: md380_vocoder_dynarmic
+arch: ${ARCH}
+platform: linux
+version: 0.0.0
+maintainer: "URFD Project"
+vendor: "URFD"
+homepage: "https://github.com/dbehnke/urfd"
+description: |
+  MD380 dynamic vocoder library
+
+contents:
+  - src: dist/build-${ARCH}/md380_vocoder_dynarmic/libmd380_vocoder.a
+    dst: /usr/local/lib/libmd380_vocoder.a
+    file_info:
+      mode: 0644
+  - src: dist/build-${ARCH}/md380_vocoder_dynarmic/../md380_vocoder.h
+    dst: /usr/local/include/md380_vocoder.h
+    file_info:
+      mode: 0644

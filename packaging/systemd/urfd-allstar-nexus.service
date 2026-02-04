@@ -1,0 +1,11 @@
+[Unit]
+Description=AllStar Nexus - Dashboard for AllStar nodes
+After=network-online.target urfd.service
+
+[Service]
+ExecStart=/usr/bin/allstar-nexus --config /etc/urfd/allstar-nexus.yaml
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

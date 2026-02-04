@@ -1,0 +1,50 @@
+name: Packer Parallels Build
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    name: Build VM with Packer (Parallels)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@v2
+
+      - name: Generate ephemeral SSH key
+        run: |
+          mkdir -p "$RUNNER_TEMP/urfd"
+          ssh-keygen -t ed25519 -f "$RUNNER_TEMP/urfd/urfd_ci_key" -N "" -C "ci-$(date +%s)"
+          echo "PRIVKEY=$RUNNER_TEMP/urfd/urfd_ci_key" >> $GITHUB_ENV
+          echo "PUBKEY=$(cat $RUNNER_TEMP/urfd/urfd_ci_key.pub)" >> $GITHUB_ENV
+          echo "::add-mask::$(cat $RUNNER_TEMP/urfd/urfd_ci_key)"
+
+      - name: Generate user-data with public key
+        run: |
+          PUBKEY="${{ env.PUBKEY }}"
+          OUT=$(bash packer/generate-user-data.sh "$PUBKEY")
+          echo "USER_DATA=$OUT" >> $GITHUB_ENV
+
+      - name: Packer init
+        run: packer init packer/
+
+      - name: Run Packer build
+        env:
+          ISO_URL: ${{ secrets.ISO_URL }}
+        run: |
+          packer build -var "iso_url=${ISO_URL}" -var "user_data_path=${{ env.USER_DATA }}" packer/urfd-parallels.pkr.hcl
+
+      - name: Cleanup VM (if prlctl available)
+        if: always()
+        run: |
+          if command -v prlctl >/dev/null 2>&1; then
+            VMNAME="urfd-test"
+            echo "Stopping & deleting VM $VMNAME"
+            prlctl stop "$VMNAME" --kill || true
+            prlctl delete "$VMNAME" || true
+          else
+            echo "prlctl not available on runner; skip cleanup"
+          fi

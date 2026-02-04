@@ -1,0 +1,20 @@
+[Unit]
+Description=URFD Universal Reflector
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=urfd
+Group=urfd
+ExecStart=/usr/bin/urfd /etc/urfd/urfd.ini
+Restart=always
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/log/urfd /var/lib/urfd /var/run
+
+[Install]
+WantedBy=multi-user.target

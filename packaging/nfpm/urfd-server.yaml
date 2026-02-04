@@ -1,0 +1,25 @@
+name: urfd-server
+arch: all
+platform: linux
+version: 0.0.0
+maintainer: "URFD Project"
+vendor: "URFD"
+homepage: "https://github.com/dbehnke/urfd"
+description: |
+  URFD Server - Meta-package for complete URFD installation
+  Installs all core URFD packages for a full server deployment.
+
+depends:
+  - urfd
+  - urfd-tcd
+  - urfd-dashboard
+
+contents:
+  - dst: /var/log/urfd
+    type: dir
+    file_info:
+      mode: 0755
+  - dst: /var/lib/urfd
+    type: dir
+    file_info:
+      mode: 0755

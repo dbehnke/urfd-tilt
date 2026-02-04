@@ -1,3 +1,5 @@
+ARG BUILD_VERSION=dev
+
 # Frontend Build
 FROM oven/bun:1 AS frontend-builder
 
@@ -23,7 +25,7 @@ COPY . .
 COPY --from=frontend-builder /app/web/dist ./web/dist
 
 # Build backend
-RUN task build-backend
+RUN task build-backend BUILD_VERSION=$(BUILD_VERSION)
 
 # Install
 RUN cp urfd-dashboard /usr/local/bin/dashboard

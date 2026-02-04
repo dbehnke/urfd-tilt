@@ -1,3 +1,5 @@
+ARG BUILD_VERSION=dev
+
 # Build stage
 FROM golang:1.25.3-alpine AS builder
 
@@ -21,7 +23,7 @@ RUN npm ci && npm run build
 WORKDIR /build
 # Use fixed version string for dev build or dynamic
 RUN go build \
-    -ldflags "-X 'main.buildVersion=dev-tilt' -X 'main.buildTime=$(date -u +'%Y-%m-%dT%H:%M:%SZ')'" \
+    -ldflags "-X 'main.buildVersion=${BUILD_VERSION}' -X 'main.buildTime=$(date -u +'%Y-%m-%dT%H:%M:%SZ')'" \
     -o allstar-nexus \
     .
 

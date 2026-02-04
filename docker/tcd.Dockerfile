@@ -1,3 +1,5 @@
+ARG BUILD_VERSION=dev
+
 FROM urfd-common
 
 # Copy artifacts from libraries
@@ -23,7 +25,7 @@ RUN echo "swambe2=true" > tcd.mk && \
 RUN sed -i 's/-lmd380_vocoder/-lmd380_vocoder -lfmt/g' Makefile
 
 # Build
-RUN make clean && make swmodes=true
+RUN make clean && make swmodes=true BUILD_VERSION=$(BUILD_VERSION)
 
 # Install
 RUN cp tcd /usr/local/bin/
