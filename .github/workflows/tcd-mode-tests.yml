@@ -31,11 +31,11 @@ jobs:
               cd src/md380_vocoder_dynarmic
               if [ -f Makefile ]; then
                 make || true
-                sudo make install || true
+                make install || true
               elif [ -f CMakeLists.txt ]; then
                 mkdir -p build && cd build
                 cmake .. && make -j2
-                sudo make install || true
+                make install || true
               else
                 echo "No known build system for md380_vocoder_dynarmic; skipping"
               fi
