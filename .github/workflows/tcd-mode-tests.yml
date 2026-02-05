@@ -17,41 +17,51 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: Set up build deps
+      - name: Build tcd builder image
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential pkg-config libusb-1.0-0-dev libftdi1-dev git
+          docker build -f src/tcd/Dockerfile.builder --target tcd-builder -t urfd-tcd-builder:ci .
 
-      - name: Build md380_vocoder (if present)
-        working-directory: ${{ github.workspace }}
+      - name: Build tcd + dependencies inside builder container
         run: |
-          if [ -d src/md380_vocoder_dynarmic ]; then
-            echo "Found md380_vocoder_dynarmic; attempting build"
-            cd src/md380_vocoder_dynarmic
-            if [ -f Makefile ]; then
-              make || true
-              sudo make install || true
-            elif [ -f CMakeLists.txt ]; then
-              mkdir -p build && cd build
-              cmake .. && make -j2
-              sudo make install || true
-            else
-              echo "No known build system for md380_vocoder_dynarmic; skipping"
+          docker run --rm -v "${{ github.workspace }}:/work" -w /work urfd-tcd-builder:ci bash -lc '
+            set -e
+            # Build md380_vocoder if present
+            if [ -d src/md380_vocoder_dynarmic ]; then
+              echo "Found md380_vocoder_dynarmic; attempting build"
+              cd src/md380_vocoder_dynarmic
+              if [ -f Makefile ]; then
+                make || true
+                sudo make install || true
+              elif [ -f CMakeLists.txt ]; then
+                mkdir -p build && cd build
+                cmake .. && make -j2
+                sudo make install || true
+              else
+                echo "No known build system for md380_vocoder_dynarmic; skipping"
+              fi
+              cd /work
             fi
-          else
-            echo "md380_vocoder_dynarmic not present; continuing"
-          fi
 
-      - name: Build tcd with UNIT_TEST_FTDI
-        working-directory: ${{ github.workspace }}/src/tcd
-        run: |
-          make clean || true
-          # Build with software AMBE enabled and UNIT_TEST_FTDI to allow simulation
-          make swambe2=true swmodes=true CFLAGS+=' -DUNIT_TEST_FTDI' BUILD_VERSION=ci -j$(nproc)
+            # Build tcd with UNIT_TEST_FTDI
+            cd src/tcd
+            make clean || true
+            make swambe2=true swmodes=true CFLAGS+=' -DUNIT_TEST_FTDI' BUILD_VERSION=ci -j$(nproc)
 
-      - name: Run tcd-mode smoke tests
+            # Copy artifacts out for tests
+            mkdir -p /work/dist/build-amd64/tcd
+            cp tcd /work/dist/build-amd64/tcd/tcd || true
+            # Attempt a unit-test build
+            make clean || true
+            make swambe2=true swmodes=true CFLAGS+=' -DUNIT_TEST_FTDI' BUILD_VERSION=ci -j$(nproc)
+            cp tcd /work/dist/build-amd64/tcd/tcd-unittest || true
+          '
+
+      - name: Run tcd-mode smoke tests inside builder container
         env:
           SIMULATE_FTDI: ${{ matrix.simulate }}
         run: |
-          chmod +x packaging/tests/tcd-mode-tests.sh
-          packaging/tests/tcd-mode-tests.sh BIN=src/tcd/tcd INI=packaging/configs/tcd.ini
+          docker run --rm -v "${{ github.workspace }}:/work" -w /work urfd-tcd-builder:ci bash -lc '
+            set -e
+            chmod +x packaging/tests/tcd-mode-tests.sh
+            SIMULATE_FTDI=${SIMULATE_FTDI} bash packaging/tests/tcd-mode-tests.sh BIN=/work/dist/build-amd64/tcd/tcd INI=/work/packaging/configs/tcd.ini
+          '
