@@ -43,6 +43,13 @@ jobs:
             fi
 
             # Build tcd with UNIT_TEST_FTDI
+            # When mounting the workspace into the builder container the image-created tcd.mk
+            # can be hidden by the mount. Create a local tcd.mk if it's missing.
+            if [ ! -f src/tcd/tcd.mk ]; then
+              echo "swambe2=true" > src/tcd/tcd.mk
+              echo "swmodes=true" >> src/tcd/tcd.mk
+              echo "debug=false" >> src/tcd/tcd.mk
+            fi
             cd src/tcd
             make clean || true
             make swambe2=true swmodes=true CFLAGS+=' -DUNIT_TEST_FTDI' BUILD_VERSION=ci -j$(nproc)
