@@ -1,0 +1,57 @@
+name: tcd-mode-tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        simulate: [0, 2]
+    steps:
+      - name: Checkout repository (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libusb-1.0-0-dev libftdi1-dev git
+
+      - name: Build md380_vocoder (if present)
+        working-directory: ${{ github.workspace }}
+        run: |
+          if [ -d src/md380_vocoder_dynarmic ]; then
+            echo "Found md380_vocoder_dynarmic; attempting build"
+            cd src/md380_vocoder_dynarmic
+            if [ -f Makefile ]; then
+              make || true
+              sudo make install || true
+            elif [ -f CMakeLists.txt ]; then
+              mkdir -p build && cd build
+              cmake .. && make -j2
+              sudo make install || true
+            else
+              echo "No known build system for md380_vocoder_dynarmic; skipping"
+            fi
+          else
+            echo "md380_vocoder_dynarmic not present; continuing"
+          fi
+
+      - name: Build tcd with UNIT_TEST_FTDI
+        working-directory: ${{ github.workspace }}/src/tcd
+        run: |
+          make clean || true
+          # Build with software AMBE enabled and UNIT_TEST_FTDI to allow simulation
+          make swambe2=true swmodes=true CFLAGS+=' -DUNIT_TEST_FTDI' BUILD_VERSION=ci -j$(nproc)
+
+      - name: Run tcd-mode smoke tests
+        env:
+          SIMULATE_FTDI: ${{ matrix.simulate }}
+        run: |
+          chmod +x packaging/tests/tcd-mode-tests.sh
+          packaging/tests/tcd-mode-tests.sh BIN=src/tcd/tcd INI=packaging/configs/tcd.ini
