@@ -21,3 +21,13 @@ echo "Running container to execute package tests"
 docker run --rm "$IMAGE_TAG"
 
 echo "Test image run complete"
+
+# Run additional host-side tcd mode tests (fast smoke tests)
+if [ -x "$SCRIPT_DIR/tests/tcd-mode-tests.sh" ]; then
+  echo "Running host-side tcd mode smoke tests"
+  (cd "$PROJECT_ROOT" && "$SCRIPT_DIR/tests/tcd-mode-tests.sh") || {
+    echo "tcd mode tests failed" >&2
+    exit 1
+  }
+  echo "Host-side tcd mode tests passed"
+fi
