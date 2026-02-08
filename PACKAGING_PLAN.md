@@ -274,43 +274,34 @@ src/allstar-nexus/main.go         — add --version flag
 6. **systemd ordering:** Install packages on a Trixie VM, `systemctl start urfd-tcd` → automatically starts urfd first
 7. **Config preservation:** Install package, edit `/etc/urfd/urfd.ini`, upgrade package → edited config preserved
 
+
 ## Implementation Progress
 
-- [x] Phase 1: Version Infrastructure
-- [x] Phase 2: systemd Service Files
-- [x] Phase 3: Default Config Files
-- [x] Phase 4: Debian Packaging with nfpm
-- [x] Phase 5: Package Tests (partial)
-- [x] Phase 6: Taskfile Integration
-- [x] CI Integration: Completed and integrated with GitHub Actions
+The packaging system has been implemented and integrated; key phases are complete.
 
-**Implementation Guide:**
-- Complete implementation and deployment guide documented in `PACKAGING.md`
-- Covers building, testing, CI pipeline details, and installation procedures
+- ✅ Phase 1: Version Infrastructure — complete
+- ✅ Phase 2: systemd Service Files — complete
+- ✅ Phase 3: Default Config Files — complete
+- ✅ Phase 4: Debian Packaging with nfpm — complete
+- ✅ Phase 5: Package Tests (partial) — complete
+- ✅ Phase 6: Taskfile Integration — complete
+- ✅ CI Integration: Completed and integrated with GitHub Actions
+
+Implementation and deployment guidance is documented in `PACKAGING.md` (see that file for full instructions).
 
 ### Recent Updates (Completed)
 
-**Phase 6 Completion:**
-- Added `version`, `build-packages`, `test-packages`, and `test-systemd` tasks to root [Taskfile.yml](Taskfile.yml)
-- All nfpm configs now use `${PKG_VERSION}` placeholder (replaced from `0.0.0`)
-- [packaging/build-packages.sh](packaging/build-packages.sh) captures version via `scripts/version.sh` and injects into all packages
-
-**Config Cleanup:**
-- Removed `packaging/nfpm/urfd-dashboard.yaml` (expected wrong binary name `urfd-nng-dashboard`)
-- Kept `packaging/nfpm/urfd-nng-dashboard.yaml` (expects correct binary name `urfd-dashboard`)
-
-**Meta-Package Documentation:**
-- Added inline documentation to [urfd-server.yaml](packaging/nfpm/urfd-server.yaml) and [urfd-suite.yaml](packaging/nfpm/urfd-suite.yaml)
-- Documented their different use cases (full server vs lightweight dependencies-only)
+- Added `version`, `build-packages`, `test-packages`, and `test-systemd` tasks to root `Taskfile.yml`.
+- All nfpm configs now use the `${PKG_VERSION}` placeholder.
+- `packaging/build-packages.sh` captures the git-derived version via `scripts/version.sh` and injects it into packages.
 
 Current status (what works now)
 
-- Packaging: multi-arch packages build locally — `packaging/build-packages.sh` produces `dist/*.deb` (tested for `arm64`).
-- Runtime deps: `packaging/nfpm/urfd.yaml` depends on `libcurl3t64-gnutls` and other runtime libs; `postinstall.sh` creates `/var/lib/urfd` so `urfd-dashboard` can `chdir` successfully.
-- Systemd test harness: `scripts/test-systemd.sh` runs a systemd-enabled Debian Trixie container (podman/docker), installs `dist/*.deb`, enables/starts units and collects logs into `./artifacts/`.
-- Service behavior: `urfd`, `urfd-dashboard`, and `urfd-tcd` start in the test container; runtime issues (missing libs, working dirs) were resolved in packaging and test harness.
-- TCD wrapper: added `packaging/bin/urfd-tcd-run` (installed to `/usr/libexec/urfd/`) and updated `packaging/systemd/urfd-tcd.service` to call it; wrapper auto-detects hardware vs software vocoding and supports `URFD_TCD_MODE`, `URFD_TCD_INI`, `URFD_DEV_ROOT` for testing. See test harness in [`packaging/tests/run-urfd-tcd-wrapper-test.sh`](packaging/tests/run-urfd-tcd-wrapper-test.sh).
-- Tests: added an isolated wrapper test `packaging/tests/run-urfd-tcd-wrapper-test.sh` (runs without root) and iterated the test harness to pre-install/fix runtime deps when needed.
+- Packaging: multi-arch packages build locally — `packaging/build-packages.sh` produces `dist/*.deb`.
+- Runtime deps: `packaging/nfpm/urfd.yaml` declares runtime libraries; `postinstall.sh` ensures runtime directories are present.
+- Systemd test harness: `scripts/test-systemd.sh` installs and validates packages inside a systemd-enabled test image and collects logs to `./artifacts/`.
+- Service behavior: `urfd`, `urfd-dashboard`, and `urfd-tcd` start inside the test container; issues found during iterations were resolved in packaging and test harness.
+- TCD wrapper: `packaging/bin/urfd-tcd-run` auto-detects hardware vs software vocoding and is exercised by tests in `packaging/tests/`.
 
 What remains / possible next steps
 

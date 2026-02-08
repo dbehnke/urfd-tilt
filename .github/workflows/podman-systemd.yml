@@ -105,3 +105,9 @@ jobs:
           if [ -n "$pods" ]; then
             podman rm -f $pods || true
           fi
+      - name: lint .deb files with lintian
+        if: steps.build.outputs.dist != ''
+        uses: docker://debuerreotype/lintian:stable
+        with:
+          entrypoint: ''
+          args: bash -lc "lintian --display-info --display-experimental --show-overrides dist/*.deb || true"
