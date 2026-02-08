@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Pre-commit hook: lint staged Markdown files with remark
+# This script is intended to be copied into .git/hooks/pre-commit (use scripts/install-git-hooks.sh)
+
+IFS=$'\n'
+STAGED_MD_FILES=($(git diff --cached --name-only --diff-filter=ACM | grep -E '\.md$' || true))
+
+if [ ${#STAGED_MD_FILES[@]} -eq 0 ]; then
+  exit 0
+fi
+
+echo "Running remark lint on staged Markdown files..."
+fail=0
+for f in "${STAGED_MD_FILES[@]}"; do
+  if [ ! -f "$f" ]; then
+    # File may have been deleted or renamed
+    continue
+  fi
+  echo "  linting $f"
+  # Use npx to prefer local install if present
+  if ! npx --no-install remark -u remark-preset-lint-recommended "$f"; then
+    echo "Lint failed: $f"
+    fail=1
+  fi
+done
+
+if [ "$fail" -ne 0 ]; then
+  echo "Pre-commit: Markdown lint failed. Fix issues and retry commit."
+  exit 1
+fi
+
+echo "Markdown lint passed."
+exit 0

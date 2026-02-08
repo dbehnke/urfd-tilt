@@ -1,7 +1,16 @@
+# urfd-suite: Lightweight meta-package for core URFD components
+#
+# Use this package when:
+# - You want dependencies-only installation without directory creation
+# - You prefer to use 'tcd' package instead of 'urfd-tcd'
+# - You don't need the full server setup
+#
+# Note: Depends on 'tcd' package, not 'urfd-tcd'. Does not create directories.
+
 name: urfd-suite
 arch: all
 platform: linux
-version: 0.0.0
+version: ${PKG_VERSION}
 maintainer: "URFD Project"
 vendor: "URFD"
 homepage: "https://github.com/dbehnke/urfd"

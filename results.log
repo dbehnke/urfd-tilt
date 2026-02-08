@@ -278,3 +278,1071 @@ Version needs section '.gnu.version_r' contains 4 entries:
   0x01b0:   Name: GLIBC_2.33  Flags: none  Version: 11
   0x01c0:   Name: GLIBC_2.38  Flags: none  Version: 9
   0x01d0:   Name: GLIBC_2.17  Flags: none  Version: 2
+Starting machine "urfd-podman"
+
+This machine is currently configured in rootless mode. If your containers
+require root permissions (e.g. ports < 1024), or if you run into compatibility
+issues with non-podman clients, you can switch using the following command:
+
+	podman machine set --rootful urfd-podman
+
+API forwarding listening on: /var/run/docker.sock
+Docker API clients default to this address. You do not need to set DOCKER_HOST.
+
+Machine "urfd-podman" started successfully
+Starting systemd-enabled container...
+95632fdb8509de64a3f93d8b3c77d80535e2ca9921216e287418a9be5825df4c
+Waiting for systemd inside container (timeout 60s)...
+systemd detected
+Installing .deb packages (best-effort)...
+Selecting previously unselected package tcd.
+(Reading database ... 6337 files and directories currently installed.)
+Preparing to unpack .../urfd-dist/tcd_0.0.0_arm64.deb ...
+Unpacking tcd (0.0.0) ...
+Selecting previously unselected package urfd-dashboard.
+Preparing to unpack .../urfd-dashboard_0.0.0_arm64.deb ...
+Unpacking urfd-dashboard (0.0.0) ...
+Selecting previously unselected package urfd-suite.
+Preparing to unpack .../urfd-suite_0.0.0_all.deb ...
+Unpacking urfd-suite (0.0.0) ...
+Selecting previously unselected package urfd.
+Preparing to unpack .../urfd-dist/urfd_0.0.0_arm64.deb ...
+Creating urfd system user and group
+Unpacking urfd (0.0.0) ...
+Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 Packages [9607 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages [5404 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main arm64 Packages [99.0 kB]
+Fetched 9943 kB in 2s (5871 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Correcting dependencies... Done
+The following packages will be REMOVED:
+  tcd urfd urfd-dashboard urfd-suite
+0 upgraded, 0 newly installed, 4 to remove and 0 not upgraded.
+4 not fully installed or removed.
+After this operation, 30.8 MB disk space will be freed.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6350 files and directories currently installed.)
+Removing urfd-suite (0.0.0) ...
+Removing tcd (0.0.0) ...
+Removing urfd-dashboard (0.0.0) ...
+Removing urfd (0.0.0) ...
+Checking service: urfd
+Service urfd state: inactive
+unknown
+Checking service: urfd-dashboard
+Service urfd-dashboard state: inactive
+unknown
+Checking service: tcd
+Service tcd state: inactive
+unknown
+Cleaning up container...
+urfd-test-ctr-15515
+Stopping podman machine urfd-podman
+Machine "urfd-podman" stopped successfully
+Note: 3 service(s) were not active after enable/start. Logs are in ./artifacts
+[INFO] SINGLE_ARCH set: building for arm64 only
+[INFO] Starting package build process...
+[INFO] Using nfpm: /Users/dbehnke/go/bin/nfpm
+[INFO] === Building for architecture: arm64 ===
+[INFO] Building C++ service: urfd (arm64)
+[INFO] Building C++ service: tcd (arm64)
+[INFO] Building Go service: allstar-nexus (arm64)
+[INFO] Building package path: . -> /Users/dbehnke/development/urfd-dev/urfd-tilt/dist/build-arm64/allstar-nexus/allstar-nexus
+[INFO] Building allstar-nexus inside debian:trixie for linux/arm64
+[INFO] Cleaning up...
+[INFO] SINGLE_ARCH set: building for arm64 only
+[INFO] Starting package build process...
+[INFO] Using nfpm: /Users/dbehnke/go/bin/nfpm
+[INFO] === Building for architecture: arm64 ===
+[INFO] Building C++ service: urfd (arm64)
+[INFO] Building C++ service: tcd (arm64)
+[INFO] Building Go service: allstar-nexus (arm64)
+[INFO] Building package path: . -> /Users/dbehnke/development/urfd-dev/urfd-tilt/dist/build-arm64/allstar-nexus/allstar-nexus
+[INFO] Building allstar-nexus inside debian:trixie for linux/arm64
+Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 Packages [9607 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages [5404 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main arm64 Packages [99.0 kB]
+Fetched 9943 kB in 2s (6118 kB/s)
+Reading package lists...
+[INFO] Building Go service: urfd-nng-dashboard (arm64)
+[INFO] Building package path: ./cmd/dashboard -> /Users/dbehnke/development/urfd-dev/urfd-tilt/dist/build-arm64/urfd-nng-dashboard/urfd-dashboard
+[INFO] Building urfd-nng-dashboard inside debian:trixie for linux/arm64
+Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 Packages [9607 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages [5404 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main arm64 Packages [99.0 kB]
+Fetched 9943 kB in 2s (5820 kB/s)
+Reading package lists...
+[INFO] === Creating DEB packages ===
+[INFO] Creating package: urfd (arm64)
+using deb packager...
+created package: /Users/dbehnke/development/urfd-dev/urfd-tilt/dist/urfd_0.0.0_arm64.deb
+[INFO] Creating package: tcd (arm64)
+using deb packager...
+created package: /Users/dbehnke/development/urfd-dev/urfd-tilt/dist/tcd_0.0.0_arm64.deb
+[WARN] nfpm config not found: /Users/dbehnke/development/urfd-dev/urfd-tilt/packaging/nfpm/allstar-nexus.yaml, skipping...
+[INFO] Creating package: urfd-nng-dashboard (arm64)
+using deb packager...
+created package: /Users/dbehnke/development/urfd-dev/urfd-tilt/dist/urfd-dashboard_0.0.0_arm64.deb
+[INFO] === Building meta-package (urfd-suite) ===
+using deb packager...
+created package: /Users/dbehnke/development/urfd-dev/urfd-tilt/dist/urfd-suite_0.0.0_all.deb
+[INFO] === Build complete ===
+[INFO] Packages available in: /Users/dbehnke/development/urfd-dev/urfd-tilt/dist
+-rw-r--r--@ 1 dbehnke  staff   2.0M Feb  4 16:15 /Users/dbehnke/development/urfd-dev/urfd-tilt/dist/tcd_0.0.0_arm64.deb
+-rw-r--r--@ 1 dbehnke  staff   1.7M Feb  4 16:15 /Users/dbehnke/development/urfd-dev/urfd-tilt/dist/urfd_0.0.0_arm64.deb
+-rw-r--r--@ 1 dbehnke  staff   6.2M Feb  4 16:15 /Users/dbehnke/development/urfd-dev/urfd-tilt/dist/urfd-dashboard_0.0.0_arm64.deb
+-rw-r--r--@ 1 dbehnke  staff   546B Feb  4 16:15 /Users/dbehnke/development/urfd-dev/urfd-tilt/dist/urfd-suite_0.0.0_all.deb
+[INFO] Cleaning up...
+Starting machine "urfd-podman"
+
+This machine is currently configured in rootless mode. If your containers
+require root permissions (e.g. ports < 1024), or if you run into compatibility
+issues with non-podman clients, you can switch using the following command:
+
+	podman machine set --rootful urfd-podman
+
+API forwarding listening on: /var/run/docker.sock
+Docker API clients default to this address. You do not need to set DOCKER_HOST.
+
+Machine "urfd-podman" started successfully
+Starting systemd-enabled container...
+bf2cbe5a281223f2d3b131de791c25d404fec5f590084474152be664068a4711
+Waiting for systemd inside container (timeout 60s)...
+systemd detected
+Installing .deb packages (best-effort)...
+Selecting previously unselected package tcd.
+(Reading database ... 6337 files and directories currently installed.)
+Preparing to unpack .../urfd-dist/tcd_0.0.0_arm64.deb ...
+Unpacking tcd (0.0.0) ...
+Selecting previously unselected package urfd-dashboard.
+Preparing to unpack .../urfd-dashboard_0.0.0_arm64.deb ...
+Unpacking urfd-dashboard (0.0.0) ...
+Selecting previously unselected package urfd-suite.
+Preparing to unpack .../urfd-suite_0.0.0_all.deb ...
+Unpacking urfd-suite (0.0.0) ...
+Selecting previously unselected package urfd.
+Preparing to unpack .../urfd-dist/urfd_0.0.0_arm64.deb ...
+Creating urfd system user and group
+Unpacking urfd (0.0.0) ...
+Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 Packages [9607 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages [5404 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main arm64 Packages [99.0 kB]
+Fetched 9943 kB in 2s (5935 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Correcting dependencies... Done
+The following additional packages will be installed:
+  libfmt10 libmbedcrypto16 libmbedtls21 libmbedx509-7 libnng1 libogg0 libopus0
+Suggested packages:
+  opus-tools
+The following NEW packages will be installed:
+  libfmt10 libmbedcrypto16 libmbedtls21 libmbedx509-7 libnng1 libogg0 libopus0
+0 upgraded, 7 newly installed, 0 to remove and 0 not upgraded.
+4 not fully installed or removed.
+Need to get 3832 kB of archives.
+After this operation, 6079 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian trixie/main arm64 libmbedcrypto16 arm64 3.6.5-0.1~deb13u1 [347 kB]
+Get:2 http://deb.debian.org/debian trixie/main arm64 libmbedx509-7 arm64 3.6.5-0.1~deb13u1 [151 kB]
+Get:3 http://deb.debian.org/debian trixie/main arm64 libmbedtls21 arm64 3.6.5-0.1~deb13u1 [229 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 libnng1 arm64 1.10.1-2 [147 kB]
+Get:5 http://deb.debian.org/debian trixie/main arm64 libopus0 arm64 1.5.2-2 [2813 kB]
+Get:6 http://deb.debian.org/debian trixie/main arm64 libogg0 arm64 1.3.5-3+b2 [23.6 kB]
+Get:7 http://deb.debian.org/debian trixie/main arm64 libfmt10 arm64 10.1.1+ds1-4 [121 kB]
+Fetched 3832 kB in 0s (8343 kB/s)
+Selecting previously unselected package libmbedcrypto16:arm64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6350 files and directories currently installed.)
+Preparing to unpack .../0-libmbedcrypto16_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedcrypto16:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libmbedx509-7:arm64.
+Preparing to unpack .../1-libmbedx509-7_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedx509-7:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libmbedtls21:arm64.
+Preparing to unpack .../2-libmbedtls21_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedtls21:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libnng1:arm64.
+Preparing to unpack .../3-libnng1_1.10.1-2_arm64.deb ...
+Unpacking libnng1:arm64 (1.10.1-2) ...
+Selecting previously unselected package libopus0:arm64.
+Preparing to unpack .../4-libopus0_1.5.2-2_arm64.deb ...
+Unpacking libopus0:arm64 (1.5.2-2) ...
+Selecting previously unselected package libogg0:arm64.
+Preparing to unpack .../5-libogg0_1.3.5-3+b2_arm64.deb ...
+Unpacking libogg0:arm64 (1.3.5-3+b2) ...
+Selecting previously unselected package libfmt10:arm64.
+Preparing to unpack .../6-libfmt10_10.1.1+ds1-4_arm64.deb ...
+Unpacking libfmt10:arm64 (10.1.1+ds1-4) ...
+Setting up libogg0:arm64 (1.3.5-3+b2) ...
+Setting up libopus0:arm64 (1.5.2-2) ...
+Setting up libmbedcrypto16:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up libfmt10:arm64 (10.1.1+ds1-4) ...
+Setting up libmbedx509-7:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up libmbedtls21:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up libnng1:arm64 (1.10.1-2) ...
+Setting up urfd (0.0.0) ...
+URFD installation complete!
+
+Next steps:
+1. Configure services by editing files in /etc/urfd/
+2. Enable and start services with (if systemd is in use):
+   systemctl enable urfd.service
+   systemctl enable urfd-tcd.service
+   systemctl enable urfd-dashboard.service
+   systemctl enable urfd-allstar-nexus.service
+   systemctl start urfd.service
+   systemctl start urfd-tcd.service
+   systemctl start urfd-dashboard.service
+   systemctl start urfd-allstar-nexus.service
+
+3. Check status with: systemctl status urfd.service
+4. View logs with: journalctl -u urfd -f
+
+Documentation is available in /usr/share/doc/urfd/
+Setting up urfd-dashboard (0.0.0) ...
+Setting up tcd (0.0.0) ...
+Setting up urfd-suite (0.0.0) ...
+Processing triggers for libc-bin (2.41-12+deb13u1) ...
+Checking service: urfd
+● urfd.service - URFD Universal Reflector
+     Loaded: loaded (/usr/lib/systemd/system/urfd.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:15:40 UTC; 5ms ago
+ Invocation: 894e188f6d554ed19e842281ce78af20
+   Main PID: 278 ((urfd))
+      Tasks: 1 (limit: 2140)
+     Memory: 1.5M (peak: 1.5M)
+        CPU: 2ms
+     CGroup: /system.slice/urfd.service
+             └─278 "(urfd)"
+
+Feb 04 21:15:40 bf2cbe5a2812 systemd[1]: Started urfd.service - URFD Universal Reflector.
+Service urfd state: activating
+unknown
+Checking service: urfd-dashboard
+● urfd-dashboard.service - URFD NNG Dashboard
+     Loaded: loaded (/usr/lib/systemd/system/urfd-dashboard.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:15:41 UTC; 5ms ago
+ Invocation: 5d1bf1aeca35499696fdd3a4e1ae109c
+   Main PID: 308 ((ashboard))
+      Tasks: 1 (limit: 2140)
+     Memory: 1.7M (peak: 1.7M)
+        CPU: 2ms
+     CGroup: /system.slice/urfd-dashboard.service
+             └─308 "(ashboard)"
+
+Feb 04 21:15:41 bf2cbe5a2812 systemd[1]: Started urfd-dashboard.service - URFD NNG Dashboard.
+Service urfd-dashboard state: activating
+unknown
+Checking service: tcd
+Service tcd state: inactive
+unknown
+Cleaning up container...
+urfd-test-ctr-17357
+Stopping podman machine urfd-podman
+Machine "urfd-podman" stopped successfully
+Note: 3 service(s) were not active after enable/start. Logs are in ./artifacts
+Starting machine "urfd-podman"
+
+This machine is currently configured in rootless mode. If your containers
+require root permissions (e.g. ports < 1024), or if you run into compatibility
+issues with non-podman clients, you can switch using the following command:
+
+	podman machine set --rootful urfd-podman
+
+API forwarding listening on: /var/run/docker.sock
+Docker API clients default to this address. You do not need to set DOCKER_HOST.
+
+Machine "urfd-podman" started successfully
+Starting systemd-enabled container...
+0b7b9554a9b73ed0dc598fee220cbffb8adbd28907286f4b76d182e31bae6285
+Waiting for systemd inside container (timeout 60s)...
+systemd detected
+Installing .deb packages (best-effort)...
+Selecting previously unselected package tcd.
+(Reading database ... 6337 files and directories currently installed.)
+Preparing to unpack .../urfd-dist/tcd_0.0.0_arm64.deb ...
+Unpacking tcd (0.0.0) ...
+Selecting previously unselected package urfd-dashboard.
+Preparing to unpack .../urfd-dashboard_0.0.0_arm64.deb ...
+Unpacking urfd-dashboard (0.0.0) ...
+Selecting previously unselected package urfd-suite.
+Preparing to unpack .../urfd-suite_0.0.0_all.deb ...
+Unpacking urfd-suite (0.0.0) ...
+Selecting previously unselected package urfd.
+Preparing to unpack .../urfd-dist/urfd_0.0.0_arm64.deb ...
+Creating urfd system user and group
+Unpacking urfd (0.0.0) ...
+Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 Packages [9607 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages [5404 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main arm64 Packages [99.0 kB]
+Fetched 9943 kB in 2s (6053 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Correcting dependencies... Done
+The following additional packages will be installed:
+  libfmt10 libmbedcrypto16 libmbedtls21 libmbedx509-7 libnng1 libogg0 libopus0
+Suggested packages:
+  opus-tools
+The following NEW packages will be installed:
+  libfmt10 libmbedcrypto16 libmbedtls21 libmbedx509-7 libnng1 libogg0 libopus0
+0 upgraded, 7 newly installed, 0 to remove and 0 not upgraded.
+4 not fully installed or removed.
+Need to get 3832 kB of archives.
+After this operation, 6079 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian trixie/main arm64 libmbedcrypto16 arm64 3.6.5-0.1~deb13u1 [347 kB]
+Get:2 http://deb.debian.org/debian trixie/main arm64 libmbedx509-7 arm64 3.6.5-0.1~deb13u1 [151 kB]
+Get:3 http://deb.debian.org/debian trixie/main arm64 libmbedtls21 arm64 3.6.5-0.1~deb13u1 [229 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 libnng1 arm64 1.10.1-2 [147 kB]
+Get:5 http://deb.debian.org/debian trixie/main arm64 libopus0 arm64 1.5.2-2 [2813 kB]
+Get:6 http://deb.debian.org/debian trixie/main arm64 libogg0 arm64 1.3.5-3+b2 [23.6 kB]
+Get:7 http://deb.debian.org/debian trixie/main arm64 libfmt10 arm64 10.1.1+ds1-4 [121 kB]
+Fetched 3832 kB in 1s (6006 kB/s)
+Selecting previously unselected package libmbedcrypto16:arm64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6350 files and directories currently installed.)
+Preparing to unpack .../0-libmbedcrypto16_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedcrypto16:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libmbedx509-7:arm64.
+Preparing to unpack .../1-libmbedx509-7_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedx509-7:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libmbedtls21:arm64.
+Preparing to unpack .../2-libmbedtls21_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedtls21:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libnng1:arm64.
+Preparing to unpack .../3-libnng1_1.10.1-2_arm64.deb ...
+Unpacking libnng1:arm64 (1.10.1-2) ...
+Selecting previously unselected package libopus0:arm64.
+Preparing to unpack .../4-libopus0_1.5.2-2_arm64.deb ...
+Unpacking libopus0:arm64 (1.5.2-2) ...
+Selecting previously unselected package libogg0:arm64.
+Preparing to unpack .../5-libogg0_1.3.5-3+b2_arm64.deb ...
+Unpacking libogg0:arm64 (1.3.5-3+b2) ...
+Selecting previously unselected package libfmt10:arm64.
+Preparing to unpack .../6-libfmt10_10.1.1+ds1-4_arm64.deb ...
+Unpacking libfmt10:arm64 (10.1.1+ds1-4) ...
+Setting up libogg0:arm64 (1.3.5-3+b2) ...
+Setting up libopus0:arm64 (1.5.2-2) ...
+Setting up libmbedcrypto16:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up libfmt10:arm64 (10.1.1+ds1-4) ...
+Setting up libmbedx509-7:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up libmbedtls21:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up libnng1:arm64 (1.10.1-2) ...
+Setting up urfd (0.0.0) ...
+URFD installation complete!
+
+Next steps:
+1. Configure services by editing files in /etc/urfd/
+2. Enable and start services with (if systemd is in use):
+   systemctl enable urfd.service
+   systemctl enable urfd-tcd.service
+   systemctl enable urfd-dashboard.service
+   systemctl enable urfd-allstar-nexus.service
+   systemctl start urfd.service
+   systemctl start urfd-tcd.service
+   systemctl start urfd-dashboard.service
+   systemctl start urfd-allstar-nexus.service
+
+3. Check status with: systemctl status urfd.service
+4. View logs with: journalctl -u urfd -f
+
+Documentation is available in /usr/share/doc/urfd/
+Setting up urfd-dashboard (0.0.0) ...
+Setting up tcd (0.0.0) ...
+Setting up urfd-suite (0.0.0) ...
+Processing triggers for libc-bin (2.41-12+deb13u1) ...
+Checking service: urfd
+● urfd.service - URFD Universal Reflector
+     Loaded: loaded (/usr/lib/systemd/system/urfd.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:21:27 UTC; 7ms ago
+ Invocation: d32278d2e410405db067fb0b2b63e231
+   Main PID: 278 ((urfd))
+      Tasks: 1 (limit: 2140)
+     Memory: 1.5M (peak: 1.5M)
+        CPU: 2ms
+     CGroup: /system.slice/urfd.service
+             └─278 "(urfd)"
+
+Feb 04 21:21:27 0b7b9554a9b7 systemd[1]: Started urfd.service - URFD Universal Reflector.
+Service urfd state: activating
+unknown
+Checking service: urfd-dashboard
+● urfd-dashboard.service - URFD NNG Dashboard
+     Loaded: loaded (/usr/lib/systemd/system/urfd-dashboard.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:21:27 UTC; 6ms ago
+ Invocation: 2758efe7e5c04cff9b5beeebf09e3899
+   Main PID: 308 ((ashboard))
+      Tasks: 1 (limit: 2140)
+     Memory: 1.5M (peak: 1.5M)
+        CPU: 2ms
+     CGroup: /system.slice/urfd-dashboard.service
+             └─308 "(ashboard)"
+
+Feb 04 21:21:27 0b7b9554a9b7 systemd[1]: Started urfd-dashboard.service - URFD NNG Dashboard.
+Service urfd-dashboard state: activating
+unknown
+Checking service: urfd-tcd
+● urfd-tcd.service - URFD Transcoder Daemon (tcd)
+     Loaded: loaded (/usr/lib/systemd/system/urfd-tcd.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:21:28 UTC; 8ms ago
+ Invocation: 625c09f450e84973ab3824afd4d31488
+    Process: 340 ExecStartPre=/sbin/rmmod ftdi_sio (code=exited, status=203/EXEC)
+   Main PID: 342 (tcd)
+      Tasks: 1 (limit: 2140)
+     Memory: 564K (peak: 1.6M)
+        CPU: 6ms
+     CGroup: /system.slice/urfd-tcd.service
+             └─342 /usr/bin/tcd /etc/urfd/tcd.ini
+
+Feb 04 21:21:28 0b7b9554a9b7 systemd[1]: Starting urfd-tcd.service - URFD Transcoder Daemon (tcd)...
+Feb 04 21:21:28 0b7b9554a9b7 (rmmod)[340]: urfd-tcd.service: Unable to locate executable '/sbin/rmmod': No such file or directory
+Feb 04 21:21:28 0b7b9554a9b7 systemd[1]: Started urfd-tcd.service - URFD Transcoder Daemon (tcd).
+Cleaning up container...
+urfd-test-ctr-20954
+Stopping podman machine urfd-podman
+Machine "urfd-podman" stopped successfully
+Note: 2 service(s) were not active after enable/start. Logs are in ./artifacts
+Starting machine "urfd-podman"
+
+This machine is currently configured in rootless mode. If your containers
+require root permissions (e.g. ports < 1024), or if you run into compatibility
+issues with non-podman clients, you can switch using the following command:
+
+	podman machine set --rootful urfd-podman
+
+API forwarding listening on: /var/run/docker.sock
+Docker API clients default to this address. You do not need to set DOCKER_HOST.
+
+Machine "urfd-podman" started successfully
+Starting systemd-enabled container...
+8817c26eb84fa5b63258e41384b30f558fdf22ae2d3b4d9ab4863a19da873b78
+Waiting for systemd inside container (timeout 60s)...
+systemd detected
+Installing .deb packages (best-effort)...
+Selecting previously unselected package tcd.
+(Reading database ... 6337 files and directories currently installed.)
+Preparing to unpack .../urfd-dist/tcd_0.0.0_arm64.deb ...
+Unpacking tcd (0.0.0) ...
+Selecting previously unselected package urfd-dashboard.
+Preparing to unpack .../urfd-dashboard_0.0.0_arm64.deb ...
+Unpacking urfd-dashboard (0.0.0) ...
+Selecting previously unselected package urfd-suite.
+Preparing to unpack .../urfd-suite_0.0.0_all.deb ...
+Unpacking urfd-suite (0.0.0) ...
+Selecting previously unselected package urfd.
+Preparing to unpack .../urfd-dist/urfd_0.0.0_arm64.deb ...
+Creating urfd system user and group
+Unpacking urfd (0.0.0) ...
+Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 Packages [9607 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages [5404 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main arm64 Packages [99.0 kB]
+Fetched 9943 kB in 2s (5713 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Correcting dependencies... Done
+The following packages will be REMOVED:
+  tcd urfd urfd-dashboard urfd-suite
+0 upgraded, 0 newly installed, 4 to remove and 0 not upgraded.
+4 not fully installed or removed.
+After this operation, 30.7 MB disk space will be freed.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6350 files and directories currently installed.)
+Removing urfd-suite (0.0.0) ...
+Removing tcd (0.0.0) ...
+Removing urfd-dashboard (0.0.0) ...
+Removing urfd (0.0.0) ...
+Checking service: urfd
+Service urfd state: inactive
+unknown
+Checking service: urfd-dashboard
+Service urfd-dashboard state: inactive
+unknown
+Checking service: urfd-tcd
+Service urfd-tcd state: inactive
+unknown
+Cleaning up container...
+urfd-test-ctr-25130
+Stopping podman machine urfd-podman
+Machine "urfd-podman" stopped successfully
+Note: 3 service(s) were not active after enable/start. Logs are in ./artifacts
+Starting machine "urfd-podman"
+
+This machine is currently configured in rootless mode. If your containers
+require root permissions (e.g. ports < 1024), or if you run into compatibility
+issues with non-podman clients, you can switch using the following command:
+
+	podman machine set --rootful urfd-podman
+
+API forwarding listening on: /var/run/docker.sock
+Docker API clients default to this address. You do not need to set DOCKER_HOST.
+
+Machine "urfd-podman" started successfully
+Starting systemd-enabled container...
+0a8fdac505c0855c1c7230b8be9f28688718cf7c7f1ac55316559605a84e03f2
+Waiting for systemd inside container (timeout 60s)...
+systemd detected
+Installing runtime dependencies and .deb packages (best-effort)...
+Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 Packages [9607 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages [5404 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main arm64 Packages [99.0 kB]
+Fetched 9943 kB in 2s (4704 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Selecting previously unselected package tcd.
+(Reading database ... 6337 files and directories currently installed.)
+Preparing to unpack .../urfd-dist/tcd_0.0.0_arm64.deb ...
+Unpacking tcd (0.0.0) ...
+Selecting previously unselected package urfd-dashboard.
+Preparing to unpack .../urfd-dashboard_0.0.0_arm64.deb ...
+Unpacking urfd-dashboard (0.0.0) ...
+Selecting previously unselected package urfd-suite.
+Preparing to unpack .../urfd-suite_0.0.0_all.deb ...
+Unpacking urfd-suite (0.0.0) ...
+Selecting previously unselected package urfd.
+Preparing to unpack .../urfd-dist/urfd_0.0.0_arm64.deb ...
+Creating urfd system user and group
+Unpacking urfd (0.0.0) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Correcting dependencies... Done
+The following packages will be REMOVED:
+  tcd urfd urfd-dashboard urfd-suite
+0 upgraded, 0 newly installed, 4 to remove and 0 not upgraded.
+4 not fully installed or removed.
+After this operation, 30.7 MB disk space will be freed.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6350 files and directories currently installed.)
+Removing urfd-suite (0.0.0) ...
+Removing tcd (0.0.0) ...
+Removing urfd-dashboard (0.0.0) ...
+Removing urfd (0.0.0) ...
+Checking service: urfd
+Service urfd state: inactive
+unknown
+Checking service: urfd-dashboard
+Service urfd-dashboard state: inactive
+unknown
+Checking service: urfd-tcd
+Service urfd-tcd state: inactive
+unknown
+Cleaning up container...
+urfd-test-ctr-25873
+Stopping podman machine urfd-podman
+Machine "urfd-podman" stopped successfully
+Note: 3 service(s) were not active after enable/start. Logs are in ./artifacts
+Starting machine "urfd-podman"
+
+This machine is currently configured in rootless mode. If your containers
+require root permissions (e.g. ports < 1024), or if you run into compatibility
+issues with non-podman clients, you can switch using the following command:
+
+	podman machine set --rootful urfd-podman
+
+API forwarding listening on: /var/run/docker.sock
+Docker API clients default to this address. You do not need to set DOCKER_HOST.
+
+Machine "urfd-podman" started successfully
+Starting systemd-enabled container...
+e8bd49f471808d4985590345d350fd4ef141d2d4d4d90462978be3a10bc3f516
+Waiting for systemd inside container (timeout 60s)...
+systemd detected
+Installing runtime dependencies and .deb packages (best-effort)...
+Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 Packages [9607 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages [5404 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main arm64 Packages [99.0 kB]
+Fetched 9943 kB in 2s (5969 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Selecting previously unselected package tcd.
+(Reading database ... 6337 files and directories currently installed.)
+Preparing to unpack .../urfd-dist/tcd_0.0.0_arm64.deb ...
+Unpacking tcd (0.0.0) ...
+Selecting previously unselected package urfd-dashboard.
+Preparing to unpack .../urfd-dashboard_0.0.0_arm64.deb ...
+Unpacking urfd-dashboard (0.0.0) ...
+Selecting previously unselected package urfd-suite.
+Preparing to unpack .../urfd-suite_0.0.0_all.deb ...
+Unpacking urfd-suite (0.0.0) ...
+Selecting previously unselected package urfd.
+Preparing to unpack .../urfd-dist/urfd_0.0.0_arm64.deb ...
+Creating urfd system user and group
+Unpacking urfd (0.0.0) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Correcting dependencies... Done
+The following packages will be REMOVED:
+  tcd urfd urfd-dashboard urfd-suite
+0 upgraded, 0 newly installed, 4 to remove and 0 not upgraded.
+4 not fully installed or removed.
+After this operation, 30.7 MB disk space will be freed.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6350 files and directories currently installed.)
+Removing urfd-suite (0.0.0) ...
+Removing tcd (0.0.0) ...
+Removing urfd-dashboard (0.0.0) ...
+Removing urfd (0.0.0) ...
+Checking service: urfd
+Service urfd state: inactive
+unknown
+Checking service: urfd-dashboard
+Service urfd-dashboard state: inactive
+unknown
+Checking service: urfd-tcd
+Service urfd-tcd state: inactive
+unknown
+Cleaning up container...
+urfd-test-ctr-26503
+Stopping podman machine urfd-podman
+Machine "urfd-podman" stopped successfully
+Note: 3 service(s) were not active after enable/start. Logs are in ./artifacts
+Starting machine "urfd-podman"
+
+This machine is currently configured in rootless mode. If your containers
+require root permissions (e.g. ports < 1024), or if you run into compatibility
+issues with non-podman clients, you can switch using the following command:
+
+	podman machine set --rootful urfd-podman
+
+API forwarding listening on: /var/run/docker.sock
+Docker API clients default to this address. You do not need to set DOCKER_HOST.
+
+Machine "urfd-podman" started successfully
+Starting systemd-enabled container...
+0e36be472b93ad014d314e353695237dcb65714942bb72b0af902f2ed748e492
+Waiting for systemd inside container (timeout 60s)...
+systemd detected
+Installing runtime dependencies and .deb packages (best-effort)...
+Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 Packages [9607 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages [5404 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main arm64 Packages [99.0 kB]
+Fetched 9943 kB in 2s (5650 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Selecting previously unselected package tcd.
+(Reading database ... 6337 files and directories currently installed.)
+Preparing to unpack .../urfd-dist/tcd_0.0.0_arm64.deb ...
+Unpacking tcd (0.0.0) ...
+Selecting previously unselected package urfd-dashboard.
+Preparing to unpack .../urfd-dashboard_0.0.0_arm64.deb ...
+Unpacking urfd-dashboard (0.0.0) ...
+Selecting previously unselected package urfd-suite.
+Preparing to unpack .../urfd-suite_0.0.0_all.deb ...
+Unpacking urfd-suite (0.0.0) ...
+Selecting previously unselected package urfd.
+Preparing to unpack .../urfd-dist/urfd_0.0.0_arm64.deb ...
+Creating urfd system user and group
+Unpacking urfd (0.0.0) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Correcting dependencies... Done
+The following additional packages will be installed:
+  ca-certificates libcurl3t64-gnutls libfmt10 libmbedcrypto16 libmbedtls21
+  libmbedx509-7 libngtcp2-16 libngtcp2-crypto-gnutls8 libnng1 libogg0 libopus0
+  openssl
+Suggested packages:
+  opus-tools
+The following NEW packages will be installed:
+  ca-certificates libcurl3t64-gnutls libfmt10 libmbedcrypto16 libmbedtls21
+  libmbedx509-7 libngtcp2-16 libngtcp2-crypto-gnutls8 libnng1 libogg0 libopus0
+  openssl
+0 upgraded, 12 newly installed, 0 to remove and 0 not upgraded.
+4 not fully installed or removed.
+Need to get 5956 kB of archives.
+After this operation, 10.6 MB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian trixie/main arm64 libmbedcrypto16 arm64 3.6.5-0.1~deb13u1 [347 kB]
+Get:2 http://deb.debian.org/debian trixie/main arm64 libmbedx509-7 arm64 3.6.5-0.1~deb13u1 [151 kB]
+Get:3 http://deb.debian.org/debian trixie/main arm64 libmbedtls21 arm64 3.6.5-0.1~deb13u1 [229 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 libnng1 arm64 1.10.1-2 [147 kB]
+Get:5 http://deb.debian.org/debian trixie/main arm64 libngtcp2-16 arm64 1.11.0-1 [121 kB]
+Get:6 http://deb.debian.org/debian trixie/main arm64 libngtcp2-crypto-gnutls8 arm64 1.11.0-1 [28.2 kB]
+Get:7 http://deb.debian.org/debian trixie/main arm64 libcurl3t64-gnutls arm64 8.14.1-2+deb13u2 [354 kB]
+Get:8 http://deb.debian.org/debian trixie/main arm64 libopus0 arm64 1.5.2-2 [2813 kB]
+Get:9 http://deb.debian.org/debian trixie/main arm64 libogg0 arm64 1.3.5-3+b2 [23.6 kB]
+Get:10 http://deb.debian.org/debian trixie/main arm64 libfmt10 arm64 10.1.1+ds1-4 [121 kB]
+Get:11 http://deb.debian.org/debian-security trixie-security/main arm64 openssl arm64 3.5.4-1~deb13u2 [1459 kB]
+Get:12 http://deb.debian.org/debian trixie/main arm64 ca-certificates all 20250419 [162 kB]
+Preconfiguring packages ...
+Fetched 5956 kB in 1s (8363 kB/s)
+Selecting previously unselected package libmbedcrypto16:arm64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6350 files and directories currently installed.)
+Preparing to unpack .../00-libmbedcrypto16_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedcrypto16:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libmbedx509-7:arm64.
+Preparing to unpack .../01-libmbedx509-7_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedx509-7:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libmbedtls21:arm64.
+Preparing to unpack .../02-libmbedtls21_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedtls21:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libnng1:arm64.
+Preparing to unpack .../03-libnng1_1.10.1-2_arm64.deb ...
+Unpacking libnng1:arm64 (1.10.1-2) ...
+Selecting previously unselected package libngtcp2-16:arm64.
+Preparing to unpack .../04-libngtcp2-16_1.11.0-1_arm64.deb ...
+Unpacking libngtcp2-16:arm64 (1.11.0-1) ...
+Selecting previously unselected package libngtcp2-crypto-gnutls8:arm64.
+Preparing to unpack .../05-libngtcp2-crypto-gnutls8_1.11.0-1_arm64.deb ...
+Unpacking libngtcp2-crypto-gnutls8:arm64 (1.11.0-1) ...
+Selecting previously unselected package libcurl3t64-gnutls:arm64.
+Preparing to unpack .../06-libcurl3t64-gnutls_8.14.1-2+deb13u2_arm64.deb ...
+Unpacking libcurl3t64-gnutls:arm64 (8.14.1-2+deb13u2) ...
+Selecting previously unselected package libopus0:arm64.
+Preparing to unpack .../07-libopus0_1.5.2-2_arm64.deb ...
+Unpacking libopus0:arm64 (1.5.2-2) ...
+Selecting previously unselected package libogg0:arm64.
+Preparing to unpack .../08-libogg0_1.3.5-3+b2_arm64.deb ...
+Unpacking libogg0:arm64 (1.3.5-3+b2) ...
+Selecting previously unselected package libfmt10:arm64.
+Preparing to unpack .../09-libfmt10_10.1.1+ds1-4_arm64.deb ...
+Unpacking libfmt10:arm64 (10.1.1+ds1-4) ...
+Selecting previously unselected package openssl.
+Preparing to unpack .../10-openssl_3.5.4-1~deb13u2_arm64.deb ...
+Unpacking openssl (3.5.4-1~deb13u2) ...
+Selecting previously unselected package ca-certificates.
+Preparing to unpack .../11-ca-certificates_20250419_all.deb ...
+Unpacking ca-certificates (20250419) ...
+Setting up libogg0:arm64 (1.3.5-3+b2) ...
+Setting up libopus0:arm64 (1.5.2-2) ...
+Setting up libngtcp2-16:arm64 (1.11.0-1) ...
+Setting up libmbedcrypto16:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up openssl (3.5.4-1~deb13u2) ...
+Setting up libfmt10:arm64 (10.1.1+ds1-4) ...
+Setting up libngtcp2-crypto-gnutls8:arm64 (1.11.0-1) ...
+Setting up libcurl3t64-gnutls:arm64 (8.14.1-2+deb13u2) ...
+Setting up ca-certificates (20250419) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (TERM is not set, so the dialog frontend is not usable.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC entries checked: /etc/perl /usr/local/lib/aarch64-linux-gnu/perl/5.40.1 /usr/local/share/perl/5.40.1 /usr/lib/aarch64-linux-gnu/perl5/5.40 /usr/share/perl5 /usr/lib/aarch64-linux-gnu/perl-base /usr/lib/aarch64-linux-gnu/perl/5.40 /usr/share/perl/5.40 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 8.)
+debconf: falling back to frontend: Teletype
+debconf: unable to initialize frontend: Teletype
+debconf: (This frontend requires a controlling tty.)
+debconf: falling back to frontend: Noninteractive
+Updating certificates in /etc/ssl/certs...
+150 added, 0 removed; done.
+Setting up libmbedx509-7:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up libmbedtls21:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up libnng1:arm64 (1.10.1-2) ...
+Setting up urfd (0.0.0) ...
+URFD installation complete!
+
+Next steps:
+1. Configure services by editing files in /etc/urfd/
+2. Enable and start services with (if systemd is in use):
+   systemctl enable urfd.service
+   systemctl enable urfd-tcd.service
+   systemctl enable urfd-dashboard.service
+   systemctl enable urfd-allstar-nexus.service
+   systemctl start urfd.service
+   systemctl start urfd-tcd.service
+   systemctl start urfd-dashboard.service
+   systemctl start urfd-allstar-nexus.service
+
+3. Check status with: systemctl status urfd.service
+4. View logs with: journalctl -u urfd -f
+
+Documentation is available in /usr/share/doc/urfd/
+Setting up urfd-dashboard (0.0.0) ...
+Setting up tcd (0.0.0) ...
+Setting up urfd-suite (0.0.0) ...
+Processing triggers for libc-bin (2.41-12+deb13u1) ...
+Processing triggers for ca-certificates (20250419) ...
+Updating certificates in /etc/ssl/certs...
+0 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+Checking service: urfd
+● urfd.service - URFD Universal Reflector
+     Loaded: loaded (/usr/lib/systemd/system/urfd.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:32:01 UTC; 7ms ago
+ Invocation: 3fe88754c38b4498bc3e705d47bc48a9
+   Main PID: 2999 (urfd)
+      Tasks: 1 (limit: 2140)
+     Memory: 664K (peak: 1.7M)
+        CPU: 4ms
+     CGroup: /system.slice/urfd.service
+             └─2999 /usr/bin/urfd /etc/urfd/urfd.ini
+
+Feb 04 21:32:01 0e36be472b93 systemd[1]: Started urfd.service - URFD Universal Reflector.
+Checking service: urfd-dashboard
+● urfd-dashboard.service - URFD NNG Dashboard
+     Loaded: loaded (/usr/lib/systemd/system/urfd-dashboard.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:32:02 UTC; 6ms ago
+ Invocation: 9b9951d5846c45c7b9b4c1460a9feac6
+   Main PID: 3059 ((ashboard))
+      Tasks: 1 (limit: 2140)
+     Memory: 1.5M (peak: 1.5M)
+        CPU: 2ms
+     CGroup: /system.slice/urfd-dashboard.service
+             └─3059 "(ashboard)"
+
+Feb 04 21:32:02 0e36be472b93 systemd[1]: Started urfd-dashboard.service - URFD NNG Dashboard.
+Checking service: urfd-tcd
+● urfd-tcd.service - URFD Transcoder Daemon (tcd)
+     Loaded: loaded (/usr/lib/systemd/system/urfd-tcd.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:32:03 UTC; 10ms ago
+ Invocation: 4dbc497ecce24cdaaf7bfa4d2f50bf5c
+    Process: 3091 ExecStartPre=/sbin/rmmod ftdi_sio (code=exited, status=203/EXEC)
+   Main PID: 3092 (tcd)
+      Tasks: 1 (limit: 2140)
+     Memory: 564K (peak: 1.8M)
+        CPU: 6ms
+     CGroup: /system.slice/urfd-tcd.service
+             └─3092 /usr/bin/tcd /etc/urfd/tcd.ini
+
+Feb 04 21:32:03 0e36be472b93 systemd[1]: Starting urfd-tcd.service - URFD Transcoder Daemon (tcd)...
+Feb 04 21:32:03 0e36be472b93 (rmmod)[3091]: urfd-tcd.service: Unable to locate executable '/sbin/rmmod': No such file or directory
+Feb 04 21:32:03 0e36be472b93 systemd[1]: Started urfd-tcd.service - URFD Transcoder Daemon (tcd).
+Cleaning up container...
+urfd-test-ctr-29228
+Stopping podman machine urfd-podman
+Machine "urfd-podman" stopped successfully
+Artifacts saved in ./artifacts
+Starting machine "urfd-podman"
+
+This machine is currently configured in rootless mode. If your containers
+require root permissions (e.g. ports < 1024), or if you run into compatibility
+issues with non-podman clients, you can switch using the following command:
+
+	podman machine set --rootful urfd-podman
+
+API forwarding listening on: /var/run/docker.sock
+Docker API clients default to this address. You do not need to set DOCKER_HOST.
+
+Machine "urfd-podman" started successfully
+Starting systemd-enabled container...
+1bf7c02f42dbbab7db57407c28d5cdbefe7dcd4c29d89f8274152b1af98281d2
+Waiting for systemd inside container (timeout 60s)...
+systemd detected
+Installing runtime dependencies and .deb packages (best-effort)...
+Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 Packages [9607 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main arm64 Packages [5404 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main arm64 Packages [99.0 kB]
+Fetched 9943 kB in 2s (5783 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Selecting previously unselected package tcd.
+(Reading database ... 6337 files and directories currently installed.)
+Preparing to unpack .../urfd-dist/tcd_0.0.0_arm64.deb ...
+Unpacking tcd (0.0.0) ...
+Selecting previously unselected package urfd-dashboard.
+Preparing to unpack .../urfd-dashboard_0.0.0_arm64.deb ...
+Unpacking urfd-dashboard (0.0.0) ...
+Selecting previously unselected package urfd-suite.
+Preparing to unpack .../urfd-suite_0.0.0_all.deb ...
+Unpacking urfd-suite (0.0.0) ...
+Selecting previously unselected package urfd.
+Preparing to unpack .../urfd-dist/urfd_0.0.0_arm64.deb ...
+Creating urfd system user and group
+Unpacking urfd (0.0.0) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Correcting dependencies... Done
+The following additional packages will be installed:
+  ca-certificates libcurl3t64-gnutls libfmt10 libmbedcrypto16 libmbedtls21
+  libmbedx509-7 libngtcp2-16 libngtcp2-crypto-gnutls8 libnng1 libogg0 libopus0
+  openssl
+Suggested packages:
+  opus-tools
+The following NEW packages will be installed:
+  ca-certificates libcurl3t64-gnutls libfmt10 libmbedcrypto16 libmbedtls21
+  libmbedx509-7 libngtcp2-16 libngtcp2-crypto-gnutls8 libnng1 libogg0 libopus0
+  openssl
+0 upgraded, 12 newly installed, 0 to remove and 0 not upgraded.
+4 not fully installed or removed.
+Need to get 5956 kB of archives.
+After this operation, 10.6 MB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian trixie/main arm64 libmbedcrypto16 arm64 3.6.5-0.1~deb13u1 [347 kB]
+Get:2 http://deb.debian.org/debian trixie/main arm64 libmbedx509-7 arm64 3.6.5-0.1~deb13u1 [151 kB]
+Get:3 http://deb.debian.org/debian trixie/main arm64 libmbedtls21 arm64 3.6.5-0.1~deb13u1 [229 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 libnng1 arm64 1.10.1-2 [147 kB]
+Get:5 http://deb.debian.org/debian trixie/main arm64 libngtcp2-16 arm64 1.11.0-1 [121 kB]
+Get:6 http://deb.debian.org/debian trixie/main arm64 libngtcp2-crypto-gnutls8 arm64 1.11.0-1 [28.2 kB]
+Get:7 http://deb.debian.org/debian trixie/main arm64 libcurl3t64-gnutls arm64 8.14.1-2+deb13u2 [354 kB]
+Get:8 http://deb.debian.org/debian trixie/main arm64 libopus0 arm64 1.5.2-2 [2813 kB]
+Get:9 http://deb.debian.org/debian trixie/main arm64 libogg0 arm64 1.3.5-3+b2 [23.6 kB]
+Get:10 http://deb.debian.org/debian trixie/main arm64 libfmt10 arm64 10.1.1+ds1-4 [121 kB]
+Get:11 http://deb.debian.org/debian-security trixie-security/main arm64 openssl arm64 3.5.4-1~deb13u2 [1459 kB]
+Get:12 http://deb.debian.org/debian trixie/main arm64 ca-certificates all 20250419 [162 kB]
+Preconfiguring packages ...
+Fetched 5956 kB in 1s (9143 kB/s)
+Selecting previously unselected package libmbedcrypto16:arm64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6351 files and directories currently installed.)
+Preparing to unpack .../00-libmbedcrypto16_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedcrypto16:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libmbedx509-7:arm64.
+Preparing to unpack .../01-libmbedx509-7_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedx509-7:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libmbedtls21:arm64.
+Preparing to unpack .../02-libmbedtls21_3.6.5-0.1~deb13u1_arm64.deb ...
+Unpacking libmbedtls21:arm64 (3.6.5-0.1~deb13u1) ...
+Selecting previously unselected package libnng1:arm64.
+Preparing to unpack .../03-libnng1_1.10.1-2_arm64.deb ...
+Unpacking libnng1:arm64 (1.10.1-2) ...
+Selecting previously unselected package libngtcp2-16:arm64.
+Preparing to unpack .../04-libngtcp2-16_1.11.0-1_arm64.deb ...
+Unpacking libngtcp2-16:arm64 (1.11.0-1) ...
+Selecting previously unselected package libngtcp2-crypto-gnutls8:arm64.
+Preparing to unpack .../05-libngtcp2-crypto-gnutls8_1.11.0-1_arm64.deb ...
+Unpacking libngtcp2-crypto-gnutls8:arm64 (1.11.0-1) ...
+Selecting previously unselected package libcurl3t64-gnutls:arm64.
+Preparing to unpack .../06-libcurl3t64-gnutls_8.14.1-2+deb13u2_arm64.deb ...
+Unpacking libcurl3t64-gnutls:arm64 (8.14.1-2+deb13u2) ...
+Selecting previously unselected package libopus0:arm64.
+Preparing to unpack .../07-libopus0_1.5.2-2_arm64.deb ...
+Unpacking libopus0:arm64 (1.5.2-2) ...
+Selecting previously unselected package libogg0:arm64.
+Preparing to unpack .../08-libogg0_1.3.5-3+b2_arm64.deb ...
+Unpacking libogg0:arm64 (1.3.5-3+b2) ...
+Selecting previously unselected package libfmt10:arm64.
+Preparing to unpack .../09-libfmt10_10.1.1+ds1-4_arm64.deb ...
+Unpacking libfmt10:arm64 (10.1.1+ds1-4) ...
+Selecting previously unselected package openssl.
+Preparing to unpack .../10-openssl_3.5.4-1~deb13u2_arm64.deb ...
+Unpacking openssl (3.5.4-1~deb13u2) ...
+Selecting previously unselected package ca-certificates.
+Preparing to unpack .../11-ca-certificates_20250419_all.deb ...
+Unpacking ca-certificates (20250419) ...
+Setting up libogg0:arm64 (1.3.5-3+b2) ...
+Setting up libopus0:arm64 (1.5.2-2) ...
+Setting up libngtcp2-16:arm64 (1.11.0-1) ...
+Setting up libmbedcrypto16:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up openssl (3.5.4-1~deb13u2) ...
+Setting up libfmt10:arm64 (10.1.1+ds1-4) ...
+Setting up libngtcp2-crypto-gnutls8:arm64 (1.11.0-1) ...
+Setting up libcurl3t64-gnutls:arm64 (8.14.1-2+deb13u2) ...
+Setting up ca-certificates (20250419) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (TERM is not set, so the dialog frontend is not usable.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC entries checked: /etc/perl /usr/local/lib/aarch64-linux-gnu/perl/5.40.1 /usr/local/share/perl/5.40.1 /usr/lib/aarch64-linux-gnu/perl5/5.40 /usr/share/perl5 /usr/lib/aarch64-linux-gnu/perl-base /usr/lib/aarch64-linux-gnu/perl/5.40 /usr/share/perl/5.40 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 8.)
+debconf: falling back to frontend: Teletype
+debconf: unable to initialize frontend: Teletype
+debconf: (This frontend requires a controlling tty.)
+debconf: falling back to frontend: Noninteractive
+Updating certificates in /etc/ssl/certs...
+150 added, 0 removed; done.
+Setting up libmbedx509-7:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up libmbedtls21:arm64 (3.6.5-0.1~deb13u1) ...
+Setting up libnng1:arm64 (1.10.1-2) ...
+Setting up urfd (0.0.0) ...
+URFD installation complete!
+
+Next steps:
+1. Configure services by editing files in /etc/urfd/
+2. Enable and start services with (if systemd is in use):
+   systemctl enable urfd.service
+   systemctl enable urfd-tcd.service
+   systemctl enable urfd-dashboard.service
+   systemctl enable urfd-allstar-nexus.service
+   systemctl start urfd.service
+   systemctl start urfd-tcd.service
+   systemctl start urfd-dashboard.service
+   systemctl start urfd-allstar-nexus.service
+
+3. Check status with: systemctl status urfd.service
+4. View logs with: journalctl -u urfd -f
+
+Documentation is available in /usr/share/doc/urfd/
+Setting up urfd-dashboard (0.0.0) ...
+Setting up tcd (0.0.0) ...
+Setting up urfd-suite (0.0.0) ...
+Processing triggers for libc-bin (2.41-12+deb13u1) ...
+Processing triggers for ca-certificates (20250419) ...
+Updating certificates in /etc/ssl/certs...
+0 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+Checking service: urfd
+● urfd.service - URFD Universal Reflector
+     Loaded: loaded (/usr/lib/systemd/system/urfd.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:39:00 UTC; 5ms ago
+ Invocation: 564e39c79c294a9890f387d86097cdd3
+   Main PID: 2999 ((urfd))
+      Tasks: 1 (limit: 2140)
+     Memory: 1.5M (peak: 1.5M)
+        CPU: 2ms
+     CGroup: /system.slice/urfd.service
+             └─2999 "(urfd)"
+
+Feb 04 21:39:00 1bf7c02f42db systemd[1]: Started urfd.service - URFD Universal Reflector.
+Checking service: urfd-dashboard
+● urfd-dashboard.service - URFD NNG Dashboard
+     Loaded: loaded (/usr/lib/systemd/system/urfd-dashboard.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:39:01 UTC; 5ms ago
+ Invocation: e04817f20f4041748557ffdd0d56d381
+   Main PID: 3059 ((ashboard))
+      Tasks: 1 (limit: 2140)
+     Memory: 1.5M (peak: 1.5M)
+        CPU: 2ms
+     CGroup: /system.slice/urfd-dashboard.service
+             └─3059 "(ashboard)"
+
+Feb 04 21:39:01 1bf7c02f42db systemd[1]: Started urfd-dashboard.service - URFD NNG Dashboard.
+Checking service: urfd-tcd
+● urfd-tcd.service - URFD Transcoder Daemon (tcd)
+     Loaded: loaded (/usr/lib/systemd/system/urfd-tcd.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:39:02 UTC; 7ms ago
+ Invocation: 7cda4f84648b4498bd4731bc1e8ae1b8
+    Process: 3091 ExecStartPre=/bin/sh -c [ -x /sbin/rmmod ] && command -v lsmod >/dev/null 2>&1 && lsmod | grep -q ftdi_sio && /sbin/rmmod ftdi_sio || true (code=exited, status=0/SUCCESS)
+   Main PID: 3092 (urfd-tcd-run)
+      Tasks: 2 (limit: 2140)
+     Memory: 1M (peak: 1.8M)
+        CPU: 7ms
+     CGroup: /system.slice/urfd-tcd.service
+             ├─3092 /bin/sh /usr/bin/urfd-tcd-run
+             └─3097 grep -q .
+
+Feb 04 21:39:02 1bf7c02f42db systemd[1]: Starting urfd-tcd.service - URFD Transcoder Daemon (tcd)...
+Feb 04 21:39:02 1bf7c02f42db systemd[1]: Started urfd-tcd.service - URFD Transcoder Daemon (tcd).
+Service urfd-tcd state: activating
+unknown
+Cleaning up container...
+urfd-test-ctr-32416
+Stopping podman machine urfd-podman
+Machine "urfd-podman" stopped successfully
+Note: 1 service(s) were not active after enable/start. Logs are in ./artifacts

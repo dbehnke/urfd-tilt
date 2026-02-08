@@ -7,7 +7,7 @@ IMAGE="local/debian-trixie-systemd:latest"
 MACHINE_NAME="urfd-podman"
 KEEP_MACHINE=false
 FAIL_ON_SERVICE_FAILED=false
-SERVICES="${URFD_SERVICES:-urfd urfd-dashboard tcd}"
+SERVICES="${URFD_SERVICES:-urfd urfd-dashboard urfd-tcd}"
 TIMEOUT=60
 
 while [[ $# -gt 0 ]]; do
@@ -82,8 +82,22 @@ while true; do
   fi
 done
 
-echo "Installing .deb packages (best-effort)..."
-podman exec "$CTR_NAME" bash -lc 'set -e; dpkg -i /tmp/urfd-dist/*.deb || (apt-get update && apt-get -f install -y)'
+echo "Installing runtime dependencies and .deb packages (best-effort)..."
+# Pre-install common runtime libs so dpkg doesn't leave packages in a broken state
+podman exec "$CTR_NAME" bash -lc 'set -e; apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libnng1 libcurl4-gnutls libopus0 libogg0 libfmt10 ca-certificates || true'
+podman exec "$CTR_NAME" bash -lc 'set -e; dpkg -i /tmp/urfd-dist/*.deb || (apt-get -f install -y)'
+
+# If the binary expects libcurl-gnutls but the distro provides libcurl.so.4 with a
+# different name, create a compatibility symlink so the service can start inside
+# the ephemeral test image.
+podman exec "$CTR_NAME" bash -lc 'set -e; \
+  if [ ! -f /usr/lib/*/libcurl-gnutls.so.4 ] 2>/dev/null; then \
+    TARGET=$(ldconfig -p | awk "/libcurl.so.4/ {print \$4; exit}"); \
+    if [ -n "$TARGET" ]; then \
+      DIR=$(dirname "$TARGET"); \
+      ln -sf "$(basename "$TARGET")" "$DIR/libcurl-gnutls.so.4" || true; \
+    fi; \
+  fi'
 
 podman exec "$CTR_NAME" bash -lc 'set -e; systemctl daemon-reload || true'
 

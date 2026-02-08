@@ -205,7 +205,7 @@ export const useLiveStore = defineStore('live', () => {
 
 **Code Review:** Generate SSE analysis (impact, edge cases, security, performance) before requesting human review
 
-**Packaging:** All packages follow the packaging process defined in `PACKAGING.md` (implementation in progress)
+**Packaging:** Implementation and how-to are documented in `/PACKAGING.md`. See PACKAGING.md for building, testing, and CI details.
 
 **Documentation:** Keep documentation up to date. Audit documentation when:
 - Making architecture changes

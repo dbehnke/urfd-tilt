@@ -25,3 +25,23 @@ tasks:
     desc: Generate or serve documentation (placeholder)
     cmds:
       - echo "See README.md for documentation."
+
+  version:
+    desc: Show version from git
+    cmds:
+      - bash scripts/version.sh
+
+  build-packages:
+    desc: Build all Debian packages
+    cmds:
+      - bash packaging/build-packages.sh
+
+  test-packages:
+    desc: Test built packages
+    cmds:
+      - bash packaging/test-packages.sh
+
+  test-systemd:
+    desc: Test packages in systemd container
+    cmds:
+      - bash scripts/test-systemd.sh

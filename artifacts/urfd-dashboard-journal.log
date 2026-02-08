@@ -1,5 +1,1 @@
-Feb 04 17:45:59 0f4c6b9bc9e2 systemd[1]: Started URFD NNG Dashboard.
-Feb 04 17:45:59 0f4c6b9bc9e2 systemd[3042]: urfd-dashboard.service: Changing to the requested working directory failed: No such file or directory
-Feb 04 17:45:59 0f4c6b9bc9e2 systemd[3042]: urfd-dashboard.service: Failed at step CHDIR spawning /usr/bin/urfd-dashboard: No such file or directory
-Feb 04 17:45:59 0f4c6b9bc9e2 systemd[1]: urfd-dashboard.service: Main process exited, code=exited, status=200/CHDIR
-Feb 04 17:45:59 0f4c6b9bc9e2 systemd[1]: urfd-dashboard.service: Failed with result 'exit-code'.
+Feb 04 21:39:01 1bf7c02f42db systemd[1]: Started urfd-dashboard.service - URFD NNG Dashboard.

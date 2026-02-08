@@ -1,0 +1,8 @@
+{
+  "lsp": {
+    "remark-ls": {
+      "command": ["npx", "remark-language-server", "--stdio"],
+      "extensions": [".md"]
+    }
+  }
+}

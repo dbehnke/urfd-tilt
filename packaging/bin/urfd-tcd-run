@@ -1,0 +1,54 @@
+#!/bin/sh
+set -euo pipefail
+
+# Wrapper to select hardware vs software vocoder for tcd.
+# Behavior:
+# - If URFD_TCD_MODE is set to 'hardware' or 'software' it is honored.
+# - If URFD_TCD_MODE is 'auto' (default) wrapper probes for FTDI hardware
+#   by checking for loaded kernel module or serial device entries and
+#   falls back to software mode when not present.
+
+# allow overrides for testing
+MODE="${URFD_TCD_MODE:-auto}"
+INI="${URFD_TCD_INI:-/etc/urfd/tcd.ini}"
+DEV_ROOT="${URFD_DEV_ROOT:-/dev}"
+
+probe_hardware() {
+  # Check lsmod if available
+  if command -v lsmod >/dev/null 2>&1; then
+    if lsmod | grep -q ftdi_sio 2>/dev/null; then
+      return 0
+    fi
+  fi
+  # Check for serial by-id entries that often include FTDI strings
+  if [ -d "$DEV_ROOT/serial/by-id" ] && command -v find >/dev/null 2>&1 && find "$DEV_ROOT/serial/by-id" -maxdepth 1 -iname "*ftdi*" -print -quit | grep -q . >/dev/null 2>&1; then
+    return 0
+  fi
+  # Check /sys for known FTDI device hints
+  if [ -d /sys/bus/usb-serial/devices ] && ls /sys/bus/usb-serial/devices | grep -q . >/dev/null 2>&1; then
+    return 0
+  fi
+  return 1
+}
+
+if [ "$MODE" = "auto" ]; then
+  if probe_hardware; then
+    MODE=hardware
+  else
+    MODE=software
+  fi
+fi
+
+# Optionally remove ftdi_sio if requested and rmmod exists and module loaded
+if [ "$MODE" = "hardware" ]; then
+  if [ -x /sbin/rmmod ] && command -v lsmod >/dev/null 2>&1 && lsmod | grep -q ftdi_sio 2>/dev/null; then
+    /sbin/rmmod ftdi_sio || true
+  fi
+fi
+
+echo "urfd-tcd-run: selected mode=$MODE (ini=$INI dev_root=$DEV_ROOT)" >&2
+# tcd expects a single INI path argument. Mode selection (hardware vs software)
+# is controlled by the tcd.ini 'Modules' setting or by how tcd was built. We
+# therefore always pass the INI file. The wrapper may rmmod the kernel module
+# for hardware flows if requested above.
+exec tcd --mode="$MODE" "$INI"

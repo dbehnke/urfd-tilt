@@ -12,6 +12,11 @@ else
     echo "systemd not present or not running; skipping daemon-reload"
 fi
 
+# ensure runtime dirs exist
+mkdir -p /var/lib/urfd
+chown root:root /var/lib/urfd
+chmod 0755 /var/lib/urfd
+
 cat << 'EOF'
 URFD installation complete!
 

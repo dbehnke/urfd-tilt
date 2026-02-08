@@ -1,7 +1,7 @@
 name: urfd-dashboard
 arch: ${ARCH}
 platform: linux
-version: 0.0.0
+version: ${PKG_VERSION}
 maintainer: "URFD Project"
 vendor: "URFD"
 homepage: "https://github.com/dbehnke/urfd"

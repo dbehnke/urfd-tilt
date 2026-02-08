@@ -1,7 +1,7 @@
 name: tcd
 arch: ${ARCH}
 platform: linux
-version: 0.0.0
+version: ${PKG_VERSION}
 maintainer: "URFD Project"
 vendor: "URFD"
 homepage: "https://github.com/dbehnke/urfd"
@@ -16,6 +16,11 @@ depends:
 contents:
   - src: dist/build-${ARCH}/tcd/tcd
     dst: /usr/bin/tcd
+    file_info:
+      mode: 0755
+  # systemd unit is included above; avoid duplicate entry
+  - src: packaging/bin/urfd-tcd-run
+    dst: /usr/libexec/urfd/urfd-tcd-run
     file_info:
       mode: 0755
   - src: packaging/configs/tcd.ini

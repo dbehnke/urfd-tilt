@@ -1,0 +1,15 @@
+● urfd-tcd.service - URFD Transcoder Daemon (tcd)
+     Loaded: loaded (/usr/lib/systemd/system/urfd-tcd.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:39:02 UTC; 7ms ago
+ Invocation: 7cda4f84648b4498bd4731bc1e8ae1b8
+    Process: 3091 ExecStartPre=/bin/sh -c [ -x /sbin/rmmod ] && command -v lsmod >/dev/null 2>&1 && lsmod | grep -q ftdi_sio && /sbin/rmmod ftdi_sio || true (code=exited, status=0/SUCCESS)
+   Main PID: 3092 (urfd-tcd-run)
+      Tasks: 2 (limit: 2140)
+     Memory: 1M (peak: 1.8M)
+        CPU: 7ms
+     CGroup: /system.slice/urfd-tcd.service
+             ├─3092 /bin/sh /usr/bin/urfd-tcd-run
+             └─3097 grep -q .
+
+Feb 04 21:39:02 1bf7c02f42db systemd[1]: Starting urfd-tcd.service - URFD Transcoder Daemon (tcd)...
+Feb 04 21:39:02 1bf7c02f42db systemd[1]: Started urfd-tcd.service - URFD Transcoder Daemon (tcd).

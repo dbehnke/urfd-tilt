@@ -1,7 +1,7 @@
 name: urfd
 arch: ${ARCH}
 platform: linux
-version: 0.0.0
+version: ${PKG_VERSION}
 maintainer: "URFD Project"
 vendor: "URFD"
 homepage: "https://github.com/dbehnke/urfd"
@@ -11,10 +11,10 @@ description: |
 
 depends:
   - libnng1
-  - libcurl4
+  - libcurl3t64-gnutls
   - libopus0
   - libogg0
-  - libfmt8
+  - libfmt10
   - systemd
 
 contents:

@@ -1,0 +1,14 @@
+Modules = ADMSZ
+ServerAddress = 127.0.0.1
+Port = 10100
+DStarGainIn = 16
+DStarGainOut = -16
+DmrYsfGainIn = -3
+DmrYsfGainOut = 0
+UsrpTxGain = 12
+UsrpRxGain = -6
+AGC = true
+AGCTargetLevel = -18 dBFS
+AGC Configured Target: -18 dBFS (Linear: 0.125893)
+AGC Enabled: Forcing RX gains to Unity (256). Preserving TX gains.
+Hybrid Transcoder version  successfully started

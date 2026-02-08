@@ -48,6 +48,10 @@ trap cleanup EXIT
 main() {
     log_info "Starting package build process..."
 
+    # Capture version from git
+    PKG_VERSION="$(bash "$PROJECT_ROOT/scripts/version.sh")"
+    log_info "Package version: $PKG_VERSION"
+
     # Locate nfpm binary (used for packaging). Prefer PATH, then GOPATH/GOBIN locations.
     NFPM_BIN=""
     if command -v nfpm >/dev/null 2>&1; then
@@ -148,6 +152,10 @@ main() {
             # write the binary to the $BUILD_DIR/$SERVICE directory via a bind mount.
             mkdir -p "$BUILD_DIR/$SERVICE"
             log_info "Building $SERVICE inside debian:trixie for linux/$ARCH"
+            # Precompute the Go tarball name on the host so we don't rely on
+            # variable assignment/expansion inside the inner quoted docker
+            # command (which would be evaluated inside the container only).
+            GO_TARBALL_HOST="go1.25.6.linux-${ARCH}.tar.gz"
             # Mount the service source and the absolute build output directory
             # directly. Previously we prefixed the absolute $BUILD_DIR with
             # "$(pwd)/" which produced an incorrect host path and caused
@@ -166,8 +174,7 @@ main() {
                     # Install Go 1.25.6 to ensure reproducible toolchain and
                     # avoid host/go-version mismatches. Use the official tarball
                     # from go.dev and extract to /usr/local/go.
-                    GO_TARBALL=go1.25.6.linux-${ARCH}.tar.gz; \
-                    curl -fsSL "https://go.dev/dl/${GO_TARBALL}" -o /tmp/go.tgz; \
+                    curl -fsSL "https://go.dev/dl/${GO_TARBALL_HOST}" -o /tmp/go.tgz; \
                     rm -rf /usr/local/go; mkdir -p /usr/local; tar -C /usr/local -xzf /tmp/go.tgz; \
                     export PATH=/usr/local/go/bin:$PATH; \
                     GOOS=linux GOARCH=${ARCH} CGO_ENABLED=0 /usr/local/go/bin/go build -ldflags='-s -w' -o /out/${BINARY_NAME} ${BUILD_PKG}" || {
@@ -202,7 +209,7 @@ main() {
             fi
 
             TEMP_CONFIG="$DIST_DIR/${PKG}-${ARCH}.yaml"
-            sed "s/\${ARCH}/$ARCH/g" "$NFPM_CONFIG" > "$TEMP_CONFIG"
+            sed -e "s/\${ARCH}/$ARCH/g" -e "s/\${PKG_VERSION}/$PKG_VERSION/g" "$NFPM_CONFIG" > "$TEMP_CONFIG"
             TEMP_CONFIGS+=("$TEMP_CONFIG")
 
             "$NFPM_BIN" pkg \
