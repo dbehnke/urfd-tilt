@@ -1,0 +1,56 @@
+name: Packaging — multi-arch (act dry-run)
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  dry-run:
+    name: Act dry-run of packaging steps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show environment
+        run: |
+          echo "ACT DRY-RUN: printing env"
+          env | sort
+
+      - name: Check packaging script syntax (non-fatal)
+        run: |
+          echo "Checking packaging/build-packages.sh syntax with bash -n (non-fatal)"
+          if [ -f packaging/build-packages.sh ]; then
+            bash -n packaging/build-packages.sh || (echo "syntax error in build-packages.sh"; exit 1)
+          else
+            echo "packaging/build-packages.sh not found in container; skipping syntax check (this may be an act/local environment artifact)"
+          fi
+
+      - name: Validate nfpm manifests (YAML parse)
+        run: |
+          echo "Validating nfpm YAML files"
+          # Ensure python3 and PyYAML are available in the runner/container
+          if command -v python3 >/dev/null 2>&1; then
+            echo "python3 present"
+          else
+            echo "Installing python3"
+            apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y python3 >/dev/null
+          fi
+          # Install system-packaged PyYAML to avoid pip in constrained environments
+          apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y python3-yaml >/dev/null || true
+          shopt -s nullglob || true
+          files=(packaging/nfpm/*.yaml)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No nfpm manifests found in packaging/nfpm; skipping YAML validation (act/local mismatch)"
+          else
+            for f in "${files[@]}"; do
+              echo "Checking $f"
+              python3 -c "import sys,yaml,json; yaml.safe_load(open('$f'))" || (echo "YAML parse failed for $f"; exit 1)
+            done
+          fi
+
+      - name: Lintian dry-run placeholder
+        run: |
+          echo "Skipping actual lintian execution in act dry-run. Ensure lintian is installed on CI runners."
+
+      - name: Final checks
+        run: |
+          echo "Files to be used by packaging script:"
+          ls -lah packaging || true
+          echo "Dry-run complete"

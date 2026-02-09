@@ -12,7 +12,12 @@ name: urfd-server
 arch: all
 platform: linux
 version: ${PKG_VERSION}
-maintainer: "URFD Project"
+maintainer: "URFD Packaging Team <packaging@urfd.example.org>"
+description: |
+  URFD server components and runtime configuration. This package installs
+  the core server binaries and supporting configuration necessary to run
+  URFD as a system service.
+section: misc
 vendor: "URFD"
 homepage: "https://github.com/dbehnke/urfd"
 description: |

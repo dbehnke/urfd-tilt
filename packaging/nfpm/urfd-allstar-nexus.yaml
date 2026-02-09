@@ -2,7 +2,11 @@ name: urfd-allstar-nexus
 arch: ${ARCH}
 platform: linux
 version: ${PKG_VERSION}
-maintainer: "URFD Project"
+maintainer: "URFD Packaging Team <packaging@urfd.example.org>"
+description: |
+  Optional AllStar Nexus integration package for URFD. Installs nexus
+  integration components used for USRP testing and optional features.
+section: net
 vendor: "URFD"
 homepage: "https://github.com/dbehnke/urfd"
 description: |
@@ -27,5 +31,9 @@ contents:
       mode: 0644
   - src: packaging/systemd/urfd-allstar-nexus.service
     dst: /usr/lib/systemd/system/urfd-allstar-nexus.service
+    file_info:
+      mode: 0644
+  - src: packaging/docs/COPYRIGHT
+    dst: /usr/share/doc/urfd-allstar-nexus/copyright
     file_info:
       mode: 0644

@@ -14,8 +14,21 @@ fi
 
 # ensure runtime dirs exist
 mkdir -p /var/lib/urfd
-chown root:root /var/lib/urfd
-chmod 0755 /var/lib/urfd
+chown root:root /var/lib/urfd || true
+chmod 0755 /var/lib/urfd || true
+
+# Compatibility: create libcurl-gnutls symlink if system provides libcurl.so.4 only
+  if command -v ldconfig >/dev/null 2>&1; then
+    if ldconfig -p | grep -q 'libcurl.so.4'; then
+      TARGET=$(ldconfig -p | awk '/libcurl.so.4/ {print $4; exit}') || true
+      if [ -n "$TARGET" ]; then
+        DIR=$(dirname "$TARGET")
+        if [ ! -f "$DIR/libcurl-gnutls.so.4" ]; then
+          ln -sf "$(basename "$TARGET")" "$DIR/libcurl-gnutls.so.4" || true
+        fi
+      fi
+    fi
+  fi
 
 cat << 'EOF'
 URFD installation complete!

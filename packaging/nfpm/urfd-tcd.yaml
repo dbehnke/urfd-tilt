@@ -2,7 +2,11 @@ name: urfd-tcd
 arch: ${ARCH}
 platform: linux
 version: ${PKG_VERSION}
-maintainer: "URFD Project"
+maintainer: "URFD Packaging Team <packaging@urfd.example.org>"
+description: |
+  URFD TCD integration package. Provides helper scripts and unit files needed
+  to run the transcoder (tcd) integrated with URFD services.
+section: sound
 vendor: "URFD"
 homepage: "https://github.com/dbehnke/urfd"
 description: |
@@ -25,5 +29,9 @@ contents:
       mode: 0644
   - src: packaging/systemd/urfd-tcd.service
     dst: /usr/lib/systemd/system/urfd-tcd.service
+    file_info:
+      mode: 0644
+  - src: packaging/docs/COPYRIGHT
+    dst: /usr/share/doc/urfd-tcd/copyright
     file_info:
       mode: 0644

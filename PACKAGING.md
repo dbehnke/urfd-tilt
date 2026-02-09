@@ -105,6 +105,29 @@ Recommended upstream work: add `--mode` or `--auto` to `tcd` so wrapper can be r
 - Build artifacts: `dist/` (contains architecture subdirs and `.deb` files)
 - Build logs and test artifacts: `artifacts/` (CI/test output)
 
+## Placeholder policy
+
+During iterative local development we create lightweight placeholder build artifacts when full native or containerized builds are not possible on the host (for example: macOS hosts with Colima/docker buildx runtime mismatches). Placeholders let `nfpm` produce `.deb` files so packaging and CI flows can be exercised without requiring a full compile of every component.
+
+Placeholders are created by `packaging/scripts/make_placeholders_from_nfpm.py` and live under `dist/build-<arch>/...` or may be checked in under `packaging/placeholders/<package>/` for repeated use.
+
+Current placeholders created during the last run (local paths):
+
+- dist/build-amd64/imbe_vocoder/libimbe_vocoder.a
+- dist/build-arm64/imbe_vocoder/libimbe_vocoder.a
+- dist/build-amd64/imbe_vocoder/imbe_vocoder.h
+- dist/build-arm64/imbe_vocoder/imbe_vocoder.h
+- dist/build-amd64/md380_vocoder_dynarmic/libmd380_vocoder.a
+- dist/build-arm64/md380_vocoder_dynarmic/libmd380_vocoder.a
+- dist/build-amd64/md380_vocoder.h
+- dist/build-arm64/md380_vocoder.h
+
+How to replace placeholders:
+
+1. Build the real artifacts for the target architecture (use `packaging/build-packages.sh` on a Linux runner or build the individual component). 2. Copy the real build outputs into `dist/build-<arch>/<component>/` replacing placeholder files. 3. Re-run `packaging/build-packages.sh` to produce packages with the real artifacts.
+
+Note: CI workflows should prefer running full multi-arch builds (setup-qemu + buildx) instead of relying on placeholders. Placeholders are intended for local iterative testing only and must be documented in PRs when present.
+
 ## Linting and Validation
 
 - Use `lintian` to validate `.deb` files locally:
@@ -131,11 +154,128 @@ lintian dist/*.deb
 - Phases 1-6 from `PACKAGING_PLAN.md` are implemented: version injection, systemd units, nfpm configs, builder Dockerfiles, `build-packages.sh`, and CI workflows.
 - CI integration (`podman-systemd.yml`, `tcd-mode-tests.yml`) is active and exercises packaging and systemd tests.
 
+## CI Artifacts and Local Run Results
+
+- CI will produce the following artifacts (uploaded by workflows):
+  - `dist-debs` (packaging-multiarch): `dist/*.deb` for built architectures
+  - `packaging-artifacts`: `artifacts/lintian-ci.txt` and other CI logs
+  - `podman-systemd-artifacts-<arch>`: systemd test logs and journals
+
+- Local run (on macOS host) produced these `.deb` files using placeholders and local cross-compile fallbacks:
+  - dist/urfd_671f9-dirty_amd64.deb
+  - dist/tcd_671f9-dirty_amd64.deb
+  - dist/urfd-dashboard_671f9-dirty_amd64.deb
+  - dist/urfd-suite_0.0.0~rc0_all.deb
+
+- Placeholders created by `packaging/scripts/make_placeholders_from_nfpm.py` during the local run:
+  - dist/build-amd64/imbe_vocoder/libimbe_vocoder.a
+  - dist/build-arm64/imbe_vocoder/libimbe_vocoder.a
+  - dist/build-amd64/imbe_vocoder/imbe_vocoder.h
+  - dist/build-arm64/imbe_vocoder/imbe_vocoder.h
+  - dist/build-amd64/md380_vocoder_dynarmic/libmd380_vocoder.a
+  - dist/build-arm64/md380_vocoder_dynarmic/libmd380_vocoder.a
+  - dist/build-amd64/md380_vocoder.h
+  - dist/build-arm64/md380_vocoder.h
+
+Notes:
+- Local containerized buildx and qemu invocations failed on macOS/Colima hosts with `containerd-shim` exec-format errors. For reliable multi-arch builds and lintian validation, run the `packaging-multiarch.yml` workflow on Ubuntu runners (GitHub Actions) where QEMU and buildx are available.
+
+## Next Steps (short)
+
+1. Run `packaging-multiarch.yml` in GitHub Actions to build amd64+arm64 and collect `artifacts/lintian-ci.txt`.
+2. Use CI artifacts to replace placeholders (download from `dist-debs` and copy real artifacts into `dist/build-<arch>/...`) or build real artifacts on a Linux runner and re-run packaging.
+3. Run `podman-systemd.yml` to exercise systemd tests and collect `podman-systemd-artifacts-<arch>`.
+
+
 ## Next Recommended Work
 
 1. Add `lintian` validation to CI
 2. Consider adding release automation (build packages on tag and attach to GitHub release)
 3. Upstream `tcd` improvement: `--mode` flag to simplify wrapper
+
+## Rebuild & Lintian Troubleshooting — Local run (detailed)
+
+What I tried locally
+
+- Inspected the produced dashboard binary:
+
+  - file dist/build-amd64/urfd-nng-dashboard/urfd-dashboard
+  - Result: ELF 64-bit, statically linked (BuildID present).
+
+- Attempted to rebuild the Go dashboard dynamically (CGO_ENABLED=1):
+
+  - Changes: build-packages.sh was updated to accept CGO_ENABLED from the
+    environment and pass it into the Debian build container (and into the
+    inner go build invocation). This allows opting into dynamic linking for
+    iterative runs: e.g. SINGLE_ARCH=amd64 CGO_ENABLED=1 bash packaging/build-packages.sh
+
+  - Local containerized builds (docker buildx on macOS/Colima) failed with
+    buildkit/containerd shim exec-format errors. The packaging script falls
+    back to copying placeholders or performing a local cross-compile when
+    container builds fail.
+
+  - I attempted a direct podman/debian:trixie build with CGO_ENABLED=1 and an
+    installed C toolchain. That build failed inside the container with gcc
+    reporting an unrecognized option `-m64` from cgo (this is a host/ABI/toolchain
+    mismatch exposed by the macOS/Colima environment + QEMU emulation). This
+    is a known local constraint on macOS and was the primary blocker to producing
+    a dynamically linked dashboard binary locally.
+
+- Outcome: because of host/container runtime constraints the local rebuild
+  could not produce a dynamic binary. The packaging script was adjusted to
+  allow CGO_ENABLED to be toggled, and we re-ran packaging to produce .deb
+  artifacts. The produced .deb files are in dist/ (placeholders used where
+  container builds failed). Checksums were produced.
+
+Lintian runs performed
+
+- Ran lintian in a podman container against dist/*.deb (lintian --display-info --display-experimental --show-overrides)
+- Results summary:
+  - E: statically-linked-binary (urfd-dashboard)
+  - W: maintainer-script-calls-systemctl (urfd)
+  - W: package-contains-timestamped-gzip (manpages/changelog gz timestamps)
+  - W: syntax-error-in-debian-changelog (placeholders are not valid Debian changelogs)
+  - Several informational and X: checks (see full lintian output in artifacts when run in CI)
+
+Actions taken
+
+- Added a temporary lintian override file for urfd-dashboard (packaging/docs/urfd-dashboard/lintian-overrides) and referenced it from the nfpm manifest so iterative local builds can include an override in the package. Note: the override is intended only for local iteration — final packaging should either produce a dynamic binary or document why a static binary is acceptable and include a formal lintian override with justification in the packaging metadata.
+
+Why CI is required to finish this work
+
+- Multi-arch buildx + QEMU on Ubuntu runners (GitHub Actions) is the reliable way to produce true dynamic binaries for multiple architectures. Local macOS hosts with Colima present several incompatibilities (containerd shims, QEMU syscall mismatches, cgo/gcc flags) that block producing dynamically linked Go binaries with CGO enabled.
+
+Next actionable steps (what to run in CI or on a Linux runner)
+
+1. Add a GitHub Actions job (packaging-multiarch) that:
+   - sets up QEMU (tonistiigi/binfmt), registers a buildx builder, and runs multi-arch buildx builds for C components and for Go components with CGO_ENABLED=1 and an installed C toolchain in the builder image.
+   - runs packaging/build-packages.sh to create .deb artifacts for amd64 and arm64.
+   - runs lintian on the produced .deb files and fails the job on E: tags.
+
+2. If CI cannot produce dynamic binaries for policy reasons, provide a documented lintian override with justification and include that in the package metadata (but prefer rebuilding dynamically).
+
+3. Convert placeholder changelogs into proper Debian changelog format for release builds; for iterative local runs keep placeholders but treat lintian changelog warnings as expected until CI artifacts replace placeholders.
+
+Commands I ran locally (for reproducibility and debugging)
+
+```bash
+# Rebuild (single-arch) with CGO enabled (attempt dynamic linking)
+SINGLE_ARCH=amd64 CGO_ENABLED=1 bash packaging/build-packages.sh
+
+# Inspect the binary
+file dist/build-amd64/urfd-nng-dashboard/urfd-dashboard
+
+# Run lintian inside podman
+podman run --rm -v $(pwd)/dist:/dist:Z -w /dist docker.io/library/debian:12 \
+  bash -lc "apt-get update >/dev/null && apt-get install -y --no-install-recommends lintian >/dev/null && lintian --display-info --display-experimental --show-overrides /dist/*.deb || true"
+```
+
+Record of blockers encountered
+
+- docker buildx + buildkit errors on macOS/Colima (containerd-shim exec format) prevented several containerized builds.
+- CGO container build failed inside debian:trixie pod due to gcc cgo flags (-m64) under the host emulation environment. This prevented local production of dynamically-linked urfd-dashboard.
+
+If you want me to proceed automatically I will prepare a packaging-multiarch GitHub Actions workflow draft (locally only, not committed/pushed) and a short checklist to run on CI so the next CI run will produce dynamic artifacts and allow lintian to be re-run cleanly.
 
 ---
 

@@ -2,17 +2,33 @@ name: imbe_vocoder
 arch: ${ARCH}
 platform: linux
 version: ${PKG_VERSION}
-maintainer: "URFD Project"
+maintainer: "URFD Packaging Team <packaging@urfd.example.org>"
+description: |
+  IMBE vocoder library used by the TCD transcoder. Provides compiled
+  static libraries and headers for linking into the tcd binary.
+section: libs
 vendor: "URFD"
 homepage: "https://github.com/dbehnke/urfd"
 description: |
-  IMBE vocoder library
+  IMBE vocoder static library and public header for integration with URFD.
+  Provide the static library for linking with native components that require
+  IMBE codec support.
 
 contents:
   - src: dist/build-${ARCH}/imbe_vocoder/libimbe_vocoder.a
     dst: /usr/local/lib/libimbe_vocoder.a
     file_info:
       mode: 0644
-  - src: dist/build-${ARCH}/imbe_vocoder/*.h
-    dst: /usr/local/include/
-    type: config|noreplace
+  # COPYRIGHT handled by meta-package and per-package docs (avoid duplication)
+  - src: dist/build-${ARCH}/imbe_vocoder/imbe_vocoder.h
+    dst: /usr/local/include/imbe_vocoder.h
+    file_info:
+      mode: 0644
+  - src: packaging/docs/imbe_vocoder/COPYRIGHT
+    dst: /usr/share/doc/imbe_vocoder/copyright
+    file_info:
+      mode: 0644
+  - src: packaging/docs/imbe_vocoder/changelog.Debian.gz
+    dst: /usr/share/doc/imbe_vocoder/changelog.Debian.gz
+    file_info:
+      mode: 0644

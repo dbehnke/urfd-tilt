@@ -1,0 +1,6 @@
+
+tcd (0.0.0~local) unstable; urgency=medium
+
+  * Placeholder changelog entry for iterative packaging and CI testing.
+
+ -- URFD Packager <packager@example.com> Mon, 09 Feb 2026 13:27:31 -0500

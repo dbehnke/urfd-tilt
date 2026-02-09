@@ -11,13 +11,29 @@ name: urfd-suite
 arch: all
 platform: linux
 version: ${PKG_VERSION}
-maintainer: "URFD Project"
+maintainer: "URFD Project <maintainers@urfd.example.org>"
+section: misc
 vendor: "URFD"
 homepage: "https://github.com/dbehnke/urfd"
 description: |
   URFD meta-package that pulls together core components.
 
+  This meta-package installs the core URFD components (urfd, urfd-dashboard and
+  tcd). It is intended as a convenience meta-package for simple installations
+  and does not create runtime directories or configuration files.
+
 depends:
   - urfd
   - urfd-dashboard
   - tcd
+
+contents:
+  - src: packaging/docs/COPYRIGHT
+    dst: /usr/share/doc/urfd-suite/copyright
+    file_info:
+      mode: 0644
+  # changelog handled as plain file; nfpm/deb packager will compress as needed
+  - src: packaging/docs/changelog.Debian.gz
+    dst: /usr/share/doc/urfd-suite/changelog.Debian.gz
+    file_info:
+      mode: 0644
