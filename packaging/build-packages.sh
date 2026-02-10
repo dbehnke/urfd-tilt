@@ -337,9 +337,12 @@ EOF
             sed -e "s/\${ARCH}/$ARCH/g" \
                 -e "s/\${PKG_VERSION}/$PKG_VERSION/g" \
                 -e "s#packaging/docs/COPYRIGHT#${PER_PKG_DOC_DIR}/COPYRIGHT#g" \
+                -e "s#packaging/docs/[^/]*/COPYRIGHT#${PER_PKG_DOC_DIR}/COPYRIGHT#g" \
                 -e "s#packaging/docs/${PKG}/COPYRIGHT#${PER_PKG_DOC_DIR}/COPYRIGHT#g" \
                 -e "s#packaging/docs/changelog.Debian#${PER_PKG_DOC_DIR}/changelog.Debian#g" \
                 -e "s#packaging/docs/changelog.Debian.gz#${PER_PKG_DOC_DIR}/changelog.Debian.gz#g" \
+                -e "s#packaging/docs/[^/]*/changelog.Debian#${PER_PKG_DOC_DIR}/changelog.Debian#g" \
+                -e "s#packaging/docs/[^/]*/changelog.Debian.gz#${PER_PKG_DOC_DIR}/changelog.Debian.gz#g" \
                 -e "s#packaging/docs/${PKG}/changelog.Debian#${PER_PKG_DOC_DIR}/changelog.Debian#g" \
                 -e "s#packaging/docs/${PKG}/changelog.Debian.gz#${PER_PKG_DOC_DIR}/changelog.Debian.gz#g" \
                 -e "s#packaging/docs/manpages/#${PER_PKG_DOC_DIR}/manpages/#g" \
