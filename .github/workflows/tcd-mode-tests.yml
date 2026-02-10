@@ -51,7 +51,7 @@ jobs:
             cd src/tcd
             make clean || true
             make swambe2=true swmodes=true BUILD_VERSION=ci \
-              CFLAGS='-W -Werror -Icodec2 -MMD -MD -std=c++17 -DBUILD_VERSION="ci" -DUSE_SW_AMBE2 -DSW_MODES_ONLY -DUNIT_TEST_FTDI' \
+              CFLAGS="-W -Werror -Icodec2 -MMD -MD -std=c++17 -DUSE_SW_AMBE2 -DSW_MODES_ONLY -DUNIT_TEST_FTDI" \
               -j$(nproc)
 
             # Copy artifacts out for tests
@@ -60,7 +60,7 @@ jobs:
             # Attempt a unit-test build
             make clean || true
             make swambe2=true swmodes=true BUILD_VERSION=ci \
-              CFLAGS='-W -Werror -Icodec2 -MMD -MD -std=c++17 -DBUILD_VERSION="ci" -DUSE_SW_AMBE2 -DSW_MODES_ONLY -DUNIT_TEST_FTDI' \
+              CFLAGS="-W -Werror -Icodec2 -MMD -MD -std=c++17 -DUSE_SW_AMBE2 -DSW_MODES_ONLY -DUNIT_TEST_FTDI" \
               -j$(nproc)
             cp tcd /work/dist/build-amd64/tcd/tcd-unittest || true
           '
