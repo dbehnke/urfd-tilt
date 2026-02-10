@@ -8,8 +8,16 @@ on:
 
 jobs:
   podman-systemd-test:
-    name: Podman + systemd validation (amd64)
-    runs-on: ubuntu-latest
+    name: Podman + systemd validation (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
     permissions:
       contents: read
     steps:
@@ -18,9 +26,6 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Setup buildx
         uses: docker/setup-buildx-action@v3
@@ -49,9 +54,9 @@ jobs:
             -f scripts/docker/debian-trixie-systemd-kmod.Dockerfile \
             scripts/docker
 
-      - name: Build packages (amd64)
+      - name: Build packages (${{ matrix.arch }})
         env:
-          SINGLE_ARCH: amd64
+          SINGLE_ARCH: ${{ matrix.arch }}
         run: |
           set -euo pipefail
           bash packaging/build-packages.sh
@@ -75,5 +80,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: dist-amd64-systemd-tested
+          name: dist-${{ matrix.arch }}-systemd-tested
           path: dist/*.deb
