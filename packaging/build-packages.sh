@@ -154,17 +154,6 @@ main() {
             log_info "Building Go service: $SERVICE ($ARCH)"
 
             SERVICE_DIR="$PROJECT_ROOT/src/$SERVICE"
-            if [[ "$SERVICE" == "allstar-nexus" ]]; then
-                # allstar-nexus embeds frontend/dist at compile time. In packaging
-                # CI we may not have a prebuilt frontend, so create a minimal
-                # placeholder to keep the binary build/package flow working.
-                if [[ ! -d "$SERVICE_DIR/frontend/dist" ]] || [[ -z "$(ls -A "$SERVICE_DIR/frontend/dist" 2>/dev/null || true)" ]]; then
-                    mkdir -p "$SERVICE_DIR/frontend/dist"
-                    cat > "$SERVICE_DIR/frontend/dist/index.html" <<EOF
-<!doctype html><html><body><h1>allstar-nexus frontend placeholder</h1></body></html>
-EOF
-                fi
-            fi
             # Default binary name is the service basename, but some packages
             # expect a different final binary name (eg. `urfd-nng-dashboard`
             # package installs `/usr/bin/urfd-dashboard`). Handle known
@@ -176,6 +165,34 @@ EOF
 
         # Ensure per-service build output directory exists
         mkdir -p "$BUILD_DIR/$SERVICE"
+
+            if [[ "$SERVICE" == "allstar-nexus" ]]; then
+                log_info "Building allstar-nexus frontend/dist and embedded binary"
+                GO_TARBALL_HOST="go1.25.6.linux-${ARCH}.tar.gz"
+
+                if ! docker run --rm --platform "linux/$ARCH" \
+                    -e CGO_ENABLED="${CGO_ENABLED:-0}" \
+                    -v "$SERVICE_DIR":/src:rw \
+                    -v "$BUILD_DIR/$SERVICE":/out:rw \
+                    -w /src \
+                    debian:trixie bash -lc "set -euo pipefail; \
+                        apt-get update; \
+                        DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+                            ca-certificates build-essential wget curl nodejs npm >/dev/null; \
+                        curl -fsSL \"https://go.dev/dl/${GO_TARBALL_HOST}\" -o /tmp/go.tgz; \
+                        rm -rf /usr/local/go; mkdir -p /usr/local; tar -C /usr/local -xzf /tmp/go.tgz; \
+                        export PATH=/usr/local/go/bin:\$PATH; \
+                        cd frontend; npm install; npm run build; cd /src; \
+                        if [[ ! -d frontend/dist ]] || [[ -z \"\$(ls -A frontend/dist 2>/dev/null || true)\" ]]; then \
+                            echo '[ERROR] allstar-nexus frontend/dist missing after frontend build' >&2; exit 1; \
+                        fi; \
+                        CGO_FLAG=\"${CGO_ENABLED:-0}\"; \
+                        GOOS=linux GOARCH=${ARCH} CGO_ENABLED=\$CGO_FLAG /usr/local/go/bin/go build -ldflags='-s -w' -o /out/${BINARY_NAME} ${BUILD_PKG}"; then
+                    log_error "Failed to build allstar-nexus with embedded frontend/dist for $ARCH"
+                    exit 1
+                fi
+                continue
+            fi
 
             # Determine the package path to build. Prefer a root-level main
             # package, otherwise look for a `cmd/*` subdirectory that contains
