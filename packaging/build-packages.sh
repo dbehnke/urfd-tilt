@@ -263,21 +263,44 @@ main() {
             # embedded timestamps (lintian warns on timestamped gz files).
             PER_PKG_DOC_DIR="$DIST_DIR/docs/$PKG"
             mkdir -p "$PER_PKG_DOC_DIR"
-            # Copy COPYRIGHT if present
-            if [[ -f "$PROJECT_ROOT/packaging/docs/COPYRIGHT" ]]; then
+            # Copy COPYRIGHT if present. Prefer package-specific file, then shared,
+            # and finally generate a minimal fallback to keep nfpm packaging robust
+            # in CI environments where optional docs are not present.
+            if [[ -f "$PROJECT_ROOT/packaging/docs/$PKG/COPYRIGHT" ]]; then
+                cp "$PROJECT_ROOT/packaging/docs/$PKG/COPYRIGHT" "$PER_PKG_DOC_DIR/COPYRIGHT" || true
+            elif [[ -f "$PROJECT_ROOT/packaging/docs/COPYRIGHT" ]]; then
                 cp "$PROJECT_ROOT/packaging/docs/COPYRIGHT" "$PER_PKG_DOC_DIR/COPYRIGHT" || true
+            else
+                cat > "$PER_PKG_DOC_DIR/COPYRIGHT" <<EOF
+Copyright notice for $PKG is not bundled in this source tree.
+See upstream repository for licensing details.
+EOF
             fi
 
             # Handle changelog: prefer the uncompressed file if available, and
             # always produce a gzipped changelog with gzip -n to avoid timestamp
             # metadata that lintian flags.
-                if [[ -f "$PROJECT_ROOT/packaging/docs/changelog.Debian" ]]; then
+            if [[ -f "$PROJECT_ROOT/packaging/docs/$PKG/changelog.Debian" ]]; then
+                cp "$PROJECT_ROOT/packaging/docs/$PKG/changelog.Debian" "$PER_PKG_DOC_DIR/changelog.Debian" || true
+                gzip -9 -n -c "$PROJECT_ROOT/packaging/docs/$PKG/changelog.Debian" > "$PER_PKG_DOC_DIR/changelog.Debian.gz" || true
+            elif [[ -f "$PROJECT_ROOT/packaging/docs/changelog.Debian" ]]; then
                 cp "$PROJECT_ROOT/packaging/docs/changelog.Debian" "$PER_PKG_DOC_DIR/changelog.Debian" || true
                 # Use maximal compression and omit timestamp metadata to satisfy lintian
                 gzip -9 -n -c "$PROJECT_ROOT/packaging/docs/changelog.Debian" > "$PER_PKG_DOC_DIR/changelog.Debian.gz" || true
+            elif [[ -f "$PROJECT_ROOT/packaging/docs/$PKG/changelog.Debian.gz" ]]; then
+                gunzip -c "$PROJECT_ROOT/packaging/docs/$PKG/changelog.Debian.gz" 2>/dev/null | gzip -9 -n -c > "$PER_PKG_DOC_DIR/changelog.Debian.gz" || cp "$PROJECT_ROOT/packaging/docs/$PKG/changelog.Debian.gz" "$PER_PKG_DOC_DIR/changelog.Debian.gz" || true
             elif [[ -f "$PROJECT_ROOT/packaging/docs/changelog.Debian.gz" ]]; then
                 # Re-compress without timestamps and with maximal compression
                 gunzip -c "$PROJECT_ROOT/packaging/docs/changelog.Debian.gz" 2>/dev/null | gzip -9 -n -c > "$PER_PKG_DOC_DIR/changelog.Debian.gz" || cp "$PROJECT_ROOT/packaging/docs/changelog.Debian.gz" "$PER_PKG_DOC_DIR/changelog.Debian.gz" || true
+            else
+                cat > "$PER_PKG_DOC_DIR/changelog.Debian" <<EOF
+$PKG (${PKG_VERSION}) unstable; urgency=medium
+
+  * Automated packaging build.
+
+ -- URFD Packaging Team <packaging@urfd.example.org>  $(date -Ru)
+EOF
+                gzip -9 -n -c "$PER_PKG_DOC_DIR/changelog.Debian" > "$PER_PKG_DOC_DIR/changelog.Debian.gz" || true
             fi
 
             # Normalise manpages: ensure per-package manpage .1.gz files are
@@ -296,6 +319,15 @@ main() {
                         gzip -9 -n -c "$m" > "$PER_PKG_DOC_DIR/manpages/$name.gz" || true
                     fi
                 done
+            fi
+
+            # Ensure fallback manpages exist for packages that reference them.
+            mkdir -p "$PER_PKG_DOC_DIR/manpages"
+            if [[ ! -f "$PER_PKG_DOC_DIR/manpages/tcd.1.gz" ]]; then
+                printf '.TH tcd 1\n.SH NAME\ntcd - URFD transcoding daemon\n' | gzip -9 -n -c > "$PER_PKG_DOC_DIR/manpages/tcd.1.gz"
+            fi
+            if [[ ! -f "$PER_PKG_DOC_DIR/manpages/urfd.1.gz" ]]; then
+                printf '.TH urfd 1\n.SH NAME\nurfd - URFD service daemon\n' | gzip -9 -n -c > "$PER_PKG_DOC_DIR/manpages/urfd.1.gz"
             fi
 
             TEMP_CONFIG="$DIST_DIR/${PKG}-${ARCH}.yaml"

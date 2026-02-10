@@ -52,6 +52,7 @@ jobs:
             make clean || true
             make swambe2=true swmodes=true BUILD_VERSION=ci \
               CFLAGS="-W -Werror -Icodec2 -MMD -MD -std=c++17 -DUSE_SW_AMBE2 -DSW_MODES_ONLY -DUNIT_TEST_FTDI" \
+              LDFLAGS="-limbe_vocoder -pthread -lnng -lmd380_vocoder -lfmt" \
               -j$(nproc)
 
             # Copy artifacts out for tests
@@ -61,6 +62,7 @@ jobs:
             make clean || true
             make swambe2=true swmodes=true BUILD_VERSION=ci \
               CFLAGS="-W -Werror -Icodec2 -MMD -MD -std=c++17 -DUSE_SW_AMBE2 -DSW_MODES_ONLY -DUNIT_TEST_FTDI" \
+              LDFLAGS="-limbe_vocoder -pthread -lnng -lmd380_vocoder -lfmt" \
               -j$(nproc)
             cp tcd /work/dist/build-amd64/tcd/tcd-unittest || true
           '
