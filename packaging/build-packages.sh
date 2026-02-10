@@ -166,6 +166,25 @@ main() {
         # Ensure per-service build output directory exists
         mkdir -p "$BUILD_DIR/$SERVICE"
 
+            # Determine the package path to build. Prefer a root-level main
+            # package, otherwise look for a `cmd/*` subdirectory that contains
+            # a main.go entrypoint (common in monorepos).
+            BUILD_PKG=""
+            if compgen -G "$SERVICE_DIR"/*.go >/dev/null 2>&1; then
+                BUILD_PKG="."
+            elif [[ -d "$SERVICE_DIR/cmd" ]]; then
+                for d in "$SERVICE_DIR/cmd"/*; do
+                    if [[ -f "$d/main.go" ]]; then
+                        BUILD_PKG="./cmd/$(basename "$d")"
+                        break
+                    fi
+                done
+            fi
+            if [[ -z "$BUILD_PKG" ]]; then
+                log_error "No Go entrypoint found for $SERVICE in $SERVICE_DIR"
+                exit 1
+            fi
+
             if [[ "$SERVICE" == "allstar-nexus" ]]; then
                 log_info "Building allstar-nexus frontend/dist and embedded binary"
                 GO_TARBALL_HOST="go1.25.6.linux-${ARCH}.tar.gz"
@@ -192,25 +211,6 @@ main() {
                     exit 1
                 fi
                 continue
-            fi
-
-            # Determine the package path to build. Prefer a root-level main
-            # package, otherwise look for a `cmd/*` subdirectory that contains
-            # a main.go entrypoint (common in monorepos).
-            BUILD_PKG=""
-            if compgen -G "$SERVICE_DIR"/*.go >/dev/null 2>&1; then
-                BUILD_PKG="."
-            elif [[ -d "$SERVICE_DIR/cmd" ]]; then
-                for d in "$SERVICE_DIR/cmd"/*; do
-                    if [[ -f "$d/main.go" ]]; then
-                        BUILD_PKG="./cmd/$(basename "$d")"
-                        break
-                    fi
-                done
-            fi
-            if [[ -z "$BUILD_PKG" ]]; then
-                log_error "No Go entrypoint found for $SERVICE in $SERVICE_DIR"
-                exit 1
             fi
 
             log_info "Building package path: $BUILD_PKG -> $BUILD_DIR/$SERVICE/$BINARY_NAME"
