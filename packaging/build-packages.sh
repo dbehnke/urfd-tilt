@@ -277,6 +277,15 @@ See upstream repository for licensing details.
 EOF
             fi
 
+            # Package-specific lintian overrides, if defined by nfpm config.
+            if [[ -f "$PROJECT_ROOT/packaging/docs/$PKG/lintian-overrides" ]]; then
+                cp "$PROJECT_ROOT/packaging/docs/$PKG/lintian-overrides" "$PER_PKG_DOC_DIR/lintian-overrides" || true
+            elif [[ -f "$PROJECT_ROOT/packaging/docs/urfd-dashboard/lintian-overrides" && "$PKG" == "urfd-nng-dashboard" ]]; then
+                cp "$PROJECT_ROOT/packaging/docs/urfd-dashboard/lintian-overrides" "$PER_PKG_DOC_DIR/lintian-overrides" || true
+            else
+                : > "$PER_PKG_DOC_DIR/lintian-overrides"
+            fi
+
             # Handle changelog: prefer the uncompressed file if available, and
             # always produce a gzipped changelog with gzip -n to avoid timestamp
             # metadata that lintian flags.
@@ -343,8 +352,10 @@ EOF
                 -e "s#packaging/docs/changelog.Debian.gz#${PER_PKG_DOC_DIR}/changelog.Debian.gz#g" \
                 -e "s#packaging/docs/[^/]*/changelog.Debian#${PER_PKG_DOC_DIR}/changelog.Debian#g" \
                 -e "s#packaging/docs/[^/]*/changelog.Debian.gz#${PER_PKG_DOC_DIR}/changelog.Debian.gz#g" \
+                -e "s#packaging/docs/[^/]*/lintian-overrides#${PER_PKG_DOC_DIR}/lintian-overrides#g" \
                 -e "s#packaging/docs/${PKG}/changelog.Debian#${PER_PKG_DOC_DIR}/changelog.Debian#g" \
                 -e "s#packaging/docs/${PKG}/changelog.Debian.gz#${PER_PKG_DOC_DIR}/changelog.Debian.gz#g" \
+                -e "s#packaging/docs/${PKG}/lintian-overrides#${PER_PKG_DOC_DIR}/lintian-overrides#g" \
                 -e "s#packaging/docs/manpages/#${PER_PKG_DOC_DIR}/manpages/#g" \
                 "$NFPM_CONFIG" > "$TEMP_CONFIG"
             TEMP_CONFIGS+=("$TEMP_CONFIG")
