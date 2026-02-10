@@ -83,8 +83,11 @@ while true; do
 done
 
 echo "Installing runtime dependencies and .deb packages (best-effort)..."
-# Pre-install common runtime libs so dpkg doesn't leave packages in a broken state
-podman exec "$CTR_NAME" bash -lc 'set -e; apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libnng1 libcurl4-gnutls libopus0 libogg0 libfmt10 ca-certificates || true'
+# Pre-install common runtime libs so dpkg doesn't leave packages in a broken state.
+# Use package names that are available across Debian architectures (libcurl4 is the
+# standard curl runtime package; libcurl4-gnutls is not always present on all
+# architectures/distributions). Allow failures to be non-fatal.
+podman exec "$CTR_NAME" bash -lc 'set -e; apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libnng1 libcurl4 libopus0 libogg0 libfmt10 ca-certificates || true'
 podman exec "$CTR_NAME" bash -lc 'set -e; dpkg -i /tmp/urfd-dist/*.deb || (apt-get -f install -y)'
 
 # If the binary expects libcurl-gnutls but the distro provides libcurl.so.4 with a
@@ -104,20 +107,22 @@ podman exec "$CTR_NAME" bash -lc 'set -e; systemctl daemon-reload || true'
 FAILED_SERVICES=0
 for s in $SERVICES; do
   echo "Checking service: $s"
-  podman exec "$CTR_NAME" bash -lc "if systemctl list-unit-files | grep -q \"^${s}\\.service\"; then
-      systemctl enable --now ${s}.service || true
-      systemctl status ${s}.service --no-pager --full > /tmp/${s}-status.log || true
-      journalctl -u ${s}.service -n 500 --no-pager > /tmp/${s}-journal.log || true
-      cat /tmp/${s}-status.log
-    else
-      echo \"UNIT_MISSING ${s}\" >&2
-    fi"
+  UNIT_PRESENT=$(podman exec "$CTR_NAME" bash -lc "if systemctl list-unit-files | grep -q '^${s}\\.service'; then echo yes; else echo no; fi")
+  if [ "$UNIT_PRESENT" = "yes" ]; then
+    podman exec "$CTR_NAME" bash -lc "systemctl enable --now ${s}.service || true"
+    podman exec "$CTR_NAME" bash -lc "systemctl status ${s}.service --no-pager --full > /tmp/${s}-status.log || true"
+    podman exec "$CTR_NAME" bash -lc "journalctl -u ${s}.service -n 500 --no-pager > /tmp/${s}-journal.log || true"
+    podman exec "$CTR_NAME" bash -lc "cat /tmp/${s}-status.log || true"
+  else
+    echo "UNIT_MISSING ${s}" >&2
+    continue
+  fi
   # copy logs out
   podman cp "$CTR_NAME":/tmp/${s}-journal.log "$ARTDIR/${s}-journal.log" 2>/dev/null || true
   podman cp "$CTR_NAME":/tmp/${s}-status.log "$ARTDIR/${s}-status.log" 2>/dev/null || true
   # check active state if present
-  ACTIVE=$(podman exec "$CTR_NAME" systemctl is-active ${s}.service 2>/dev/null || echo "unknown")
-  if [ "$ACTIVE" != "active" ] && [ "$ACTIVE" != "unknown" ]; then
+  ACTIVE=$(podman exec "$CTR_NAME" bash -lc "systemctl is-active ${s}.service 2>/dev/null || true" | head -n1)
+  if [ "$ACTIVE" != "active" ] && [ -n "$ACTIVE" ] && [ "$ACTIVE" != "unknown" ]; then
     echo "Service ${s} state: $ACTIVE"
     FAILED_SERVICES=$((FAILED_SERVICES+1))
   fi
