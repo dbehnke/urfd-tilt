@@ -137,7 +137,7 @@ All services: `Restart=always`, `RestartSec=5`, journal logging, `WantedBy=multi
 
 | Config | Package | Binaries | Depends |
 |--------|---------|----------|---------|
-| `urfd.yaml` | `urfd` | urfd, urfd-inicheck, urfd-dbutil | libnng1, libcurl4t64, libopus0, libogg0, libfmt-dev, systemd |
+| `urfd.yaml` | `urfd` | urfd, urfd-inicheck, urfd-dbutil | libnng1, libcurl4 \| libcurl3t64-gnutls, libopus0, libogg0, libfmt10, systemd |
 | `urfd-tcd.yaml` | `urfd-tcd` | tcd | urfd, systemd |
 | `urfd-nng-dashboard.yaml` | `urfd-dashboard` | urfd-dashboard | urfd, systemd |
 | `urfd-allstar-nexus.yaml` | `urfd-allstar-nexus` | allstar-nexus | systemd (Recommends: urfd) |
@@ -283,7 +283,7 @@ The packaging system has been implemented and integrated; key phases are complet
 - ✅ Phase 2: systemd Service Files — complete
 - ✅ Phase 3: Default Config Files — complete
 - ✅ Phase 4: Debian Packaging with nfpm — complete
-- ✅ Phase 5: Package Tests (partial) — complete
+- ✅ Phase 5: Package Tests — complete
 - ✅ Phase 6: Taskfile Integration — complete
 - ✅ CI Integration: Completed and integrated with GitHub Actions
 
@@ -305,20 +305,15 @@ Current status (what works now)
 
 What remains / possible next steps
 
-1) CI integration (high priority) — add jobs to:
-  - Build multi-arch packages via `packaging/build-packages.sh` and upload artifacts.
-  - Run `scripts/test-systemd.sh` in CI using the systemd test image; ensure qemu/buildx registration on runners.
-  - Run the wrapper unit test `packaging/tests/run-urfd-tcd-wrapper-test.sh` on Linux runners.
+1) Packaging polish (medium priority) — keep runtime dependency validation active:
+  - `packaging/nfpm/urfd.yaml` now uses `libcurl4 | libcurl3t64-gnutls` for distro compatibility; keep validating this against CI install tests.
+  - Consider additional package validation and linting locally beyond what CI provides.
 
-2) Test image improvements (recommended) — update `scripts/docker/debian-trixie-systemd.Dockerfile` to include `kmod` (so `/sbin/rmmod` exists) and common runtime packages to make tests deterministic.
+2) Upstream change for tcd (long-term): add built-in auto-detection and `--mode` flag so the wrapper can be simplified or removed; add unit/integration tests in `src/tcd`.
 
-3) Packaging polish — audit package dependencies and file locations:
-  - Confirm `libcurl3t64-gnutls` is the correct dependency across supported distros or provide alternative transitional deps.
-  - Consider additional package validation and linting.
+3) Documentation: keep `PACKAGING_PLAN.md` (this file) and `PACKAGING.md` synchronized as new issues are found; update `src/tcd/README.md` and packaging README with notes about `URFD_TCD_MODE` and the wrapper test so maintainers can reproduce locally.
 
-4) Upstream change for tcd (long-term): add built-in auto-detection and `--mode` flag so the wrapper can be simplified or removed; add unit/integration tests in `src/tcd`.
-
-6) Documentation: update `PACKAGING_PLAN.md` (this file), `src/tcd/README.md`, and packaging README with notes about `URFD_TCD_MODE` and the wrapper test so maintainers can reproduce locally.
+4) Release Automation (future): integrate package builds with GitHub Releases when tagging `v*`.
 
 Files of interest to review next
 

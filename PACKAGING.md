@@ -77,9 +77,10 @@ Notes:
 
 Current GitHub workflows (see `.github/workflows/`):
 
-- `podman-systemd.yml` — builds multi-arch packages and runs the systemd package test harness (builds with buildx + QEMU, uploads `dist/` artifacts, runs `scripts/test-systemd.sh`)
-- `tcd-mode-tests.yml` — focuses on TCD mode testing (software/hardware mode simulation) and runs wrapper-specific tests
-- `packer-parallels.yml` — manual workflow for building VM images via Packer
+- `packaging-multiarch.yml` — builds multi-arch packages (amd64, arm64) using buildx + QEMU and runs `lintian` validation.
+- `podman-systemd.yml` — builds amd64 packages in-workflow, builds the `debian-trixie-systemd-kmod` test image, and executes `scripts/test-systemd.sh` with failure-on-service-failed gating.
+- `tcd-mode-tests.yml` — focuses on TCD mode testing (software/hardware mode simulation) and runs wrapper-specific tests.
+- `packer-parallels.yml` — manual workflow for building VM images via Packer.
 
 In CI the `build-packages.sh` script is used as the canonical packaging pipeline. Artifacts are uploaded for each architecture.
 
@@ -152,7 +153,7 @@ lintian dist/*.deb
 ## Recent Changes & Status
 
 - Phases 1-6 from `PACKAGING_PLAN.md` are implemented: version injection, systemd units, nfpm configs, builder Dockerfiles, `build-packages.sh`, and CI workflows.
-- CI integration (`podman-systemd.yml`, `tcd-mode-tests.yml`) is active and exercises packaging and systemd tests.
+- CI integration (`packaging-multiarch.yml`, `podman-systemd.yml`, `tcd-mode-tests.yml`) is active and exercises packaging, lintian validation, and systemd tests.
 
 ## CI Artifacts and Local Run Results
 
@@ -180,18 +181,11 @@ lintian dist/*.deb
 Notes:
 - Local containerized buildx and qemu invocations failed on macOS/Colima hosts with `containerd-shim` exec-format errors. For reliable multi-arch builds and lintian validation, run the `packaging-multiarch.yml` workflow on Ubuntu runners (GitHub Actions) where QEMU and buildx are available.
 
-## Next Steps (short)
-
-1. Run `packaging-multiarch.yml` in GitHub Actions to build amd64+arm64 and collect `artifacts/lintian-ci.txt`.
-2. Use CI artifacts to replace placeholders (download from `dist-debs` and copy real artifacts into `dist/build-<arch>/...`) or build real artifacts on a Linux runner and re-run packaging.
-3. Run `podman-systemd.yml` to exercise systemd tests and collect `podman-systemd-artifacts-<arch>`.
-
-
 ## Next Recommended Work
 
-1. Add `lintian` validation to CI
-2. Consider adding release automation (build packages on tag and attach to GitHub release)
-3. Upstream `tcd` improvement: `--mode` flag to simplify wrapper
+1. **Packaging polish**: Keep runtime dependency validation active in CI; `urfd` now depends on `libcurl4 | libcurl3t64-gnutls` for cross-distro compatibility.
+2. **Upstream TCD improvement**: Add a `--mode` flag to `tcd` to simplify or remove the `urfd-tcd-run` wrapper.
+3. **Release Automation**: Integrate package builds with GitHub Releases to automatically attach `.deb` files to new tags.
 
 ## Rebuild & Lintian Troubleshooting — Local run (detailed)
 
