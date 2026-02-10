@@ -2,27 +2,36 @@ name: Packaging — podman systemd tests
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   podman-systemd-test:
-    name: Podman + systemd validation
+    name: Podman + systemd validation (amd64)
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download amd64 artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-amd64
-          path: dist/amd64 || true
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
 
-      - name: Download arm64 artifacts
-        uses: actions/download-artifact@v4
+      - name: Setup buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Setup Go (for nfpm install)
+        uses: actions/setup-go@v5
         with:
-          name: dist-arm64
-          path: dist/arm64 || true
+          go-version: "1.25"
+
+      - name: Install nfpm
+        run: |
+          set -euo pipefail
+          go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       - name: Install Podman
         run: |
@@ -30,36 +39,38 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y podman uidmap
 
-      - name: Prepare systemd-enabled container image
+      - name: Build systemd test image (kmod variant)
         run: |
           set -euo pipefail
-          # Use Debian trixie base and enable systemd; image will be ephemeral
-          CONTAINER_IMAGE=debian:trixie
-          echo "Using container image: $CONTAINER_IMAGE"
+          podman build -t local/debian-trixie-systemd-kmod:latest \
+            -f scripts/docker/debian-trixie-systemd-kmod.Dockerfile \
+            scripts/docker
 
-      - name: Run systemd test harness inside Podman
+      - name: Build packages (amd64)
         env:
-          DIST_DIR: ${{ github.workspace }}/dist
+          SINGLE_ARCH: amd64
         run: |
           set -euo pipefail
-          mkdir -p test-output
-          echo "Listing debs in workspace dist:"
-          ls -lah dist || true
+          bash packaging/build-packages.sh
 
-          # Attempt to run systemd-backed container and run test script. This is a best-effort run in Actions.
-          # scripts/test-systemd.sh should be present in repo and operate on /dist inside container.
-          podman run --rm --privileged -v ${GITHUB_WORKSPACE}/dist:/dist:Z -v ${GITHUB_WORKSPACE}/scripts:/scripts:Z \
-            --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-            --name urfd-pack-test debian:trixie /sbin/init &
-          CONTAINER_ID=$!
-          echo "Started container PID $CONTAINER_ID; waiting 6s for systemd to settle"
-          sleep 6
-          # Copy and run the harness inside container using nsenter-like approach
-          podman exec -t $(podman ps -q --filter name=urfd-pack-test) /bin/bash -xc "set -euo pipefail; /scripts/test-systemd.sh /dist /test-output || exit 0"
-          podman stop $(podman ps -q --filter name=urfd-pack-test) || true
+      - name: Run systemd package test harness
+        run: |
+          set -euo pipefail
+          bash scripts/test-systemd.sh \
+            --dist ./dist \
+            --image local/debian-trixie-systemd-kmod:latest \
+            --fail-on-service-failed
 
       - name: Upload test artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: podman-systemd-output
-          path: test-output
+          path: artifacts
+
+      - name: Upload built debs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-amd64-systemd-tested
+          path: dist/*.deb
