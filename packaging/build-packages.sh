@@ -91,6 +91,31 @@ main() {
             fi
 
             if [[ ! -f "$DOCKERFILE" ]]; then
+                if [[ "$SERVICE" == "urfd" ]]; then
+                    log_warn "Dockerfile not found for urfd; using fallback make build inside debian:trixie"
+                    mkdir -p "$BUILD_DIR/$SERVICE"
+                    if ! docker run --rm --platform "linux/$ARCH" \
+                        -v "$PROJECT_ROOT/src/urfd":/src:rw \
+                        -v "$BUILD_DIR/$SERVICE":/out:rw \
+                        debian:trixie bash -lc "set -euo pipefail; \
+                            apt-get update; \
+                            DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+                              build-essential cmake git libnng-dev libcurl4-gnutls-dev libboost-all-dev \
+                              nlohmann-json3-dev libfmt-dev libopus-dev libogg-dev unzip python3 golang-go \
+                              wget curl xxd ca-certificates >/dev/null; \
+                            cd /src/reflector; \
+                            echo 'DHT=false' > urfd.mk; \
+                            make clean || true; \
+                            make BUILD_VERSION=${PKG_VERSION}; \
+                            cp -f urfd inicheck dbutil /out/; \
+                            cp -f /src/radmin /out/radmin; \
+                            chmod +x /out/urfd /out/inicheck /out/dbutil /out/radmin"; then
+                        log_warn "Fallback build failed for urfd on $ARCH"
+                        continue
+                    fi
+                    continue
+                fi
+
                 log_warn "Dockerfile not found for $SERVICE; skipping C++ build for this service"
                 continue
             fi
@@ -125,10 +150,21 @@ main() {
                 fi
         done
 
-    for SERVICE in "${GO_SERVICES[@]}"; do
-        log_info "Building Go service: $SERVICE ($ARCH)"
+        for SERVICE in "${GO_SERVICES[@]}"; do
+            log_info "Building Go service: $SERVICE ($ARCH)"
 
             SERVICE_DIR="$PROJECT_ROOT/src/$SERVICE"
+            if [[ "$SERVICE" == "allstar-nexus" ]]; then
+                # allstar-nexus embeds frontend/dist at compile time. In packaging
+                # CI we may not have a prebuilt frontend, so create a minimal
+                # placeholder to keep the binary build/package flow working.
+                if [[ ! -d "$SERVICE_DIR/frontend/dist" ]] || [[ -z "$(ls -A "$SERVICE_DIR/frontend/dist" 2>/dev/null || true)" ]]; then
+                    mkdir -p "$SERVICE_DIR/frontend/dist"
+                    cat > "$SERVICE_DIR/frontend/dist/index.html" <<EOF
+<!doctype html><html><body><h1>allstar-nexus frontend placeholder</h1></body></html>
+EOF
+                fi
+            fi
             # Default binary name is the service basename, but some packages
             # expect a different final binary name (eg. `urfd-nng-dashboard`
             # package installs `/usr/bin/urfd-dashboard`). Handle known
