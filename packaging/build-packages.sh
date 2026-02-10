@@ -375,8 +375,46 @@ EOF
     META_CONFIG="$NFPM_DIR/$META_PACKAGE.yaml"
 
     if [[ -f "$META_CONFIG" ]]; then
+        META_DOC_DIR="$DIST_DIR/docs/$META_PACKAGE"
+        mkdir -p "$META_DOC_DIR"
+
+        if [[ -f "$PROJECT_ROOT/packaging/docs/$META_PACKAGE/COPYRIGHT" ]]; then
+            cp "$PROJECT_ROOT/packaging/docs/$META_PACKAGE/COPYRIGHT" "$META_DOC_DIR/COPYRIGHT" || true
+        elif [[ -f "$PROJECT_ROOT/packaging/docs/COPYRIGHT" ]]; then
+            cp "$PROJECT_ROOT/packaging/docs/COPYRIGHT" "$META_DOC_DIR/COPYRIGHT" || true
+        else
+            cat > "$META_DOC_DIR/COPYRIGHT" <<EOF
+Copyright notice for $META_PACKAGE is not bundled in this source tree.
+See upstream repository for licensing details.
+EOF
+        fi
+
+        if [[ -f "$PROJECT_ROOT/packaging/docs/$META_PACKAGE/changelog.Debian.gz" ]]; then
+            gunzip -c "$PROJECT_ROOT/packaging/docs/$META_PACKAGE/changelog.Debian.gz" 2>/dev/null | gzip -9 -n -c > "$META_DOC_DIR/changelog.Debian.gz" || cp "$PROJECT_ROOT/packaging/docs/$META_PACKAGE/changelog.Debian.gz" "$META_DOC_DIR/changelog.Debian.gz" || true
+        elif [[ -f "$PROJECT_ROOT/packaging/docs/changelog.Debian.gz" ]]; then
+            gunzip -c "$PROJECT_ROOT/packaging/docs/changelog.Debian.gz" 2>/dev/null | gzip -9 -n -c > "$META_DOC_DIR/changelog.Debian.gz" || cp "$PROJECT_ROOT/packaging/docs/changelog.Debian.gz" "$META_DOC_DIR/changelog.Debian.gz" || true
+        else
+            cat > "$META_DOC_DIR/changelog.Debian" <<EOF
+$META_PACKAGE (${PKG_VERSION}) unstable; urgency=medium
+
+  * Automated packaging build.
+
+ -- URFD Packaging Team <packaging@urfd.example.org>  $(date -Ru)
+EOF
+            gzip -9 -n -c "$META_DOC_DIR/changelog.Debian" > "$META_DOC_DIR/changelog.Debian.gz" || true
+        fi
+
+        TEMP_META_CONFIG="$DIST_DIR/${META_PACKAGE}-all.yaml"
+        sed -e "s/\${PKG_VERSION}/$PKG_VERSION/g" \
+            -e "s#\./packaging/docs/COPYRIGHT#${META_DOC_DIR}/COPYRIGHT#g" \
+            -e "s#packaging/docs/COPYRIGHT#${META_DOC_DIR}/COPYRIGHT#g" \
+            -e "s#\./packaging/docs/changelog.Debian.gz#${META_DOC_DIR}/changelog.Debian.gz#g" \
+            -e "s#packaging/docs/changelog.Debian.gz#${META_DOC_DIR}/changelog.Debian.gz#g" \
+            "$META_CONFIG" > "$TEMP_META_CONFIG"
+        TEMP_CONFIGS+=("$TEMP_META_CONFIG")
+
         "$NFPM_BIN" pkg \
-            -f "$META_CONFIG" \
+            -f "$TEMP_META_CONFIG" \
             -p deb \
             --target "$DIST_DIR" || {
             log_error "Failed to create meta-package"
