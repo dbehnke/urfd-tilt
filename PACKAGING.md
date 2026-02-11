@@ -78,9 +78,10 @@ Notes:
 Current GitHub workflows (see `.github/workflows/`):
 
 - `packaging-multiarch.yml` — builds multi-arch packages (amd64, arm64) using buildx + QEMU and runs `lintian` validation.
-- `podman-systemd.yml` — builds amd64 packages in-workflow, builds the `debian-trixie-systemd-kmod` test image, and executes `scripts/test-systemd.sh` with failure-on-service-failed gating.
+- `podman-systemd.yml` — builds amd64 and arm64 packages in-workflow, builds the `debian-trixie-systemd-kmod` test image, and executes `scripts/test-systemd.sh` with failure-on-service-failed gating.
 - `tcd-mode-tests.yml` — focuses on TCD mode testing (software/hardware mode simulation) and runs wrapper-specific tests.
 - `packer-parallels.yml` — manual workflow for building VM images via Packer.
+- `release-please.yml` — manages semantic releases from `main` and uploads `.deb` artifacts directly to GitHub Releases (no zip bundling).
 
 In CI the `build-packages.sh` script is used as the canonical packaging pipeline. Artifacts are uploaded for each architecture.
 
@@ -88,6 +89,18 @@ Recommendations:
 
 - Add `lintian` checks on the produced `.deb` files as a CI step to catch packaging policy issues.
 - Ensure buildx builders are registered and QEMU is set up on runners for multi-arch builds.
+
+## Versioning and Releases
+
+- Package version values now use semantic-version-compatible output from `scripts/version.sh` so Debian accepts generated `.deb` metadata.
+- Tag format is `vX.Y.Z` (for example, `v1.0.0`).
+- `release-please.yml` creates/updates release PRs and, once merged and tagged, publishes each generated `.deb` file as an individual GitHub Release asset.
+
+## Latest VM Install Validation
+
+- A fresh Parallels ARM64 Debian VM was provisioned with unattended install via `packer/urfd-parallels.pkr.hcl` and package provisioning via `packer/provision.sh`.
+- Verified installed package set: `urfd`, `tcd`, `urfd-dashboard`, `urfd-allstar-nexus`, `urfd-suite`.
+- Verified services can be enabled/started in VM: `urfd.service`, `urfd-dashboard.service`, `urfd-tcd.service`, `urfd-allstar-nexus.service`.
 
 ## TCD Wrapper (`urfd-tcd-run`) — Why it exists
 
