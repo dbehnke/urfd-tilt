@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Usage: scripts/test-systemd.sh [--dist DIR] [--image IMAGE] [--machine NAME] [--keep-machine] [--fail-on-service-failed]
+DIST="./dist"
+IMAGE="local/debian-trixie-systemd:latest"
+MACHINE_NAME="urfd-podman"
+KEEP_MACHINE=false
+FAIL_ON_SERVICE_FAILED=false
+SERVICES="${URFD_SERVICES:-urfd urfd-dashboard urfd-tcd}"
+TIMEOUT=60
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dist) DIST="$2"; shift 2;;
+    --image) IMAGE="$2"; shift 2;;
+    --machine) MACHINE_NAME="$2"; shift 2;;
+    --keep-machine) KEEP_MACHINE=true; shift;;
+    --fail-on-service-failed) FAIL_ON_SERVICE_FAILED=true; shift;;
+    -h|--help) sed -n '1,240p' "$0"; exit 0;;
+    *) echo "Unknown arg: $1"; exit 2;;
+  esac
+done
+
+if [ ! -d "$DIST" ] || [ -z "$(ls -A "$DIST"/*.deb 2>/dev/null || true)" ]; then
+  echo "ERROR: No .deb files found in $DIST" >&2
+  exit 2
+fi
+
+CTR_NAME="urfd-test-ctr-$$"
+ARTDIR="./artifacts"
+mkdir -p "$ARTDIR"
+
+OS="$(uname -s)"
+
+# Ensure podman available
+if ! command -v podman >/dev/null 2>&1; then
+  echo "ERROR: podman not found in PATH" >&2
+  exit 2
+fi
+
+start_podman_machine_if_needed() {
+  if ! podman machine inspect "$MACHINE_NAME" >/dev/null 2>&1; then
+    # podman machine init takes the name as a positional parameter
+    podman machine init "$MACHINE_NAME" --cpus 2 --memory 2048
+  fi
+  # Start the machine but ignore error if it's already running
+  podman machine start "$MACHINE_NAME" || true
+}
+
+if [ "$OS" = "Darwin" ]; then
+  start_podman_machine_if_needed
+fi
+
+echo "Starting systemd-enabled container..."
+podman run --name "$CTR_NAME" -d \
+  --systemd=always \
+  --tmpfs /run --tmpfs /run/lock \
+  -v "$(realpath "$DIST")":/tmp/urfd-dist:ro \
+  "$IMAGE" /sbin/init
+
+# wait for systemd PID 1
+echo "Waiting for systemd inside container (timeout ${TIMEOUT}s)..."
+t=0
+while true; do
+  if podman exec "$CTR_NAME" test -f /proc/1/comm >/dev/null 2>&1; then
+    COMM=$(podman exec "$CTR_NAME" cat /proc/1/comm || true)
+    if [ "$COMM" = "systemd" ]; then
+      echo "systemd detected"
+      break
+    fi
+  fi
+  sleep 1
+  t=$((t+1))
+  if [ $t -ge $TIMEOUT ]; then
+    echo "ERROR: timed out waiting for systemd in container" >&2
+    podman logs "$CTR_NAME" > "$ARTDIR/container-logs.log" || true
+    podman inspect "$CTR_NAME" > "$ARTDIR/container-inspect.json" || true
+    podman rm -f "$CTR_NAME" || true
+    [ "$OS" = "Darwin" ] && [ "$KEEP_MACHINE" = false ] && podman machine stop "$MACHINE_NAME" || true
+    exit 2
+  fi
+done
+
+echo "Installing runtime dependencies and .deb packages (best-effort)..."
+# Pre-install common runtime libs so dpkg doesn't leave packages in a broken state.
+# Use package names that are available across Debian architectures (libcurl4 is the
+# standard curl runtime package; libcurl4-gnutls is not always present on all
+# architectures/distributions). Allow failures to be non-fatal.
+podman exec "$CTR_NAME" bash -lc 'set -e; apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libnng1 libcurl4 libopus0 libogg0 libfmt10 ca-certificates || true'
+podman exec "$CTR_NAME" bash -lc 'set -e; dpkg -i /tmp/urfd-dist/*.deb || (apt-get -f install -y)'
+
+# If the binary expects libcurl-gnutls but the distro provides libcurl.so.4 with a
+# different name, create a compatibility symlink so the service can start inside
+# the ephemeral test image.
+podman exec "$CTR_NAME" bash -lc 'set -e; \
+  if [ ! -f /usr/lib/*/libcurl-gnutls.so.4 ] 2>/dev/null; then \
+    TARGET=$(ldconfig -p | awk "/libcurl.so.4/ {print \$4; exit}"); \
+    if [ -n "$TARGET" ]; then \
+      DIR=$(dirname "$TARGET"); \
+      ln -sf "$(basename "$TARGET")" "$DIR/libcurl-gnutls.so.4" || true; \
+    fi; \
+  fi'
+
+podman exec "$CTR_NAME" bash -lc 'set -e; systemctl daemon-reload || true'
+
+FAILED_SERVICES=0
+for s in $SERVICES; do
+  echo "Checking service: $s"
+  UNIT_PRESENT=$(podman exec "$CTR_NAME" bash -lc "if systemctl list-unit-files | grep -q '^${s}\\.service'; then echo yes; else echo no; fi")
+  if [ "$UNIT_PRESENT" = "yes" ]; then
+    podman exec "$CTR_NAME" bash -lc "systemctl enable --now ${s}.service || true"
+    podman exec "$CTR_NAME" bash -lc "systemctl status ${s}.service --no-pager --full > /tmp/${s}-status.log || true"
+    podman exec "$CTR_NAME" bash -lc "journalctl -u ${s}.service -n 500 --no-pager > /tmp/${s}-journal.log || true"
+    podman exec "$CTR_NAME" bash -lc "cat /tmp/${s}-status.log || true"
+  else
+    echo "UNIT_MISSING ${s}" >&2
+    continue
+  fi
+  # copy logs out
+  podman cp "$CTR_NAME":/tmp/${s}-journal.log "$ARTDIR/${s}-journal.log" 2>/dev/null || true
+  podman cp "$CTR_NAME":/tmp/${s}-status.log "$ARTDIR/${s}-status.log" 2>/dev/null || true
+  # check active state if present
+  ACTIVE=$(podman exec "$CTR_NAME" bash -lc "systemctl is-active ${s}.service 2>/dev/null || true" | head -n1)
+  if [ "$ACTIVE" != "active" ] && [ -n "$ACTIVE" ] && [ "$ACTIVE" != "unknown" ]; then
+    echo "Service ${s} state: $ACTIVE"
+    FAILED_SERVICES=$((FAILED_SERVICES+1))
+  fi
+done
+
+# Collect global journal and inspect
+podman exec "$CTR_NAME" journalctl -b -o short-iso > /tmp/journal.log || true
+podman cp "$CTR_NAME":/tmp/journal.log "$ARTDIR/journal.log" 2>/dev/null || true
+podman inspect "$CTR_NAME" > "$ARTDIR/container-inspect.json" || true
+podman logs "$CTR_NAME" > "$ARTDIR/container-stdout.log" || true
+
+echo "Cleaning up container..."
+podman rm -f "$CTR_NAME" || true
+
+if [ "$OS" = "Darwin" ] && [ "$KEEP_MACHINE" = false ]; then
+  echo "Stopping podman machine $MACHINE_NAME"
+  podman machine stop "$MACHINE_NAME" || true
+fi
+
+if [ "$FAILED_SERVICES" -gt 0 ]; then
+  echo "Note: $FAILED_SERVICES service(s) were not active after enable/start. Logs are in $ARTDIR"
+  if [ "$FAIL_ON_SERVICE_FAILED" = true ]; then
+    exit 1
+  fi
+fi
+
+echo "Artifacts saved in $ARTDIR"
+exit 0

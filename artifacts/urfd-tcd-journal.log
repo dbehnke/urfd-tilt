@@ -1,0 +1,4 @@
+Feb 04 21:39:02 1bf7c02f42db systemd[1]: Starting urfd-tcd.service - URFD Transcoder Daemon (tcd)...
+Feb 04 21:39:02 1bf7c02f42db systemd[1]: Started urfd-tcd.service - URFD Transcoder Daemon (tcd).
+Feb 04 21:39:02 1bf7c02f42db urfd-tcd-run[3092]: ERROR: Usage: /usr/bin/tcd PATHTOINIFILE
+Feb 04 21:39:02 1bf7c02f42db systemd[1]: urfd-tcd.service: Main process exited, code=exited, status=1/FAILURE

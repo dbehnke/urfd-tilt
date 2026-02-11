@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+echo "pre-commit: starting checks"
+
+# Run Taskfile lint if available
+if command -v task >/dev/null 2>&1; then
+  if grep -q "lint" Taskfile.yml 2>/dev/null || task --list | grep -q "lint"; then
+    echo "Running task lint"
+    task lint || { echo "task lint failed"; exit 1; }
+  fi
+fi
+
+# Run go vet on changed go files if go is available
+if command -v go >/dev/null 2>&1; then
+  files=$(git diff --cached --name-only --diff-filter=ACM | grep '\.go$' || true)
+  if [ -n "$files" ]; then
+    echo "Running go vet on staged Go files"
+    for f in $files; do
+      if [ -f "$f" ]; then
+        go vet "$f" || { echo "go vet failed for $f"; exit 1; }
+      fi
+    done
+  fi
+fi
+
+# Run npm/bun lint if package.json exists and command available
+if [ -f package.json ]; then
+  if command -v bun >/dev/null 2>&1 && grep -q "lint" package.json; then
+    echo "Running bun lint"
+    bun run lint || { echo "bun lint failed"; exit 1; }
+  elif command -v npm >/dev/null 2>&1 && grep -q "lint" package.json; then
+    echo "Running npm run lint"
+    npm run lint || { echo "npm lint failed"; exit 1; }
+  fi
+fi
+
+echo "pre-commit: checks completed"
+exit 0

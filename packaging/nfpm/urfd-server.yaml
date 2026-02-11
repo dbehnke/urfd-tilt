@@ -1,0 +1,40 @@
+# urfd-server: Meta-package for complete URFD server installation
+#
+# Use this package when:
+# - Setting up a full URFD server deployment
+# - You need all core services (urfd, urfd-tcd, urfd-dashboard)
+# - You want automatic creation of required directories (/var/log/urfd, /var/lib/urfd)
+#
+# This package creates the necessary directory structure and pulls in all
+# core URFD components with proper dependencies.
+
+name: urfd-server
+arch: all
+platform: linux
+version: ${PKG_VERSION}
+maintainer: "URFD Packaging Team <packaging@urfd.example.org>"
+description: |
+  URFD server components and runtime configuration. This package installs
+  the core server binaries and supporting configuration necessary to run
+  URFD as a system service.
+section: misc
+vendor: "URFD"
+homepage: "https://github.com/dbehnke/urfd"
+description: |
+  URFD Server - Meta-package for complete URFD installation
+  Installs all core URFD packages for a full server deployment.
+
+depends:
+  - urfd
+  - urfd-tcd
+  - urfd-dashboard
+
+contents:
+  - dst: /var/log/urfd
+    type: dir
+    file_info:
+      mode: 0755
+  - dst: /var/lib/urfd
+    type: dir
+    file_info:
+      mode: 0755

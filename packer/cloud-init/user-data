@@ -1,0 +1,23 @@
+#cloud-config
+
+users:
+  - name: packer
+    gecos: Packer User
+    primary_group: packer
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    lock_passwd: false
+    # passwd is intentionally left empty; CI should generate and substitute
+    # a one-time user-data file that supplies either passwd (hashed) or
+    # ssh_authorized_keys per-run.
+    passwd: ""
+
+package_update: true
+package_upgrade: true
+
+ssh_pwauth: true
+ssh_authorized_keys: []
+
+runcmd:
+  - [ sh, -c, 'mkdir -p /tmp/urfd-dist || true' ]

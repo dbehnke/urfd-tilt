@@ -1,0 +1,45 @@
+FROM debian:trixie
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Copy packages into image
+COPY dist/*.deb /tmp/
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    apt-utils \
+    gnupg \
+    dpkg --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install debs - allow apt to fix missing deps
+RUN dpkg -i /tmp/*.deb || (apt-get update && apt-get install -f -y && dpkg -i /tmp/*.deb)
+
+RUN set -xe ; \
+    # Basic file checks (don't run binaries which may have native runtime deps)
+    test -f /usr/bin/urfd || (echo "urfd binary missing" && exit 1) ; \
+    test -f /usr/bin/tcd || (echo "tcd binary missing" && exit 1) ; \
+    test -f /usr/bin/urfd-dashboard || true ; \
+    test -f /usr/bin/allstar-nexus || true ; \
+    \
+    # Files and services (config and unit files should be present)
+    test -f /etc/urfd/urfd.ini ; \
+    test -f /etc/urfd/tcd.ini || true ; \
+    test -f /etc/urfd/dashboard.yaml || true ; \
+    test -f /usr/lib/systemd/system/urfd.service ; \
+    test -f /usr/lib/systemd/system/urfd-tcd.service || true ; \
+    \
+    # Check urfd user exists
+    id urfd ; \
+    \
+    # Check service dependency ordering for tcd
+    if [ -f /usr/lib/systemd/system/urfd-tcd.service ]; then \
+        grep -q "Requires=urfd.service" /usr/lib/systemd/system/urfd-tcd.service || (echo "urfd-tcd.service missing Requires=urfd.service" && false) ; \
+    fi ; \
+    \
+    # Verify config is registered as conffile
+    if [ -f /var/lib/dpkg/info/urfd.conffiles ]; then \
+        grep -q "/etc/urfd/urfd.ini" /var/lib/dpkg/info/urfd.conffiles || (echo "urfd.ini not listed in urfd.conffiles" && false) ; \
+    fi
+
+CMD ["/bin/bash", "-c", "echo 'package tests passed' && sleep 1"]

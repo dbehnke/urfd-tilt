@@ -1,0 +1,43 @@
+# URFD Dashboard Configuration
+# Minimal config copied from examples/config.yaml
+
+server:
+  # The address the HTTP server listens on
+  addr: ":8080"
+
+  # The NNG URL of the URFD reflector (or simulator)
+  nng_url: "tcp://127.0.0.1:5555"
+
+  # Path to the SQLite database
+  db_path: "/var/lib/urfd/dashboard.db"
+
+reflector:
+  # Display name for the dashboard header
+  name: "URFD Dashboard"
+
+  # Description shown below the name
+  description: "Universal Reflector Dashboard"
+
+voice:
+  # Enable live voice chat functionality
+  enable: true
+  
+  # NNG URL for voice endpoint (PAIR protocol, separate from events)
+  reflector_addr: "tcp://127.0.0.1:5556"
+  
+  # Password required for transmit (empty = no password)
+  transmit_password: ""
+  
+  # Maximum concurrent voice clients
+  max_clients: 100
+  
+  # Opus bitrate in bits/second
+  opus_bitrate: 12000
+  
+  # Maximum transmission duration in seconds
+  max_tx_duration: 180
+
+logging:
+  # Log level (debug, info, warn, error, fatal)
+  level: "info"
+  console: true

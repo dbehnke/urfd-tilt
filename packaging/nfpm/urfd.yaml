@@ -1,0 +1,70 @@
+name: urfd
+arch: ${ARCH}
+platform: linux
+version: ${PKG_VERSION}
+maintainer: "URFD Packaging Team <packaging@urfd.example.org>"
+description: |
+  Core components for the Universal Repeater Firmware Distribution.
+  Installs the core binaries, default configuration and the systemd unit
+  required to operate a URFD instance.
+section: net
+vendor: "URFD"
+homepage: "https://github.com/dbehnke/urfd"
+
+depends:
+  - libnng1
+  - libcurl4 | libcurl3t64-gnutls
+  - libopus0
+  - libogg0
+  - libfmt10
+  - systemd
+
+contents:
+  - src: dist/build-${ARCH}/urfd/urfd
+    dst: /usr/bin/urfd
+    file_info:
+      mode: 0755
+  - src: dist/build-${ARCH}/urfd/inicheck
+    dst: /usr/bin/urfd-inicheck
+    file_info:
+      mode: 0755
+  - src: dist/build-${ARCH}/urfd/dbutil
+    dst: /usr/bin/urfd-dbutil
+    file_info:
+      mode: 0755
+  - src: dist/build-${ARCH}/urfd/radmin
+    dst: /usr/bin/radmin
+    file_info:
+      mode: 0755
+  - src: packaging/configs/urfd.ini
+    dst: /etc/urfd/urfd.ini
+    type: config|noreplace
+    file_info:
+      mode: 0644
+  - src: packaging/systemd/urfd.service
+    dst: /usr/lib/systemd/system/urfd.service
+    file_info:
+      mode: 0644
+  - src: packaging/docs/urfd/COPYRIGHT
+    dst: /usr/share/doc/urfd/copyright
+    file_info:
+      mode: 0644
+  - src: packaging/docs/urfd/changelog.Debian.gz
+    dst: /usr/share/doc/urfd/changelog.Debian.gz
+    file_info:
+      mode: 0644
+  - src: packaging/docs/manpages/urfd.1.gz
+    dst: /usr/share/man/man1/urfd.1.gz
+    file_info:
+      mode: 0644
+
+overrides:
+  deb:
+    recommends:
+      - urfd-server
+
+scripts:
+  preinstall: packaging/scripts/preinstall.sh
+  postinstall: packaging/scripts/postinstall.sh
+  preremove: packaging/scripts/preremove.sh
+  postremove: packaging/scripts/postremove.sh

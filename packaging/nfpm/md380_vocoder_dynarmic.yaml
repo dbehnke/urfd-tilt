@@ -1,0 +1,33 @@
+name: md380_vocoder_dynarmic
+arch: ${ARCH}
+platform: linux
+version: ${PKG_VERSION}
+maintainer: "URFD Packaging Team <packaging@urfd.example.org>"
+description: |
+  MD380 vocoder library (dynarmic port) for use by TCD. Supplies
+  runtime libraries and headers required by the transcode pipeline.
+section: libs
+vendor: "URFD"
+homepage: "https://github.com/dbehnke/urfd"
+description: |
+  MD380 vocoder static library and public header for integration with URFD.
+  This package provides the static library used by native components.
+
+contents:
+  - src: dist/build-${ARCH}/md380_vocoder_dynarmic/libmd380_vocoder.a
+    dst: /usr/local/lib/libmd380_vocoder.a
+    file_info:
+      mode: 0644
+  # COPYRIGHT handled by meta-package and per-package docs (avoid duplication)
+  - src: dist/build-${ARCH}/md380_vocoder_dynarmic/../md380_vocoder.h
+    dst: /usr/local/include/md380_vocoder.h
+    file_info:
+      mode: 0644
+  - src: packaging/docs/md380_vocoder_dynarmic/COPYRIGHT
+    dst: /usr/share/doc/md380_vocoder_dynarmic/copyright
+    file_info:
+      mode: 0644
+  - src: packaging/docs/md380_vocoder_dynarmic/changelog.Debian.gz
+    dst: /usr/share/doc/md380_vocoder_dynarmic/changelog.Debian.gz
+    file_info:
+      mode: 0644

@@ -1,0 +1,12 @@
+● urfd.service - URFD Universal Reflector
+     Loaded: loaded (/usr/lib/systemd/system/urfd.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:39:00 UTC; 5ms ago
+ Invocation: 564e39c79c294a9890f387d86097cdd3
+   Main PID: 2999 ((urfd))
+      Tasks: 1 (limit: 2140)
+     Memory: 1.5M (peak: 1.5M)
+        CPU: 2ms
+     CGroup: /system.slice/urfd.service
+             └─2999 "(urfd)"
+
+Feb 04 21:39:00 1bf7c02f42db systemd[1]: Started urfd.service - URFD Universal Reflector.

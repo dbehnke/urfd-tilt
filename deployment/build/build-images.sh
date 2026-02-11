@@ -117,6 +117,7 @@ BUILD_START=$(date +%s)
 echo -e "${YELLOW}[1/6] Building urfd-common:${VERSION}${NC}"
 docker build \
   -t "urfd-common:${VERSION}" \
+  --build-arg BUILD_VERSION="${VERSION}" \
   -f "$PROJECT_ROOT/common.Dockerfile" \
   "$PROJECT_ROOT"
 
@@ -131,6 +132,7 @@ echo ""
 echo -e "${YELLOW}[2/6] Building imbe-lib:${VERSION}${NC}"
 docker build \
   -t "imbe-lib:${VERSION}" \
+  --build-arg BUILD_VERSION="${VERSION}" \
   -f "$PROJECT_ROOT/docker/imbe.Dockerfile" \
   "$PROJECT_ROOT/src/imbe_vocoder"
 
@@ -144,6 +146,7 @@ echo ""
 echo -e "${YELLOW}[3/6] Building md380-lib:${VERSION}${NC}"
 docker build \
   -t "md380-lib:${VERSION}" \
+  --build-arg BUILD_VERSION="${VERSION}" \
   -f "$PROJECT_ROOT/docker/md380.Dockerfile" \
   "$PROJECT_ROOT/src/md380_vocoder_dynarmic"
 
@@ -158,6 +161,7 @@ echo ""
 echo -e "${YELLOW}[4/6] Building urfd:${VERSION}${NC}"
 docker build \
   -t "urfd:${VERSION}" \
+  --build-arg BUILD_VERSION="${VERSION}" \
   -f "$PROJECT_ROOT/docker/urfd.Dockerfile" \
   "$PROJECT_ROOT/src/urfd"
 
@@ -172,6 +176,7 @@ echo ""
 echo -e "${YELLOW}[5/6] Building tcd:${VERSION}${NC}"
 docker build \
   -t "tcd:${VERSION}" \
+  --build-arg BUILD_VERSION="${VERSION}" \
   --build-arg IMBE_VERSION="${VERSION}" \
   --build-arg MD380_VERSION="${VERSION}" \
   -f "$PROJECT_ROOT/docker/tcd.Dockerfile" \
@@ -188,6 +193,7 @@ echo ""
 echo -e "${YELLOW}[6/6] Building dashboard:${VERSION}${NC}"
 docker build \
   -t "dashboard:${VERSION}" \
+  --build-arg BUILD_VERSION="${VERSION}" \
   -f "$PROJECT_ROOT/docker/dashboard.Dockerfile" \
   "$PROJECT_ROOT/src/urfd-nng-dashboard"
 
@@ -203,6 +209,7 @@ if [[ -d "$PROJECT_ROOT/src/allstar-nexus" ]]; then
   echo -e "${YELLOW}[OPTIONAL] Building allstar-nexus:${VERSION}${NC}"
   docker build \
     -t "allstar-nexus:${VERSION}" \
+    --build-arg BUILD_VERSION="${VERSION}" \
     -f "$PROJECT_ROOT/docker/allstar-nexus.Dockerfile" \
     "$PROJECT_ROOT/src/allstar-nexus"
   

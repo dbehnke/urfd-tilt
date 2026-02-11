@@ -1,0 +1,14 @@
+[Unit]
+Description=URFD Transcoder Daemon (tcd)
+Requires=urfd.service
+After=network-online.target urfd.service
+
+[Service]
+ExecStart=/usr/libexec/urfd/urfd-tcd-run
+# safe ExecStartPre that only attempts rmmod when available and the module is loaded
+ExecStartPre=/bin/sh -c '[ -x /sbin/rmmod ] && command -v lsmod >/dev/null 2>&1 && lsmod | grep -q ftdi_sio && /sbin/rmmod ftdi_sio || true'
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

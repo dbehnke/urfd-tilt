@@ -1,0 +1,84 @@
+name: Packaging — podman systemd tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  podman-systemd-test:
+    name: Podman + systemd validation (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Setup Go (for nfpm install)
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+
+      - name: Install nfpm
+        run: |
+          set -euo pipefail
+          go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Install Podman
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y podman uidmap
+
+      - name: Build systemd test image (kmod variant)
+        run: |
+          set -euo pipefail
+          podman build -t local/debian-trixie-systemd-kmod:latest \
+            -f scripts/docker/debian-trixie-systemd-kmod.Dockerfile \
+            scripts/docker
+
+      - name: Build packages (${{ matrix.arch }})
+        env:
+          SINGLE_ARCH: ${{ matrix.arch }}
+        run: |
+          set -euo pipefail
+          bash packaging/build-packages.sh
+
+      - name: Run systemd package test harness
+        run: |
+          set -euo pipefail
+          bash scripts/test-systemd.sh \
+            --dist ./dist \
+            --image local/debian-trixie-systemd-kmod:latest \
+            --fail-on-service-failed
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: podman-systemd-output-${{ matrix.arch }}
+          path: artifacts
+
+      - name: Upload built debs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.arch }}-systemd-tested
+          path: dist/*.deb

@@ -36,6 +36,7 @@ docker_build(
     'urfd',
     context='src/urfd',
     dockerfile='docker/urfd.Dockerfile',
+    build_args={'BUILD_VERSION': 'dev-tilt'},
     # live_update could be added here for incremental C++ builds if configured
 )
 
@@ -44,6 +45,7 @@ docker_build(
     'tcd',
     context='.',
     dockerfile='docker/tcd.Dockerfile',
+    build_args={'BUILD_VERSION': 'dev-tilt'},
     only=['src/tcd', 'src/urfd'], # Explicitly whitelist source folders
     ignore=['./data']
 )
@@ -53,6 +55,7 @@ docker_build(
     'dashboard',
     context='src/urfd-nng-dashboard',
     dockerfile='docker/dashboard.Dockerfile',
+    build_args={'BUILD_VERSION': 'dev-tilt'},
 )
 
 # Check for --usrp flag
@@ -63,7 +66,8 @@ if enable_usrp:
     docker_build(
         'allstar-nexus',
         context='src/allstar-nexus',
-        dockerfile='docker/allstar-nexus.Dockerfile'
+        dockerfile='docker/allstar-nexus.Dockerfile',
+        build_args={'BUILD_VERSION': 'dev-tilt'},
     )
 
 # Main Docker Compose

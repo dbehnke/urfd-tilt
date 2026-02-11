@@ -1,0 +1,12 @@
+● urfd-dashboard.service - URFD NNG Dashboard
+     Loaded: loaded (/usr/lib/systemd/system/urfd-dashboard.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-02-04 21:39:01 UTC; 5ms ago
+ Invocation: e04817f20f4041748557ffdd0d56d381
+   Main PID: 3059 ((ashboard))
+      Tasks: 1 (limit: 2140)
+     Memory: 1.5M (peak: 1.5M)
+        CPU: 2ms
+     CGroup: /system.slice/urfd-dashboard.service
+             └─3059 "(ashboard)"
+
+Feb 04 21:39:01 1bf7c02f42db systemd[1]: Started urfd-dashboard.service - URFD NNG Dashboard.

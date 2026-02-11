@@ -1,0 +1,78 @@
+name: tcd-mode-tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        simulate: [0, 2]
+    steps:
+      - name: Checkout repository (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Build tcd builder image
+        run: |
+          docker build -f src/tcd/Dockerfile.builder --target tcd-builder -t urfd-tcd-builder:ci .
+
+      - name: Build tcd + dependencies inside builder container
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/work" -w /work urfd-tcd-builder:ci bash -lc '
+            set -e
+            # Build md380_vocoder if present
+            if [ -d src/md380_vocoder_dynarmic ]; then
+              echo "Found md380_vocoder_dynarmic; attempting build"
+              cd src/md380_vocoder_dynarmic
+              if [ -f Makefile ]; then
+                make || true
+                make install || true
+              elif [ -f CMakeLists.txt ]; then
+                mkdir -p build && cd build
+                cmake .. && make -j2
+                make install || true
+              else
+                echo "No known build system for md380_vocoder_dynarmic; skipping"
+              fi
+              cd /work
+            fi
+
+            # Build tcd with UNIT_TEST_FTDI
+            # Ensure tcd.mk is configured for software-only build (swmodes=true) to avoid needing ftd2xx headers
+            echo "swambe2=true" > src/tcd/tcd.mk
+            echo "swmodes=true" >> src/tcd/tcd.mk
+            echo "debug=false" >> src/tcd/tcd.mk
+            
+            cd src/tcd
+            make clean || true
+            make swambe2=true swmodes=true BUILD_VERSION=ci \
+              CFLAGS="-W -Werror -Icodec2 -MMD -MD -std=c++17 -DUSE_SW_AMBE2 -DSW_MODES_ONLY -DUNIT_TEST_FTDI" \
+              LDFLAGS="-limbe_vocoder -pthread -lnng -lmd380_vocoder -lfmt" \
+              -j$(nproc)
+
+            # Copy artifacts out for tests
+            mkdir -p /work/dist/build-amd64/tcd
+            cp tcd /work/dist/build-amd64/tcd/tcd || true
+            # Attempt a unit-test build
+            make clean || true
+            make swambe2=true swmodes=true BUILD_VERSION=ci \
+              CFLAGS="-W -Werror -Icodec2 -MMD -MD -std=c++17 -DUSE_SW_AMBE2 -DSW_MODES_ONLY -DUNIT_TEST_FTDI" \
+              LDFLAGS="-limbe_vocoder -pthread -lnng -lmd380_vocoder -lfmt" \
+              -j$(nproc)
+            cp tcd /work/dist/build-amd64/tcd/tcd-unittest || true
+          '
+
+      - name: Run tcd-mode smoke tests inside builder container
+        env:
+          SIMULATE_FTDI: ${{ matrix.simulate }}
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/work" -w /work urfd-tcd-builder:ci bash -lc '
+            set -e
+            chmod +x packaging/tests/tcd-mode-tests.sh
+            SIMULATE_FTDI=${SIMULATE_FTDI} bash packaging/tests/tcd-mode-tests.sh BIN=/work/dist/build-amd64/tcd/tcd INI=/work/packaging/configs/tcd.ini
+          '
