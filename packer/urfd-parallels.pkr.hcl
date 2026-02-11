@@ -51,22 +51,32 @@ variable "user_data_path" {
   default = "packer/cloud-init/user-data"
 }
 
+variable "package_source_dir" {
+  type    = string
+  default = "dist"
+}
+
 source "parallels-iso" "debian" {
-  # Use a Debian cloud image (arm64 or amd64) for reliable unattended provisioning.
-  # Set `iso_url` to the cloud image URL you want to use (e.g. Debian cloud qcow2/iso).
+  # Use Debian netinst ISO with unattended preseed installation.
   iso_url      = var.iso_url
   iso_checksum = var.iso_checksum
 
   vm_name       = var.vm_name
-  guest_os_type = "Debian"
+  guest_os_type = "debian"
 
-  ram       = var.memory
+  memory    = var.memory
   cpus      = var.cpus
   disk_size = var.disk_size
 
   ssh_username = var.ssh_username
   ssh_password = var.ssh_password
-  ssh_timeout  = "20m"
+  ssh_timeout  = "45m"
+
+  parallels_tools_mode = "disable"
+
+  http_directory = "packer/http"
+
+  shutdown_command = "echo '${var.ssh_password}' | sudo -S shutdown -P now"
 
   # Use floppy_files to attach cloud-init user-data/meta-data. Packer will add them
   # to a virtual floppy (cidata) so cloud-init can consume them on first boot.
@@ -74,24 +84,26 @@ source "parallels-iso" "debian" {
   # user-data containing a one-time ssh key). Default points to packer/cloud-init/user-data
   floppy_files = [var.user_data_path, "packer/cloud-init/meta-data"]
 
-  boot_wait    = "10s"
-  # The default boot_command is kept minimal because cloud images usually auto-login
-  # and enable SSH via cloud-init. If you use a netinst ISO instead, you'll need to
-  # provide a full preseed boot_command here.
-  boot_command = ["<enter><wait>"]
+  boot_wait = "10s"
+  boot_command = [
+    "c<wait>",
+    "linux /install.a64/vmlinuz auto=true priority=critical url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg debian-installer=en_US.UTF-8 locale=en_US.UTF-8 keyboard-configuration/xkb-keymap=us netcfg/get_hostname={{ .Name }} netcfg/get_domain=local fb=false ---<enter><wait>",
+    "initrd /install.a64/initrd.gz<enter><wait>",
+    "boot<enter>"
+  ]
 }
 
 build {
   sources = ["source.parallels-iso.debian"]
 
   provisioner "file" {
-    source      = "../dist"
+    source      = var.package_source_dir
     destination = "/tmp/urfd-dist"
   }
 
   provisioner "shell" {
-    script = "provision.sh"
+    script = "packer/provision.sh"
     pause_before = "10s"
-    execute_command = "echo '{{ user `ssh_password` }}' | sudo -S -E bash '{{ .Path }}'"
+    execute_command = "echo '${var.ssh_password}' | sudo -S -E bash '{{ .Path }}'"
   }
 }

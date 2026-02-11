@@ -21,7 +21,7 @@ if command -v systemctl >/dev/null 2>&1; then
   systemctl daemon-reload || true
 fi
 
-SERVICES=(urfd urfd-dashboard tcd)
+SERVICES=(urfd urfd-dashboard tcd urfd-allstar-nexus)
 for s in "${SERVICES[@]}"; do
   echo "--- Checking service: $s ---"
   if systemctl list-unit-files | grep -q "^${s}\.service"; then
