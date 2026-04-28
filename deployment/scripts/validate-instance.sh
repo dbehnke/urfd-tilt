@@ -259,12 +259,16 @@ if [[ -f "${INSTANCE_DIR}/.env" ]]; then
         if [[ -d "${other_instance}" ]] && [[ "${other_instance}" != "${INSTANCE_DIR}" ]]; then
             if [[ -f "${other_instance}/.env" ]]; then
                 OTHER_NAME=$(grep "^INSTANCE_NAME=" "${other_instance}/.env" | cut -d= -f2)
-                OTHER_HTTP_PORT=$(grep "^PORT_DASHBOARD_HTTP=" "${other_instance}/.env" | cut -d= -f2)
-                
-                if [[ "${OTHER_HTTP_PORT}" == "${PORT_DASHBOARD_HTTP:-}" ]]; then
-                    log_error "Port conflict with ${OTHER_NAME}: PORT_DASHBOARD_HTTP=${PORT_DASHBOARD_HTTP}"
-                    CONFLICTS=$((CONFLICTS + 1))
-                fi
+
+                for port_var in "${PORT_VARS[@]}"; do
+                    current_port="${!port_var:-}"
+                    other_port=$(grep "^${port_var}=" "${other_instance}/.env" | cut -d= -f2 || true)
+
+                    if [[ -n "${current_port}" ]] && [[ -n "${other_port}" ]] && [[ "${current_port}" == "${other_port}" ]]; then
+                        log_error "Port conflict with ${OTHER_NAME}: ${port_var}=${current_port}"
+                        CONFLICTS=$((CONFLICTS + 1))
+                    fi
+                done
             fi
         fi
     done

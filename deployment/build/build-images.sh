@@ -161,12 +161,14 @@ echo ""
 echo -e "${YELLOW}[4/6] Building urfd:${VERSION}${NC}"
 docker build \
   -t "urfd:${VERSION}" \
+  -t "urfd-urfd:${VERSION}" \
   --build-arg BUILD_VERSION="${VERSION}" \
   -f "$PROJECT_ROOT/docker/urfd.Dockerfile" \
   "$PROJECT_ROOT/src/urfd"
 
 if [[ "$TAG_LATEST" == true ]]; then
   docker tag "urfd:${VERSION}" "urfd:latest"
+  docker tag "urfd-urfd:${VERSION}" "urfd-urfd:latest"
 fi
 
 echo -e "${GREEN}✓ urfd:${VERSION} built${NC}"
@@ -176,6 +178,7 @@ echo ""
 echo -e "${YELLOW}[5/6] Building tcd:${VERSION}${NC}"
 docker build \
   -t "tcd:${VERSION}" \
+  -t "urfd-tcd:${VERSION}" \
   --build-arg BUILD_VERSION="${VERSION}" \
   --build-arg IMBE_VERSION="${VERSION}" \
   --build-arg MD380_VERSION="${VERSION}" \
@@ -184,6 +187,7 @@ docker build \
 
 if [[ "$TAG_LATEST" == true ]]; then
   docker tag "tcd:${VERSION}" "tcd:latest"
+  docker tag "urfd-tcd:${VERSION}" "urfd-tcd:latest"
 fi
 
 echo -e "${GREEN}✓ tcd:${VERSION} built${NC}"
@@ -193,12 +197,14 @@ echo ""
 echo -e "${YELLOW}[6/6] Building dashboard:${VERSION}${NC}"
 docker build \
   -t "dashboard:${VERSION}" \
+  -t "urfd-dashboard:${VERSION}" \
   --build-arg BUILD_VERSION="${VERSION}" \
   -f "$PROJECT_ROOT/docker/dashboard.Dockerfile" \
   "$PROJECT_ROOT/src/urfd-nng-dashboard"
 
 if [[ "$TAG_LATEST" == true ]]; then
   docker tag "dashboard:${VERSION}" "dashboard:latest"
+  docker tag "urfd-dashboard:${VERSION}" "urfd-dashboard:latest"
 fi
 
 echo -e "${GREEN}✓ dashboard:${VERSION} built${NC}"
@@ -209,12 +215,14 @@ if [[ -d "$PROJECT_ROOT/src/allstar-nexus" ]]; then
   echo -e "${YELLOW}[OPTIONAL] Building allstar-nexus:${VERSION}${NC}"
   docker build \
     -t "allstar-nexus:${VERSION}" \
+    -t "urfd-allstar-nexus:${VERSION}" \
     --build-arg BUILD_VERSION="${VERSION}" \
     -f "$PROJECT_ROOT/docker/allstar-nexus.Dockerfile" \
     "$PROJECT_ROOT/src/allstar-nexus"
   
   if [[ "$TAG_LATEST" == true ]]; then
     docker tag "allstar-nexus:${VERSION}" "allstar-nexus:latest"
+    docker tag "urfd-allstar-nexus:${VERSION}" "urfd-allstar-nexus:latest"
   fi
   
   echo -e "${GREEN}✓ allstar-nexus:${VERSION} built${NC}"
@@ -252,11 +260,11 @@ echo -e "${GREEN}Images built:${NC}"
 echo "  • urfd-common:${VERSION}"
 echo "  • imbe-lib:${VERSION}"
 echo "  • md380-lib:${VERSION}"
-echo "  • urfd:${VERSION}"
-echo "  • tcd:${VERSION}"
-echo "  • dashboard:${VERSION}"
+echo "  • urfd:${VERSION} / urfd-urfd:${VERSION}"
+echo "  • tcd:${VERSION} / urfd-tcd:${VERSION}"
+echo "  • dashboard:${VERSION} / urfd-dashboard:${VERSION}"
 if [[ "$ALLSTAR_BUILT" == true ]]; then
-  echo "  • allstar-nexus:${VERSION}"
+  echo "  • allstar-nexus:${VERSION} / urfd-allstar-nexus:${VERSION}"
 fi
 
 if [[ "$TAG_LATEST" == true ]]; then

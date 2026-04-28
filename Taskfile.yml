@@ -1,5 +1,10 @@
 version: "3"
 
+vars:
+  INSTANCE: '{{.INSTANCE | default "URF010"}}'
+  VERSION: '{{.VERSION | default "v0.0.0-dev"}}'
+  ENV_FILE: '{{.ENV_FILE | default ".env.dev"}}'
+
 tasks:
   init:
     desc: Initialize development environment
@@ -30,6 +35,57 @@ tasks:
     desc: Show version from git
     cmds:
       - bash scripts/version.sh
+
+  dev-env:
+    desc: Generate .env.dev for an isolated Compose dev instance
+    cmds:
+      - bash scripts/dev-env.sh {{.INSTANCE}} {{.ENV_FILE}}
+
+  dev-build:
+    desc: Build local latest Docker images for Compose development
+    cmds:
+      - bash deployment/build/build-images.sh {{.VERSION}} --also-tag-latest
+
+  dev:
+    desc: Start the Compose dev stack; set INSTANCE=URF011 for alternate ports
+    deps:
+      - dev-env
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh up -d
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh ps
+
+  dev-usrp:
+    desc: Start the Compose dev stack with AllStar Nexus/USRP support
+    deps:
+      - dev-env
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh -f docker-compose.yml -f docker-compose.usrp.yml up -d
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh -f docker-compose.yml -f docker-compose.usrp.yml ps
+
+  dev-down:
+    desc: Stop the current Compose dev stack
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh down
+
+  dev-logs:
+    desc: Follow logs for the current Compose dev stack
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh logs -f
+
+  dev-ps:
+    desc: Show containers for the current Compose dev stack
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh ps
+
+  smoke:
+    desc: Run Compose config, process, dashboard, and URFD listener smoke checks
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-smoke.sh
+
+  test:
+    desc: Run development tests for initialized service repositories
+    cmds:
+      - bash scripts/dev-test.sh
 
   build-packages:
     desc: Build all Debian packages
