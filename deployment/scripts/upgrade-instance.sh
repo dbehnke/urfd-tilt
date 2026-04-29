@@ -172,7 +172,11 @@ if [[ ! -f "${INSTANCE_DIR}/.env" ]]; then
     exit 1
 fi
 
+set +u
+set -a
 source "${INSTANCE_DIR}/.env"
+set +a
+set -u
 CURRENT_VERSION="${IMAGE_VERSION}"
 
 echo ""
@@ -272,7 +276,11 @@ echo ""
 log_step "Step 5/7: Regenerating configuration files"
 
 # Reload environment with new version
+set +u
+set -a
 source "${INSTANCE_DIR}/.env"
+set +a
+set -u
 
 TEMPLATES_DIR="$(cd "${SCRIPT_DIR}/../templates" && pwd)"
 

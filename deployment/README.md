@@ -205,35 +205,24 @@ Creates instance + installs systemd service + starts instance.
 
 ### Customize Configuration
 
-After deployment, edit the configuration files:
+After deployment, edit the instance `.env` file:
 
 ```bash
 cd /opt/urfd-production/instances/URF000
 
 # Edit environment variables
 nano .env
-
-# Edit URFD configuration
-nano configs/urfd.ini
-
-# Edit transcoder settings
-nano configs/tcd.ini
-
-# Edit dashboard configuration
-nano configs/dashboard.yaml
-
-# Apply changes
-cd /Users/dbehnke/development/urfd-dev/urfd-tilt/deployment/scripts
-./manage-instance.sh URF000 restart
 ```
 
-**Important**: After editing `.env`, regenerate config files:
+Apply `.env` changes from the repository root:
+
 ```bash
-cd /opt/urfd-production/instances/URF000
-source .env
-envsubst < configs/urfd.ini > configs/urfd.ini.tmp && mv configs/urfd.ini.tmp configs/urfd.ini
-# Repeat for other config files or redeploy
+task prod-apply INSTANCE=URF000
 ```
+
+This re-renders `docker-compose.yml`, `config/urfd.ini`, `config/tcd.ini`, and `config/dashboard/config.yaml`, validates the instance, and runs `docker compose up -d`.
+
+Generated files may be overwritten by deploy, render, and upgrade commands. Keep routine customizations in `.env`.
 
 ## Managing Instances
 

@@ -4,6 +4,8 @@ vars:
   INSTANCE: '{{.INSTANCE | default "URF010"}}'
   VERSION: '{{.VERSION | default "v0.0.0-dev"}}'
   ENV_FILE: '{{.ENV_FILE | default ".env.dev"}}'
+  INSTANCES_DIR: '{{.INSTANCES_DIR | default "/opt/urfd-production/instances"}}'
+  RENDER_FLAGS: '{{.RENDER_FLAGS | default ""}}'
 
 tasks:
   init:
@@ -101,3 +103,43 @@ tasks:
     desc: Test packages in systemd container
     cmds:
       - bash scripts/test-systemd.sh
+
+  prod-build:
+    desc: Build production Docker images for VERSION
+    cmds:
+      - bash deployment/build/build-images.sh {{.VERSION}}
+
+  prod-deploy:
+    desc: Deploy a production instance; set INSTANCE=URF000 VERSION=v1.0.0
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/deploy-instance.sh {{.INSTANCE}} {{.VERSION}} --systemd --start
+
+  prod-render:
+    desc: Re-render production compose/config files from an instance .env
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/render-instance-config.sh {{.INSTANCE}} {{.RENDER_FLAGS}}
+
+  prod-apply:
+    desc: Re-render production config from .env and apply with docker compose up -d
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/render-instance-config.sh {{.INSTANCE}} --apply {{.RENDER_FLAGS}}
+
+  prod-validate:
+    desc: Validate a production instance
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/validate-instance.sh {{.INSTANCES_DIR}}/{{.INSTANCE}}
+
+  prod-status:
+    desc: Show production instance status
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/manage-instance.sh {{.INSTANCE}} status
+
+  prod-logs:
+    desc: Follow production instance logs
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/manage-instance.sh {{.INSTANCE}} logs
+
+  prod-upgrade:
+    desc: Upgrade a production instance to VERSION
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/upgrade-instance.sh {{.INSTANCE}} {{.VERSION}} --auto-restart

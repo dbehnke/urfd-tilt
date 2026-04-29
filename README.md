@@ -276,6 +276,25 @@ task dev
 
 For deploying URFD in production environments with multiple isolated instances, systemd integration, and proper port management, see the comprehensive [Production Deployment Guide](deployment/README.md).
 
+Common production tasks:
+
+```bash
+task prod-build VERSION=v1.0.0
+task prod-deploy INSTANCE=URF000 VERSION=v1.0.0
+task prod-status INSTANCE=URF000
+task prod-logs INSTANCE=URF000
+task prod-upgrade INSTANCE=URF000 VERSION=v1.0.1
+```
+
+After deployment, customize the instance `.env` file and apply it:
+
+```bash
+sudoedit /opt/urfd-production/instances/URF000/.env
+task prod-apply INSTANCE=URF000
+```
+
+`prod-apply` re-renders generated Compose and config files from `.env`, validates the instance, and runs `docker compose up -d`.
+
 Production features include:
 - Versioned Docker image builds
 - Multi-instance deployment with automatic port offsets
