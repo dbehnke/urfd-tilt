@@ -2,6 +2,8 @@
 
 This directory contains the modernized development workflow for URFD, using [Docker Compose](https://docs.docker.com/compose/) and [Taskfile](https://taskfile.dev/). Tilt remains available, but Compose + Task is the primary local workflow.
 
+**New to this repo?** Start with the [Setup Guide](SETUP.md).
+
 **For production deployment**, see the [Production Deployment Guide](deployment/README.md).
 
 ## Architecture
@@ -79,6 +81,8 @@ Ensure you have the following installed:
 - Git
 
 ## Quick Start
+
+For a step-by-step setup from a fresh machine, see [SETUP.md](SETUP.md).
 
 1. **Initialize the Environment**:
     Clones missing repositories and sets up local configuration.

@@ -2,6 +2,8 @@
 
 This directory contains tools for building, deploying, and managing production URFD instances with proper isolation, port management, and systemd integration.
 
+If you are setting up the project for the first time, start with the repository-level [Setup Guide](../SETUP.md). This file is the detailed production reference.
+
 ## Table of Contents
 
 - [Overview](#overview)
