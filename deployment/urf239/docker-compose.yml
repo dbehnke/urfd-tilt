@@ -1,0 +1,73 @@
+name: urf239
+
+x-urf239-labels: &urf239-labels
+  com.dbehnke.urfd.instance: "URF239"
+  com.dbehnke.urfd.environment: "production"
+  com.dbehnke.urfd.host: "whocares"
+  com.dbehnke.urfd.managed-by: "docker-compose"
+  com.dbehnke.urfd.compose-project: "urf239"
+
+services:
+  urfd:
+    image: urfd:${IMAGE_VERSION:-latest}
+    container_name: urf239-urfd
+    command: urfd /usr/local/etc/urfd/urfd.ini
+    network_mode: host
+    labels:
+      <<: *urf239-labels
+      com.dbehnke.urfd.role: "urfd"
+    volumes:
+      - ./config/production:/usr/local/etc/urfd:ro
+      - ./data/logs:/var/log/urfd
+      - ./data/audio:/usr/local/bin/audio
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  tcd:
+    image: tcd:${IMAGE_VERSION:-latest}
+    container_name: urf239-tcd
+    command: tcd /usr/local/etc/tcd/tcd.ini
+    network_mode: host
+    depends_on:
+      - urfd
+    labels:
+      <<: *urf239-labels
+      com.dbehnke.urfd.role: "tcd"
+    volumes:
+      - ./config/production:/usr/local/etc/tcd:ro
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  dashboard:
+    image: dashboard:${IMAGE_VERSION:-latest}
+    container_name: urf239-dashboard
+    command: dashboard -config /etc/dashboard/config.yaml
+    ports:
+      - "8080:8080/tcp"
+    environment:
+      - URFD_HOST=urfd
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - urfd
+    labels:
+      <<: *urf239-labels
+      com.dbehnke.urfd.role: "dashboard"
+    volumes:
+      - ./config/dashboard:/etc/dashboard:ro
+      - ./data/audio:/usr/local/bin/audio:ro
+      - ./data/dashboard:/data
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -11,10 +11,27 @@ Monorepo with multiple services:
 
 ## Build Commands
 
-### Root Level (Taskfile.yml)
-- `task init` - Initialize development environment (clone submodules, setup config)
-- `task init-config` - Copy default configs to local directory
+### Root Level (`Taskfile.yml`)
+
+Docker Compose + Task is the primary local workflow. Tilt remains in the repository for legacy/local experimentation, but new agent work should prefer the Task/Compose commands below unless explicitly asked otherwise.
+
+- `task init` - Initialize development environment: sync/update submodules and copy default configs into `config/local/`
+- `task init-config` - Copy default configs to `config/local/` without overwriting existing local files
+- `task dev-env` - Generate `.env.dev` for the selected isolated Compose dev instance; defaults to `INSTANCE=URF010`
+- `task dev-build` - Build local `latest` Docker images for Compose development
+- `task dev` - Start the Compose dev stack and show container status
+- `task dev-usrp` - Start the Compose dev stack with AllStar Nexus/USRP support via `docker-compose.usrp.yml`
+- `task dev-ps` - Show containers for the current Compose dev stack
+- `task dev-logs` - Follow logs for the current Compose dev stack
+- `task dev-down` - Stop the current Compose dev stack
+- `task smoke` - Run Compose config, process, dashboard, and URFD listener smoke checks
+- `task test` - Run development tests for initialized service repositories
 - `task clean` - Remove local configuration files
+
+Common overrides:
+- `INSTANCE=URF011` selects another local instance and port offset.
+- `ENV_FILE=.env.URF011.dev` lets multiple local instances keep separate env files.
+- The current port-offset scheme supports `URF000` through `URF035`.
 
 ### AllStar Nexus (`src/allstar-nexus/Taskfile.yml`)
 - `task build` - Build entire application (dashboard + backend)
@@ -223,7 +240,9 @@ export const useLiveStore = defineStore('live', () => {
 - Configuration validation should be provided
 
 **Tools:**
-- Go 1.25.6 for backend
-- Node.js with bun (preferred) or npm for frontend
-- Tilt for local orchestration
-- Task (go-task) for task automation
+- Docker Compose V2 for local orchestration (`docker compose`, usually through `task` wrappers)
+- Task (go-task) for development, test, smoke, and production wrapper commands
+- Docker Desktop or Colima for the local container runtime; on macOS with Colima, use `--port-forwarder grpc` so UDP ports work
+- Go 1.25.6 for backend services
+- Node.js with bun (preferred) or npm for frontend services
+- Tiltfile is legacy/available, but Compose + Task is the canonical workflow documented in `README.md` and `SETUP.md`
