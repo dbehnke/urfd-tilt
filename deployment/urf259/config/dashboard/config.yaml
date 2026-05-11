@@ -1,0 +1,35 @@
+server:
+  addr: ":6544"
+  nng_url: "tcp://host.docker.internal:55552"
+  db_path: "/data/dashboard.db"
+
+reflector:
+  # Display name for the dashboard header
+  name: "URF259 / ZOMBIE ALERT"
+
+  # Description shown below the name
+  description: "YSF US-ZOMBIE #28299 - WiresX 28298 - P25/NXDN TG 1259 - Detroit, MI USA"
+
+  modules:
+    "A": "TG 7001 / YSF DG-ID 10 - YSF/Multi Mode"
+    "B": "TG 7002 / YSF DG-ID 11 - Scheduled"
+    "C": "TG 7003 / YSF DG-ID 12 - TAC"
+
+logging:
+  level: "info"
+  file_path: "/data/dashboard.log"
+  max_size_mb: 10
+  max_backups: 3
+  max_age_days: 28
+  compress: true
+  console: true
+
+audio:
+  enable: true
+  path: "/usr/local/bin/audio"
+
+# Callbook configuration - QRZ credentials must be set via local override
+# Copy this file and set qrz_username and qrz_password before deployment.
+callbook:
+  qrz_username: ""
+  qrz_password: ""
