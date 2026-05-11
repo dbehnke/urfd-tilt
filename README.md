@@ -1,6 +1,8 @@
 # URFD Development Environment
 
-This directory contains the modernized development workflow for URFD, using [Tilt](https://tilt.dev/), [Docker Compose](https://docs.docker.com/compose/), and [Taskfile](https://taskfile.dev/).
+This directory contains the modernized development workflow for URFD, using [Docker Compose](https://docs.docker.com/compose/) and [Taskfile](https://taskfile.dev/). Tilt remains available, but Compose + Task is the primary local workflow.
+
+**New to this repo?** Start with the [Setup Guide](SETUP.md).
 
 **For production deployment**, see the [Production Deployment Guide](deployment/README.md).
 
@@ -11,7 +13,7 @@ The environment orchestrates multiple services and builds them from local source
 ```mermaid
 graph TD
     subgraph Host
-        Tilt[Tilt]
+        Compose[Docker Compose]
         Task[Taskfile]
         Repos[Source Repositories]
     end
@@ -32,7 +34,7 @@ graph TD
         end
     end
 
-    Tilt -->|Orchestrates| Docker
+    Compose -->|Orchestrates| Docker
     Task -->|Initializes| Repos
     Repos -->|Build Context| Common
     Common --> Imbe & MD380 & URFD & TCD & Dash
@@ -57,7 +59,7 @@ nix-shell shell.nix
 ### Option 2: macOS (Homebrew)
 
 ```bash
-brew install tilt go-task docker git
+brew install go-task docker git
 ```
 
 #### Using Colima Instead of Docker Desktop
@@ -75,11 +77,12 @@ colima start --cpu 4 --memory 8 --disk 100 --port-forwarder grpc --vz-rosetta
 Ensure you have the following installed:
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop) or [Colima](https://github.com/abiosoft/colima)
-- [Tilt](https://docs.tilt.dev/install.html)
 - [Task](https://taskfile.dev/installation/)
 - Git
 
 ## Quick Start
+
+For a step-by-step setup from a fresh machine, see [SETUP.md](SETUP.md).
 
 1. **Initialize the Environment**:
     Clones missing repositories and sets up local configuration.
@@ -88,19 +91,26 @@ Ensure you have the following installed:
     task init
     ```
 
-2. **Start Tilt**:
+2. **Start Compose**:
     Builds containers and streams logs.
 
     ```bash
-    tilt up
+    task dev-build
+    task dev
     ```
 
-    Press `Space` to open the Tilt UI in your browser.
+    `task dev-build` builds local `latest` images. `task dev` generates `.env.dev` and starts the Compose stack.
 
 3. **Access Services**:
-    - **Tilt UI**: `http://localhost:10350`
-    - **Dashboard**: `http://localhost:8080`
+    - **Dashboard**: `http://localhost:9080` by default (`URF010`)
     - **URFD**: All protocol ports are exposed (see Ports and Services section below)
+
+4. **Run Smoke Checks**:
+
+    ```bash
+    task smoke
+    ./scripts/test-udp-ports.sh
+    ```
 
 ## Workflow
 
@@ -116,14 +126,32 @@ Ensure you have the following installed:
  To enable **AllStar Nexus** for USRP testing:
 
  ```bash
- tilt up -- --usrp
+ task dev-usrp
  ```
+
+### Multiple Local Instances
+
+The default dev instance is `URF010`, which maps dashboard HTTP to port `9080`. Use another safe instance number to run a second stack:
+
+```bash
+task dev INSTANCE=URF011
+```
+
+Use separate env files when you want to switch between running instances without regenerating `.env.dev`:
+
+```bash
+task dev INSTANCE=URF011 ENV_FILE=.env.URF011.dev
+task dev-ps ENV_FILE=.env.URF011.dev
+```
+
+The current offset scheme supports `URF000` through `URF035`; higher numbers overflow the highest base port.
 
 ### Rebuilding
 
-- Tilt automatically watches the `Tiltfile` and `config/local` changes.
-- Source code changes in `src/urfd`, `src/tcd`, `src/urfd-nng-dashboard`, etc. will trigger image rebuilds (standard Tilt behavior).
-- To force a full rebuild, use the Tilt UI or restart `tilt up`.
+- Rebuild local images with `task dev-build`.
+- Restart the stack with `task dev`.
+- Stop the stack with `task dev-down`.
+- Follow logs with `task dev-logs`.
 
 ## Repository Layout
 
@@ -177,8 +205,7 @@ Common tasks:
 
 ### Web Interfaces
 
-- **Tilt UI**: http://localhost:10350
-- **Dashboard**: http://localhost:8080
+- **Dashboard**: http://localhost:9080 by default (`URF010`)
 
 ### Digital Voice Protocols (UDP)
 
@@ -232,8 +259,8 @@ The default `ssh` port forwarder only supports TCP.
 
 ### Viewing Logs
 
-- **Tilt UI**: Press `Space` in the Tilt CLI to open the web UI with streaming logs
-- **Docker logs**: `docker logs urfd`, `docker logs tcd`, `docker logs dashboard`
+- **Compose logs**: `task dev-logs`
+- **Service logs**: `bash scripts/dev-compose.sh logs -f urfd tcd dashboard`
 - **URFD log files**: Check `data/logs/` directory
 
 ### Clean Rebuild
@@ -241,16 +268,36 @@ The default `ssh` port forwarder only supports TCP.
 If you encounter build issues:
 
 ```bash
-tilt down
+task dev-down
 docker system prune -a  # Warning: removes all unused Docker resources
 task clean
 task init
-tilt up
+task dev-build
+task dev
 ```
 
 ## Production Deployment
 
 For deploying URFD in production environments with multiple isolated instances, systemd integration, and proper port management, see the comprehensive [Production Deployment Guide](deployment/README.md).
+
+Common production tasks:
+
+```bash
+task prod-build VERSION=v1.0.0
+task prod-deploy INSTANCE=URF000 VERSION=v1.0.0
+task prod-status INSTANCE=URF000
+task prod-logs INSTANCE=URF000
+task prod-upgrade INSTANCE=URF000 VERSION=v1.0.1
+```
+
+After deployment, customize the instance `.env` file and apply it:
+
+```bash
+sudoedit /opt/urfd-production/instances/URF000/.env
+task prod-apply INSTANCE=URF000
+```
+
+`prod-apply` re-renders generated Compose and config files from `.env`, validates the instance, and runs `docker compose up -d`.
 
 Production features include:
 - Versioned Docker image builds

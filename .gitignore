@@ -1,5 +1,7 @@
 # Local configuration overrides
 config/local/
+.env.dev
+.env.*.dev
 
 # Tilt temporary files
 .tilt/

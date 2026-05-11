@@ -3,12 +3,30 @@
 # Copy this to your instance directory and customize via .env file.
 #
 # Variable substitution is performed by deploy-instance.sh script.
+#
+# Networking mode:
+#   - Bridge (default): explicit port mappings, isolated container network
+#   - Host: containers share host network namespace (required for USRP/AllStar)
+#
+# To use host networking, set in your .env:
+#   URFD_NETWORK_MODE=network_mode: host
+#   TCD_NETWORK_MODE=network_mode: host
+#   DASHBOARD_EXTRA_HOSTS=extra_hosts:\n      - "host.docker.internal:host-gateway"
+#   DASHBOARD_URFD_HOST=host.docker.internal
+#
+# When using host networking, the 'ports:' section is ignored by Docker
+# but must remain for compose file validity.
 
 services:
   urfd:
     image: urfd-urfd:${IMAGE_VERSION}
     container_name: ${INSTANCE_NAME}-urfd
     command: urfd /usr/local/etc/urfd/urfd.ini
+    # Network mode: leave URFD_NETWORK_MODE empty for bridge (default)
+    # Set URFD_NETWORK_MODE=network_mode: host  for USRP/AllStar
+    # ${URFD_NETWORK_MODE}
+    # NOTE: When using host networking, uncomment the line above and remove
+    # the 'ports:' section (Docker ignores ports in host mode anyway).
     ports:
       # D-Star protocols (UDP)
       - "${PORT_DEXTRA}:30001/udp"    # DExtra
@@ -44,7 +62,14 @@ services:
     image: urfd-tcd:${IMAGE_VERSION}
     container_name: ${INSTANCE_NAME}-tcd
     command: tcd /usr/local/etc/tcd/tcd.ini
-    network_mode: service:urfd
+    # TCD networking follows URFD:
+    #   - Bridge: TCD shares urfd's network namespace via service:urfd
+    #   - Host: TCD also uses host networking
+    # Leave TCD_NETWORK_MODE empty for: network_mode: service:urfd
+    # Set TCD_NETWORK_MODE=network_mode: host  when urfd uses host
+    # ${TCD_NETWORK_MODE}
+    # NOTE: When using host networking, uncomment the line above and remove
+    # the 'depends_on:' section (host mode doesn't support service:urfd).
     depends_on:
       - urfd
     volumes:
@@ -63,7 +88,11 @@ services:
     ports:
       - "${PORT_DASHBOARD_HTTP}:8080/tcp"  # Dashboard HTTP
     environment:
-      - URFD_HOST=urfd
+      - URFD_HOST=${DASHBOARD_URFD_HOST:-urfd}
+    # Extra hosts for host networking mode:
+    # Set DASHBOARD_EXTRA_HOSTS=extra_hosts:\n      - "host.docker.internal:host-gateway"
+    # ${DASHBOARD_EXTRA_HOSTS}
+    # NOTE: When using host networking, uncomment the line above.
     depends_on:
       - urfd
     volumes:

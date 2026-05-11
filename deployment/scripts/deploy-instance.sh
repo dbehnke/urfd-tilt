@@ -293,7 +293,9 @@ log_step "Step 6/9: Processing configuration templates"
 
 # Source environment for substitution
 set +u
+set -a
 source "${INSTANCE_DIR}/.env"
+set +a
 set -u
 
 # Function to perform variable substitution
@@ -421,7 +423,7 @@ echo -e "${CYAN}Dashboard URL:${RESET}    http://localhost:${PORT_DASHBOARD_HTTP
 echo ""
 echo -e "${BOLD}Next Steps:${RESET}"
 echo "  1. Review and customize: ${INSTANCE_DIR}/.env"
-echo "  2. Edit reflector settings: ${INSTANCE_DIR}/config/urfd.ini"
-echo "  3. Start the instance: cd ${INSTANCE_DIR} && docker compose up -d"
+echo "  2. Apply .env changes: task prod-apply INSTANCE=${INSTANCE_NAME}"
+echo "  3. Start manually if needed: cd ${INSTANCE_DIR} && docker compose up -d"
 echo "  4. View logs: docker compose logs -f"
 echo ""

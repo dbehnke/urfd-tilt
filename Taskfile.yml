@@ -1,5 +1,12 @@
 version: "3"
 
+vars:
+  INSTANCE: '{{.INSTANCE | default "URF010"}}'
+  VERSION: '{{.VERSION | default "v0.0.0-dev"}}'
+  ENV_FILE: '{{.ENV_FILE | default ".env.dev"}}'
+  INSTANCES_DIR: '{{.INSTANCES_DIR | default "/opt/urfd-production/instances"}}'
+  RENDER_FLAGS: '{{.RENDER_FLAGS | default ""}}'
+
 tasks:
   init:
     desc: Initialize development environment
@@ -31,6 +38,57 @@ tasks:
     cmds:
       - bash scripts/version.sh
 
+  dev-env:
+    desc: Generate .env.dev for an isolated Compose dev instance
+    cmds:
+      - bash scripts/dev-env.sh {{.INSTANCE}} {{.ENV_FILE}}
+
+  dev-build:
+    desc: Build local latest Docker images for Compose development
+    cmds:
+      - bash deployment/build/build-images.sh {{.VERSION}} --also-tag-latest
+
+  dev:
+    desc: Start the Compose dev stack; set INSTANCE=URF011 for alternate ports
+    deps:
+      - dev-env
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh up -d
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh ps
+
+  dev-usrp:
+    desc: Start the Compose dev stack with AllStar Nexus/USRP support
+    deps:
+      - dev-env
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh -f docker-compose.yml -f docker-compose.usrp.yml up -d
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh -f docker-compose.yml -f docker-compose.usrp.yml ps
+
+  dev-down:
+    desc: Stop the current Compose dev stack
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh down
+
+  dev-logs:
+    desc: Follow logs for the current Compose dev stack
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh logs -f
+
+  dev-ps:
+    desc: Show containers for the current Compose dev stack
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-compose.sh ps
+
+  smoke:
+    desc: Run Compose config, process, dashboard, and URFD listener smoke checks
+    cmds:
+      - URFD_DEV_ENV_FILE={{.ENV_FILE}} bash scripts/dev-smoke.sh
+
+  test:
+    desc: Run development tests for initialized service repositories
+    cmds:
+      - bash scripts/dev-test.sh
+
   build-packages:
     desc: Build all Debian packages
     cmds:
@@ -45,3 +103,43 @@ tasks:
     desc: Test packages in systemd container
     cmds:
       - bash scripts/test-systemd.sh
+
+  prod-build:
+    desc: Build production Docker images for VERSION
+    cmds:
+      - bash deployment/build/build-images.sh {{.VERSION}}
+
+  prod-deploy:
+    desc: Deploy a production instance; set INSTANCE=URF000 VERSION=v1.0.0
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/deploy-instance.sh {{.INSTANCE}} {{.VERSION}} --systemd --start
+
+  prod-render:
+    desc: Re-render production compose/config files from an instance .env
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/render-instance-config.sh {{.INSTANCE}} {{.RENDER_FLAGS}}
+
+  prod-apply:
+    desc: Re-render production config from .env and apply with docker compose up -d
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/render-instance-config.sh {{.INSTANCE}} --apply {{.RENDER_FLAGS}}
+
+  prod-validate:
+    desc: Validate a production instance
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/validate-instance.sh {{.INSTANCES_DIR}}/{{.INSTANCE}}
+
+  prod-status:
+    desc: Show production instance status
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/manage-instance.sh {{.INSTANCE}} status
+
+  prod-logs:
+    desc: Follow production instance logs
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/manage-instance.sh {{.INSTANCE}} logs
+
+  prod-upgrade:
+    desc: Upgrade a production instance to VERSION
+    cmds:
+      - URFD_INSTANCES_DIR={{.INSTANCES_DIR}} bash deployment/scripts/upgrade-instance.sh {{.INSTANCE}} {{.VERSION}} --auto-restart
