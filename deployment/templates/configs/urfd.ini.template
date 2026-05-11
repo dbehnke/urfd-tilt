@@ -30,7 +30,11 @@ NNGAddr = ${DASHBOARD_NNG_URL}
 Interval = ${DASHBOARD_INTERVAL}
 NNGDebug = ${DASHBOARD_NNG_DEBUG}
 ControlNNGEnable = ${DASHBOARD_CONTROL_NNG_ENABLE}
-ControlNNGAddr = ${DASHBOARD_VOICE_CONTROL_ADDR}
+ControlNNGAddr = ${DASHBOARD_CONTROL_NNG_ADDR}
+
+[Voice]
+Enable = ${VOICE_ENABLE}
+NngAddr = ${VOICE_NNG_ADDR}
 
 [Audio]
 Enable = ${AUDIO_ENABLE}
@@ -93,6 +97,9 @@ Port = 10017
 Enable = ${USRP_ENABLE}
 Callsign = ${USRP_CALLSIGN}
 IPAddress = ${USRP_IP_ADDRESS}
+RxPort = ${USRP_RX_PORT}
+TxPort = ${USRP_TX_PORT}
+Module = ${USRP_MODULE}
 
 [DMR]
 XlxCompatibility = ${DMR_XLX_COMPATIBILITY}
@@ -143,6 +150,7 @@ WhitelistPath = ${FILE_WHITELIST_PATH}
 BlacklistPath = ${FILE_BLACKLIST_PATH}
 InterlinkPath = ${FILE_INTERLINK_PATH}
 G3TerminalPath = ${FILE_G3_TERMINAL_PATH}
+M17InterlinkPath = ${FILE_M17_INTERLINK_PATH}
 
 # ======================================================================
 # ADVANCED SETTINGS
