@@ -26,12 +26,24 @@ Docker Compose + Task is the primary local workflow. Tilt remains in the reposit
 - `task dev-down` - Stop the current Compose dev stack
 - `task smoke` - Run Compose config, process, dashboard, and URFD listener smoke checks
 - `task test` - Run development tests for initialized service repositories
+- `task prod-build VERSION=v1.0.0` - Build production Docker images for a version tag
+- `task prod-deploy INSTANCE=URF000 VERSION=v1.0.0` - Deploy, install systemd, and start a production instance
+- `task prod-render INSTANCE=URF000` - Re-render production Compose/config files from an instance `.env`
+- `task prod-apply INSTANCE=URF000` - Re-render, validate, and apply production config with `docker compose up -d`
+- `task prod-validate INSTANCE=URF000` - Validate a production instance
+- `task prod-status INSTANCE=URF000` / `task prod-logs INSTANCE=URF000` - Inspect a production instance
+- `task prod-upgrade INSTANCE=URF000 VERSION=v1.1.0` - Upgrade a production instance to a new image version
 - `task clean` - Remove local configuration files
 
 Common overrides:
 - `INSTANCE=URF011` selects another local instance and port offset.
 - `ENV_FILE=.env.URF011.dev` lets multiple local instances keep separate env files.
+- `VERSION=v1.0.0` selects the Docker image version for production build/deploy/upgrade tasks.
+- `INSTANCES_DIR=/custom/instances` overrides the production instances directory; default is `/opt/urfd-production/instances`.
+- `RENDER_FLAGS="--skip-validation"` passes extra flags to production render/apply tasks.
 - The current port-offset scheme supports `URF000` through `URF035`.
+
+Production deployment details are documented in `deployment/README.md`. Keep generated production customizations in the instance `.env`; deploy/render/upgrade commands may overwrite `docker-compose.yml`, `config/urfd.ini`, `config/tcd.ini`, and `config/dashboard/config.yaml`. Default production templates use bridge networking with explicit port mappings; URFD/TCD host networking for USRP/AllStar is controlled by `.env` variables such as `URFD_NETWORK_MODE`, `TCD_NETWORK_MODE`, `DASHBOARD_URFD_HOST`, and `DASHBOARD_EXTRA_HOSTS`.
 
 ### AllStar Nexus (`src/allstar-nexus/Taskfile.yml`)
 - `task build` - Build entire application (dashboard + backend)
@@ -222,7 +234,7 @@ export const useLiveStore = defineStore('live', () => {
 
 **Code Review:** Generate SSE analysis (impact, edge cases, security, performance) before requesting human review
 
-**Packaging:** Implementation and how-to are documented in `/PACKAGING.md`. See PACKAGING.md for building, testing, and CI details.
+**Packaging:** Implementation and how-to are documented in `PACKAGING.md`. See PACKAGING.md for building, testing, and CI details.
 
 **Documentation:** Keep documentation up to date. Audit documentation when:
 - Making architecture changes

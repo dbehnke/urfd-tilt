@@ -37,7 +37,7 @@ Each URFD instance includes:
 - **dashboard**: Web-based monitoring interface
 - **allstar-nexus** (optional): AllStar network bridge
 
-Instances are isolated using Docker Compose with bridge networking and unique port offsets.
+Instances are isolated using Docker Compose with unique port offsets. The default template uses bridge networking with explicit port mappings; production instances that need USRP/AllStar host-interface binding can opt URFD/TCD into `network_mode: host` via `.env`.
 
 ## Quick Start
 
@@ -57,7 +57,7 @@ cd ../scripts
 ./manage-instance.sh URF000 logs
 
 # 5. Access dashboard
-# Open http://your-server:10080 in browser
+# Open http://your-server:8080 in browser for URF000
 ```
 
 ## Prerequisites
@@ -188,13 +188,17 @@ Creates:
 /opt/urfd-production/instances/URF000/
 ├── .env                          # Environment variables
 ├── docker-compose.yml            # Docker Compose configuration
-├── configs/
+├── config/
 │   ├── urfd.ini                  # URFD configuration
 │   ├── tcd.ini                   # Transcoder configuration
-│   ├── dashboard.yaml            # Dashboard configuration
-│   └── allstar-nexus.yaml        # AllStar Nexus configuration
-├── logs/                         # Application logs
-└── data/                         # Database files
+│   ├── dashboard/
+│   │   └── config.yaml           # Dashboard configuration
+│   └── allstar/
+│       └── config.yaml           # AllStar Nexus configuration (optional)
+└── data/
+    ├── logs/                     # Application logs
+    ├── audio/                    # Audio recordings
+    └── dashboard/                # Dashboard data
 ```
 
 ### Full Deployment with Systemd
@@ -379,11 +383,11 @@ ls -la .backups/
 
 # Restore from backup
 cp -r .backups/backup-20260121-143022/.env .env
-cp -r .backups/backup-20260121-143022/configs/* configs/
+cp -r .backups/backup-20260121-143022/config/* config/
 
-# Restart with old version
-cd /Users/dbehnke/development/urfd-dev/urfd-tilt/deployment/scripts
-./manage-instance.sh URF000 restart
+# Restart with old version from the repository root
+cd /path/to/urfd-tilt
+deployment/scripts/manage-instance.sh URF000 restart
 ```
 
 ## Multi-Instance Deployment
@@ -456,33 +460,33 @@ done
 
 | Service | Port | Protocol | Description |
 |---------|------|----------|-------------|
-| Dashboard HTTP | 10080 | TCP | Web interface |
-| Dashboard HTTPS | 10443 | TCP | Secure web interface |
-| AMI | 5038 | TCP | Asterisk Manager Interface |
+| Dashboard HTTP | 8080 | TCP | Web interface |
 | DExtra | 30001 | UDP | DExtra protocol |
 | DPlus | 20001 | UDP | DPlus protocol |
 | DCS | 30051 | UDP | DCS protocol |
-| DMR | 8880 | UDP | DMR protocol |
-| DMRPlus | 8880 | UDP | DMRPlus protocol (same as DMR) |
+| DMRPlus | 8880 | UDP | DMRPlus protocol |
+| MMDVM | 62030 | UDP | MMDVM protocol |
 | NXDN | 41400 | UDP | NXDN protocol |
 | P25 | 41000 | UDP | P25 protocol |
 | YSF | 42000 | UDP | YSF protocol |
 | M17 | 17000 | UDP | M17 protocol |
 | URF | 10017 | UDP | URF protocol |
-| Inter-linking | 10018 | UDP | Inter-reflector linking |
+| Transcoder | 10100 | TCP | TCD connection |
+| G3 Terminal | 40000 | TCP | G3 terminal |
+| NNG Dashboard | 5555 | TCP | Dashboard event/data socket |
+| NNG Voice | 5556 | TCP | Voice audio data socket |
+| NNG Control | 6556 | TCP | Voice/PTT control socket |
 
 ### Port Calculation for Other Instances
 
 **URF001** (offset +100):
-- Dashboard HTTP: 10180
-- Dashboard HTTPS: 10543
+- Dashboard HTTP: 8180
 - DExtra: 30101
 - DPlus: 20101
 - etc.
 
 **URF002** (offset +200):
-- Dashboard HTTP: 10280
-- Dashboard HTTPS: 10643
+- Dashboard HTTP: 8280
 - DExtra: 30201
 - DPlus: 20201
 - etc.
@@ -504,10 +508,13 @@ The `.env` file contains ~50 configuration variables organized into sections:
 - `INSTANCE_DIR` - Instance directory path
 - `IMAGE_VERSION` - Docker image version
 
-**Port Mappings** (16 ports):
-- `DASHBOARD_HTTP_PORT`, `DASHBOARD_HTTPS_PORT`
-- `AMI_PORT`
-- Protocol ports: `DEXTRA_PORT`, `DPLUS_PORT`, `DCS_PORT`, `DMR_PORT`, etc.
+**Networking Mode**:
+- `URFD_NETWORK_MODE`, `TCD_NETWORK_MODE` - leave empty for bridge mode; set to `network_mode: host` for host-mode deployments
+- `DASHBOARD_URFD_HOST`, `DASHBOARD_EXTRA_HOSTS` - let the bridge-mode dashboard reach host-networked URFD/TCD via `host.docker.internal`
+
+**Port Mappings**:
+- Protocol ports: `PORT_DEXTRA`, `PORT_DPLUS`, `PORT_DCS`, `PORT_DMRPLUS`, `PORT_MMDVM`, `PORT_M17`, `PORT_YSF`, `PORT_P25`, `PORT_NXDN`, `PORT_URF`
+- Service ports: `PORT_TRANSCODER`, `PORT_G3`, `PORT_NNG_DASHBOARD`, `PORT_NNG_VOICE`, `PORT_NNG_CONTROL`, `PORT_DASHBOARD_HTTP`
 
 **Reflector Configuration**:
 - `REFLECTOR_CALLSIGN` - Your callsign (e.g., W1ABC)
@@ -515,7 +522,7 @@ The `.env` file contains ~50 configuration variables organized into sections:
 - `REFLECTOR_COUNTRY` - Country name
 - `REFLECTOR_SPONSOR` - Sponsor/operator name
 - `REFLECTOR_MODULES` - Enabled modules (e.g., ABCD)
-- Protocol enable flags: `ENABLE_DEXTRA`, `ENABLE_DPLUS`, etc.
+- Protocol-specific settings for DMR, MMDVM, NXDN, P25, YSF, M17, G3, BrandMeister, IMRS, and USRP/AllStar
 
 **Transcoder Settings**:
 - Audio gain adjustments for different modes
@@ -532,7 +539,9 @@ The `.env` file contains ~50 configuration variables organized into sections:
 
 ### Configuration Templates
 
-Templates are in `deployment/templates/configs/`:
+Compose and environment templates are in `deployment/templates/`; service configuration templates are in `deployment/templates/configs/`:
+- `.env.template` - Instance environment defaults, including networking mode and port variables
+- `docker-compose.prod.yml` - Production Compose template
 - `urfd.ini.template` - URFD reflector configuration
 - `tcd.ini.template` - Transcoder configuration
 - `dashboard.yaml.template` - Dashboard configuration
@@ -542,22 +551,17 @@ Templates use bash variable substitution (`${VARIABLE}` format) and are processe
 
 ### Regenerate Configurations
 
-After modifying `.env`:
+After modifying `.env`, re-render generated files from the repository root:
 
 ```bash
-cd /opt/urfd-production/instances/URF000
-source .env
+# Render only
+task prod-render INSTANCE=URF000
 
-# Process templates
-for template in /Users/dbehnke/development/urfd-dev/urfd-tilt/deployment/templates/configs/*.template; do
-    filename=$(basename "$template" .template)
-    envsubst < "$template" > "configs/$filename"
-done
-
-# Restart to apply
-cd /Users/dbehnke/development/urfd-dev/urfd-tilt/deployment/scripts
-./manage-instance.sh URF000 restart
+# Or render, validate, and apply with docker compose up -d
+task prod-apply INSTANCE=URF000
 ```
+
+The renderer writes `docker-compose.yml`, `config/urfd.ini`, `config/tcd.ini`, and `config/dashboard/config.yaml`. Generated files may be overwritten by deploy, render, and upgrade commands, so keep routine customizations in `.env`.
 
 Or redeploy the instance (preserves data and logs):
 ```bash
@@ -579,9 +583,9 @@ cp .env .env.backup
 # During deployment
 ./deploy-instance.sh URF000 v1.0.0 --systemd
 
-# Or manually after deployment
-cd /opt/urfd-production/instances/URF000
-sudo cp /Users/dbehnke/development/urfd-dev/urfd-tilt/deployment/templates/systemd/urfd-instance@.service /etc/systemd/system/
+# Or manually after deployment, from the repository root
+cd /path/to/urfd-tilt
+sudo cp deployment/templates/systemd/urfd-instance@.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable urfd-instance@URF000
 ```
@@ -645,7 +649,7 @@ The systemd service template (`urfd-instance@.service`):
 1. **Port conflicts**: Another service using the same port
    ```bash
    # Check what's using a port
-   sudo lsof -i :10080
+   sudo lsof -i :8080
    
    # Kill conflicting process or change port in .env
    ```
@@ -719,11 +723,11 @@ docker restart urf000-urfd-1
 **Dashboard not accessible**:
 ```bash
 # Check if dashboard is running
-curl http://localhost:10080
+curl http://localhost:8080
 
 # Check firewall
 sudo ufw status
-sudo ufw allow 10080/tcp
+sudo ufw allow 8080/tcp
 
 # Check Docker network
 docker network inspect urf000_default
@@ -753,23 +757,17 @@ ls -la .backups/
 # Restore
 cp -r .backups/backup-20260121-143022/* .
 
-# Restart
-cd /Users/dbehnke/development/urfd-dev/urfd-tilt/deployment/scripts
-./manage-instance.sh URF000 restart
+# Restart from the repository root
+cd /path/to/urfd-tilt
+deployment/scripts/manage-instance.sh URF000 restart
 ```
 
 **Configuration mismatch after upgrade**:
 ```bash
-# Regenerate configs from templates
-cd /opt/urfd-production/instances/URF000
-source .env
-
-for template in /Users/dbehnke/development/urfd-dev/urfd-tilt/deployment/templates/configs/*.template; do
-    filename=$(basename "$template" .template)
-    envsubst < "$template" > "configs/$filename"
-done
-
-./manage-instance.sh URF000 restart
+# Re-render generated files from the repository root
+cd /path/to/urfd-tilt
+task prod-render INSTANCE=URF000
+deployment/scripts/manage-instance.sh URF000 restart
 ```
 
 ### Database Issues
@@ -818,9 +816,9 @@ nano .env
 # Set log level
 LOG_LEVEL=debug
 
-# Restart
-cd /Users/dbehnke/development/urfd-dev/urfd-tilt/deployment/scripts
-./manage-instance.sh URF000 restart
+# Restart from the repository root
+cd /path/to/urfd-tilt
+deployment/scripts/manage-instance.sh URF000 restart
 ```
 
 **Collect diagnostic information**:
@@ -839,7 +837,7 @@ uname -a
 ```
 
 **Check project documentation**:
-- Main README: `/Users/dbehnke/development/urfd-dev/urfd-tilt/README.md`
+- Main README: `README.md`
 - Deployment plan: `.opencode/plans/production-deployment.md`
 
 ## Advanced Topics
@@ -863,10 +861,10 @@ export URFD_INSTANCES_DIR=/home/urfd/instances
 
 ```bash
 # Health check endpoint
-curl http://localhost:10080/api/health
+curl http://localhost:8080/api/health
 
 # Export metrics
-curl http://localhost:10080/api/metrics
+curl http://localhost:8080/api/metrics
 
 # Monitor via systemd
 sudo systemctl status urfd-instance@URF000
@@ -899,8 +897,8 @@ crontab -e
 ```bash
 cd /opt/urfd-production/instances
 tar xzf /backups/URF000-20260121.tar.gz
-cd /Users/dbehnke/development/urfd-dev/urfd-tilt/deployment/scripts
-./manage-instance.sh URF000 start
+cd /path/to/urfd-tilt
+deployment/scripts/manage-instance.sh URF000 start
 ```
 
 ### Performance Tuning
@@ -966,7 +964,7 @@ cd deployment/scripts && ./deploy-instance.sh URF000 v1.0.0 --systemd --start
 ./validate-instance.sh URF000
 
 # Access dashboard
-# http://your-server:10080
+# http://your-server:8080
 ```
 
 ### File Locations
